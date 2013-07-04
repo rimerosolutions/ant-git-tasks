@@ -332,7 +332,6 @@ limitations under the License.
       <ivy:publish resolver="@{mavenRepoId}"
                    pubrevision="${project.version}"
                    overwrite="true"
-                   forcedeliver="true"
                    publishivy="true">
         <artifacts pattern="${dist.dir}/[artifact](-[classifier]).[ext]" />
       </ivy:publish>
@@ -345,17 +344,22 @@ limitations under the License.
     <maven-publish mavenRepoId="${maven.repo.local}"/>
   </target>
 
-  <target name="maven-publish-sonatype-release"
+  <target name="-maven-publish-sonatype-release"
           depends="generate-pom,-resolve,do-release"
-          if="sonatype.deployment.releases.enabled"
-          description="Publish build artifacts to the Sonatype Releases repository">
+          if="sonatype.deployment.releases.enabled">
     <maven-publish mavenRepoId="${maven.repo.sonatype.releases}"/>
   </target>
 
-  <target name="maven-publish-sonatype-snapshots"
+  <target name="-maven-publish-sonatype-snapshots"
           depends="generate-pom,-resolve"
-          if="sonatype.deployment.snapshots.enabled,do-release"
-          description="Publish build artifacts to the Sonatype Snapshots repository">
+          if="sonatype.deployment.snapshots.enabled,do-release">
     <maven-publish mavenRepoId="${maven.repo.sonatype.snapshots}"/>
   </target>
+        
+        <target name="maven-publish-remote"
+                  depends="-maven-publish-sonatype-release,-maven-publish-sonatype-snapshots"
+                  if="sonatype.deployment.snapshots.enabled,do-release"
+                  description="Publish build artifacts to the Sonatype Snapshots repository">
+            <maven-publish mavenRepoId="${maven.repo.sonatype.snapshots}"/>
+          </target>
 </project>
