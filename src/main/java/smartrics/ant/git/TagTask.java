@@ -11,11 +11,6 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 public class TagTask extends AbstractGitRepoAwareTask {
 
         private String name;
-        private String message;
-
-        public void setMessage(String message) {
-                this.message = message;
-        }
 
         public void setName(String name) {
                 this.name = name;
@@ -23,10 +18,12 @@ public class TagTask extends AbstractGitRepoAwareTask {
 
         @Override
         protected void doExecute() {
-                log(String.format("Creating tag '%s'", name));
+                String message = String.format("Creating tag '%s'", name);
                 try {
                         // TODO log result?
+                        Git.wrap(repo).commit().setAll(true).setMessage("commit all pending changes before tagging " + name);
                         Git.wrap(repo).tag().setName(name).setMessage(message).call();
+                        Git.wrap(repo).commit().setAll(true).setMessage(message);
                 } catch (GitAPIException ex) {
                          throw new BuildException(String.format("Could not create tag %s", name), ex);
                 } 
