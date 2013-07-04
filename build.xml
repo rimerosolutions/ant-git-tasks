@@ -32,11 +32,11 @@ limitations under the License.
   <property file="${release.properties.filename}"/>
   <property name="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}"/>
         
-  <condition property="project.version.classifier" value="">
+  <condition property="project.version.classifier" value="-SNAPSHOT">
       <equals casesensitive="true" arg1="${snapshot}" arg2="true"/>
   </condition>
 
-  <property name="project.version.classifier" value="-SNAPSHOT"/>
+  <property name="project.version.classifier" value=""/>
   <property name="project.version" value="${build.number}${project.version.classifier}"/>
   <property name="src.dir" value="src/main/java"/>
   <property name="resources.dir" value="src/main/resources"/>
