@@ -25,7 +25,7 @@ limitations under the License.
       passwd="${sonatypePassword}"/>
 
   <signers>
-    <pgp name="gpg" secring="${signing.secretKeyRingFile}" password="${signing.password}" keyId="${signing.keyId}"/>
+    <pgp name="${signing.name}" secring="${signing.secretKeyRingFile}" password="${signing.password}" keyId="${signing.keyId}"/>
   </signers>
 
   <resolvers>
@@ -33,10 +33,10 @@ limitations under the License.
       <ibiblio name="central" m2compatible="true"/>
       <ibiblio name="springsource-external" m2compatible="true" root="http://repository.springsource.com/maven/bundles/external"/>
       <ibiblio name="springsource-release" m2compatible="true" root="http://repository.springsource.com/maven/bundles/release"/>
-      <url name="sonatype-snapshots" m2compatible="true" signer="pgp">
+      <url name="sonatype-snapshots" m2compatible="true" signer="${signing.name}">
         <artifact pattern="https://oss.sonatype.org/content/repositories/snapshots/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
       </url>
-      <url name="sonatype-releases" m2compatible="true" signer="pgp">
+      <url name="sonatype-releases" m2compatible="true" signer="${signing.name}">
         <artifact pattern="https://oss.sonatype.org/service/local/staging/deploy/maven2/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
       </url>
       <url name="mavencentral">

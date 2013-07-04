@@ -76,6 +76,7 @@ limitations under the License.
     <and>
       <isset property="signing.keyId"/>
       <isset property="signing.password"/>
+            <isset property="signing.name"/>
       <isset property="signing.secretKeyRingFile"/>
       <isset property="sonatypeUsername"/>
       <isset property="sonatypePassword"/>
