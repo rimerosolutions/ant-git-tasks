@@ -55,6 +55,8 @@ public class PushTask extends AbstractGitRepoAwareTask {
                         if (pushFailedProperty != null) {
                                 getProject().setProperty(pushFailedProperty, e.getMessage());
                         }
+                        
+                        log(e.getMessage());
 
                         throw new GitBuildException("Git push failed", e);
                 }
