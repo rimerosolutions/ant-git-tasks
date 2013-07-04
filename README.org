@@ -10,3 +10,5 @@ The big picture is that at some point, some kind of Ant-Git-Release workflow API
 - Add ant-git-release-conventions-api as dependency to your Ant Ivy build
 - Add a corporate implementation of ant-git-release-conventions-api or use the rimero-git-release-contentions-api implementation (Java SPI to keep things simple)
 
+There's a temporary jar at the root of the tree... This will disappear soon enough...
+
