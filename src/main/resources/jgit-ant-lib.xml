@@ -1,0 +1,3 @@
+<antlib>
+  <taskdef name="git" classname="smartrics.ant.git.GitTasksContainer"/>
+</antlib>

@@ -1,0 +1,91 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        <modelVersion>4.0.0</modelVersion>
+
+        <groupId>com.rimerosolutions.ant</groupId>
+        <artifactId>ant-git-taks</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <packaging>jar</packaging>
+        <name>ant-git-tasks</name>
+        <url>https://github.com/rimerosolutions/ant-git-tasks</url>
+        
+        <licenses>
+                <license>
+                        <name>The Apache Software License, Version 2.0</name>
+                        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+                        <distribution>repo</distribution>
+                </license>
+        </licenses>
+
+        <scm>
+                <url>https://github.com/rimerosolutions/ant-git-tasks</url>
+                <connection>scm:git:https://github.com/rimerosolutions/ant-git-tasks.git</connection>
+                <developerConnection>scm:git:https://github.com/rimerosolutions/ant-git-tasks.git</developerConnection>
+        </scm>
+                                        
+        <properties>
+                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        </properties>
+
+        <dependencies>
+                <dependency>
+                        <groupId>org.eclipse.jgit</groupId>
+                        <artifactId>org.eclipse.jgit.ant</artifactId>
+                        <version>3.0.0.201306101825-r</version>
+                </dependency>
+
+                <dependency>
+                        <groupId>org.eclipse.jgit</groupId>
+                        <artifactId>org.eclipse.jgit</artifactId>
+                        <version>3.0.0.201306101825-r</version>
+                </dependency>
+                
+                <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>0.1.50</version>
+                </dependency>            
+            
+                <dependency>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
+                        <version>3.8.1</version>
+                        <scope>test</scope>
+                </dependency>
+        </dependencies>
+        
+        <developers>
+                <developer>
+                        <id>rimerosolutions</id>
+                        <name>Yves Zoundi</name>
+                        <email>rimerosolutions@gmail.com</email>
+                </developer>
+        </developers>
+        
+        <build> 
+                <plugins>
+                        <plugin>
+        <!-- NOTE: We don't need a groupId specification because the group is
+             org.apache.maven.plugins ...which is assumed by default.
+         -->
+                                <artifactId>maven-assembly-plugin</artifactId>
+                                <version>2.4</version>
+                                <configuration>
+                                        <descriptorRefs>
+                                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                                        </descriptorRefs>
+                                </configuration>
+                                <executions>
+                                        <execution>
+                                                <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                                                <phase>package</phase> <!-- bind to the packaging phase -->
+                                                <goals>
+                                                        <goal>single</goal>
+                                                </goals>
+                                        </execution>
+                                </executions>
+                        </plugin>
+                </plugins>
+        </build>
+</project>
