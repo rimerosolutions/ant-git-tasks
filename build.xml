@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="git"
+         default="release"
+         xmlns:git="antlib:smartrics.ant.git">
+
+  <taskdef uri="antlib:smartrics.ant.git"
+           resource="jgit-ant-lib.xml"
+           classpath="target/ant-git-1.0-SNAPSHOT-jar-with-dependencies.jar"/>
+
+  <!-- ****************************************** -->
+  <!-- build number related targets -->
+  <!-- ****************************************** -->
+  <property name="release.properties.filename" value="release.properties"/>
+  <property name="next.release.properties.filename" value="next.release.properties"/>
+  <property file="${release.properties.filename}"/>
+  <property name="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}"/>
+
+  <condition property="snapshot-build">
+    <and>
+      <isset property="snapshot"/>
+      <equals arg1="true" arg2="${snapshot}"/>
+    </and>
+  </condition>
+
+  <target name="prepare-release.revision">
+    <propertyfile file="${release.properties.filename}">
+      <entry key="build.revision.number" type="int" operation="+" value="1" pattern="0"/>
+    </propertyfile>
+  </target>
+
+  <target name="prepare-release.minor">
+    <propertyfile file="${release.properties.filename}">
+      <entry key="build.minor.number" type="int" operation="+" value="1" pattern="0"/>
+      <entry key="build.revision.number" type="int" value="0" pattern="0"/>
+    </propertyfile>
+  </target>
+
+  <target name="prepare-release.major">
+    <propertyfile file="${release.properties.filename}">
+      <entry key="build.major.number" type="int" operation="+" value="1" pattern="0"/>
+      <entry key="build.minor.number" type="int" value="0" pattern="0"/>
+      <entry key="build.revision.number" type="int" value="0" pattern="0"/>
+    </propertyfile>
+  </target>
+
+  <target name="-pre-release">
+    <echo>Checking tree modifications before release.</echo>
+    <git:git localDirectory="${basedir}" verbose="true">
+      <git:uptodate modificationExistProperty="tree.modified"/>
+    </git:git>
+  </target>
+
+  <target name="-commit-release" depends="-pre-release" description="git testing" if="tree.modified">
+    <echo>Committing before release SCM tagging.</echo>
+    <git:git localDirectory="${basedir}" verbose="true">
+      <git:commit message="preparing release ${build.number}"/>
+      <git:uptodate failOnError="true"/>
+    </git:git>
+  </target>
+
+  <target name="-tag-release" depends="-commit-release" unless="snapshot-build">
+    <echo>Tagging release ${build.number}.</echo>
+    <git:git localDirectory="${basedir}" verbose="true">
+      <git:tag name="${build.number}"/>
+      <git:push/>
+    </git:git>
+  </target>
+
+</project>

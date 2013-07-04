@@ -1,4 +1,2 @@
 target
-next.release.properties
 ant-git-1.0-SNAPSHOT-jar-with-dependencies.jar
-build.xml
