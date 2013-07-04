@@ -330,8 +330,9 @@ limitations under the License.
     <sequential>
       <echo>Publishing build artifacts to your Maven repository with id @{mavenRepoId}.</echo>
       <ivy:publish resolver="@{mavenRepoId}"
-                   
+                   pubrevision="${project.version}"
                    overwrite="true"
+                   forcedeliver="true"
                    publishivy="true">
         <artifacts pattern="${dist.dir}/[artifact](-[classifier]).[ext]" />
       </ivy:publish>

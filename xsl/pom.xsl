@@ -8,7 +8,7 @@
                 version="1.0">
   <xsl:param name="version" />
 
-  <xsl:template match="m:version">
+  <xsl:template match="/m:project/m:version">
     <xsl:copy>
       <xsl:value-of select="$version" />
     </xsl:copy>
