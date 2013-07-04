@@ -85,24 +85,22 @@ limitations under the License.
   <condition property="sonatype.deployment.snapshots.enabled">
     <and>
       <isset property="sonatype.deployment.enabled"/>
-      <contains casesensitive="true" string="${project.version}" substring="-SNAPSHOT"/>
+      <contains casesensitive="false" string="${project.version}" substring="-SNAPSHOT"/>
     </and>
   </condition>
 
-  <condition property="sonatype.deployment.releases.enabled">
-    <and>
-      <isset property="sonatype.deployment.enabled"/>
-      <not>
-        <isset property="sonatype.deployment.snapshots.enabled"/>
-      </not>
-    </and>
-  </condition>
+        <condition property="sonatype.deployment.releases.enabled">
+                <not>
+                <isset property="sonatype.deployment.snapshots.enabled"/>
+                        </not>
+         </condition>
 
   <tstamp>
     <format property="build.current.time" pattern="yyyyMMdd_HHmmss" />
   </tstamp>
 
 
+        <echo>Ant Git Tasks ${project.version} Build. ${sonatype.deployment.releases.enabled}</echo>
           <!-- ****************************************** -->
           <!-- build number related targets -->
           <!-- ****************************************** -->
@@ -353,7 +351,7 @@ limitations under the License.
 
   <target name="-maven-publish-sonatype-snapshots"
           depends="generate-pom,-resolve"
-          if="sonatype.deployment.snapshots.enabled,do-release">
+          if="sonatype.deployment.snapshots.enabled">
     <maven-publish mavenRepoId="${maven.repo.sonatype.snapshots}"/>
   </target>
         
