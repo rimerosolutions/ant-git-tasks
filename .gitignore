@@ -1,2 +1,6 @@
 target
 ant-git-1.0-SNAPSHOT-jar-with-dependencies.jar
+bin
+.eclipse
+.classpath
+.project

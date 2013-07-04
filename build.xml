@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright 2013 Rimero Solutions
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<project name="ant-git-tasks"
+         default="jar"
+         xmlns:ivy="antlib:org.apache.ivy.ant"
+         xmlns:git="antlib:smartrics.ant.git">
+
+        <taskdef uri="antlib:smartrics.ant.git"
+                   resource="jgit-ant-lib.xml"
+                   classpath="ant-git-taks-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
+        
+  <!-- reuse the user's gradle properties if any for sensitive info such as gpg, credentials -->
+  <property file="${user.home}/.gradle/gradle.properties"/>
+  <property file="${basedir}/build.properties"/>
+
+  <!-- project properties -->
+  <property name="release.properties.filename" value="release.properties"/>
+  <property file="${release.properties.filename}"/>
+  <property name="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}"/>
+        
+  <condition property="project.version.classifier" value="">
+      <equals casesensitive="true" arg1="${snapshot}" arg2="true"/>
+  </condition>
+
+  <property name="project.version.classifier" value="-SNAPSHOT"/>
+  <property name="project.version" value="${build.number}${project.version.classifier}"/>
+  <property name="src.dir" value="src/main/java"/>
+  <property name="resources.dir" value="src/main/resources"/>
+  <property name="target.dir" value="target"/>
+  <property name="dist.dir" value="dist"/>
+  <property name="docs.dir" value="${target.dir}/docs"/>
+  <property name="classes.dir" value="${target.dir}/classes"/>
+  <property name="lib.dir" value="lib"/>
+
+  <!-- javac properties -->
+  <property name="javac.source" value="1.6"/>
+  <property name="javac.target" value="1.6"/>
+
+  <!-- bountycastle properties, ivy signing with pgp -->
+  <property name="bountycastle.version" value="1.45"/>
+  <property name="bountycastle.classifier" value="jdk16"/>
+  <property name="bcpg.jar.file" value="bcpg-${bountycastle.classifier}-${bountycastle.version}.jar"/>
+  <property name="bcprov.jar.file" value="bcprov-${bountycastle.classifier}-${bountycastle.version}.jar"/>
+
+  <!-- ivy properties -->
+  <property name="ivy.install.version" value="2.3.0" />
+  <condition property="ivy.home" value="${env.IVY_HOME}">
+    <isset property="env.IVY_HOME" />
+  </condition>
+  <property name="ivy.home" value="${user.home}/.ant" />
+  <property name="ivy.jar.dir" value="${ivy.home}/lib" />
+  <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+  <property name="ivy.lib.dir" value="${lib.dir}"/>
+
+  <!-- maven repositories, resolvers in ivysettings.xml -->
+  <property name="maven.repo.local" value="local-m2"/>
+  <property name="maven.repo.sonatype.releases" value="sonatype-releases"/>
+  <property name="maven.repo.sonatype.snapshots" value="sonatype-snapshots"/>
+
+  <!-- sonatype deployment conditions -->
+  <condition property="sonatype.deployment.enabled">
+    <and>
+      <isset property="signing.keyId"/>
+      <isset property="signing.password"/>
+      <isset property="signing.secretKeyRingFile"/>
+      <isset property="sonatypeUsername"/>
+      <isset property="sonatypePassword"/>
+    </and>
+  </condition>
+
+  <condition property="sonatype.deployment.snapshots.enabled">
+    <and>
+      <isset property="sonatype.deployment.enabled"/>
+      <contains casesensitive="true" string="${project.version}" substring="-SNAPSHOT"/>
+    </and>
+  </condition>
+
+  <condition property="sonatype.deployment.releases.enabled">
+    <and>
+      <isset property="sonatype.deployment.enabled"/>
+      <not>
+        <isset property="sonatype.deployment.snapshots.enabled"/>
+      </not>
+    </and>
+  </condition>
+
+  <tstamp>
+    <format property="build.current.time" pattern="yyyyMMdd_HHmmss" />
+  </tstamp>
+
+
+          <!-- ****************************************** -->
+          <!-- build number related targets -->
+          <!-- ****************************************** -->
+          <property name="release.properties.filename" value="release.properties"/>
+          <property file="${release.properties.filename}"/>
+          <property name="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}"/>
+
+          <condition property="snapshot-build">
+            <and>
+              <isset property="snapshot"/>
+              <equals arg1="true" arg2="${snapshot}"/>
+            </and>
+          </condition>
+
+          <target name="new-release-fix">
+            <propertyfile file="${release.properties.filename}">
+              <entry key="build.revision.number" type="int" operation="+" value="1" pattern="0"/>
+            </propertyfile>
+          </target>
+
+          <target name="new-release-feature">
+            <propertyfile file="${release.properties.filename}">
+              <entry key="build.minor.number" type="int" operation="+" value="1" pattern="0"/>
+              <entry key="build.revision.number" type="int" value="0" pattern="0"/>
+            </propertyfile>
+          </target>
+
+          <target name="new-release-major">
+            <propertyfile file="${release.properties.filename}">
+              <entry key="build.major.number" type="int" operation="+" value="1" pattern="0"/>
+              <entry key="build.minor.number" type="int" value="0" pattern="0"/>
+              <entry key="build.revision.number" type="int" value="0" pattern="0"/>
+            </propertyfile>
+          </target>
+
+          <target name="-pre-release">
+            <echo>Checking tree modifications before release.</echo>
+            <git:git localDirectory="${basedir}" verbose="true">
+              <git:uptodate modificationExistProperty="tree.modified"/>
+            </git:git>
+          </target>
+
+          <target name="-commit-release" depends="-pre-release" if="tree.modified">
+            <echo>Committing before release SCM tagging.</echo>
+            <git:git localDirectory="${basedir}" verbose="true">
+              <git:commit message="preparing release ${build.number}"/>
+              <git:uptodate failOnError="true"/>
+              <git:push/>
+            </git:git>
+          </target>
+
+          <target name="-tag-release" depends="-commit-release" unless="snapshot-build">
+            <echo>Tagging release ${build.number}.</echo>
+            <git:git localDirectory="${basedir}" verbose="true">
+              <git:tag name="${build.number}"/>
+              <git:push/>
+            </git:git>
+          </target>
+
+          <target name="do-release" depends="-tag-release" description="Perform a release"/>
+  <!-- ****************************************** -->
+  <!-- ivy related targets -->
+  <!-- ****************************************** -->
+  <target name="-bootstrap-build" unless="offline">
+    <echo>Fetching ivy.</echo>
+    <mkdir dir="${ivy.jar.dir}"/>
+    <!-- download Ivy from web site so that it can be used even without any special installation -->
+    <get src="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+         dest="${ivy.jar.file}"
+         usetimestamp="true"/>
+
+    <!-- bootstrap ivy gpg signing -->
+    <get src="http://repo1.maven.org/maven2/org/bouncycastle/bcprov-${bountycastle.classifier}/${bountycastle.version}/${bcprov.jar.file}"
+         dest="${ivy.home}/lib/${bcprov.jar.file}"
+         usetimestamp="true"/>
+
+    <get src="http://repo1.maven.org/maven2/org/bouncycastle/bcpg-${bountycastle.classifier}/${bountycastle.version}/${bcpg.jar.file}"
+         dest="${ivy.home}/lib/${bcpg.jar.file}"
+         usetimestamp="true"/>
+  </target>
+
+  <target name="-init-ivy" depends="-bootstrap-build">
+    <echo>Initializing Apache Ivy.</echo>
+    <!-- try to load ivy here from ivy home, in case the user has not already dropped
+         it into ant's lib dir (note that the latter copy will always take precedence).
+         We will not fail as long as local lib dir exists (it may be empty) and
+         ivy is in at least one of ant's lib dir or the local lib dir. -->
+    <path id="ivy.lib.path">
+      <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+    </path>
+
+    <taskdef resource="org/apache/ivy/ant/antlib.xml"
+             uri="antlib:org.apache.ivy.ant"
+             classpathref="ivy.lib.path"/>
+  </target>
+
+  <path id="project.classpath">
+    <fileset dir="${lib.dir}"/>
+  </path>
+
+  <target name="-resolve" depends="-init-ivy">
+    <echo>Fetching dependencies.</echo>
+    <ivy:retrieve sync="true" />
+  </target>
+
+  <!-- ****************************************** -->
+  <!-- general build targets -->
+  <!-- ****************************************** -->
+  <target name="init" depends="-resolve" description="Create build folder layout">
+    <echo>Setting up build layout.</echo>
+    <mkdir dir="${target.dir}"/>
+    <mkdir dir="${lib.dir}"/>
+    <mkdir dir="${docs.dir}"/>
+    <mkdir dir="${classes.dir}"/>
+    <mkdir dir="${dist.dir}"/>
+  </target>
+
+  <target name="clean" description="Cleanup build">
+    <echo>Cleaning up build.</echo>
+    <delete dir="${target.dir}" failonerror="false"/>
+    <delete dir="${lib.dir}" failonerror="false"/>
+    <delete dir="${classes.dir}" failonerror="false"/>
+    <delete dir="${dist.dir}" failonerror="false"/>
+  </target>
+
+  <target name="compile" depends="init" description="Compile sources">
+    <echo>Compiling sources.</echo>
+    <javac source="${javac.source}"
+           target="${javac.target}"
+           destdir="${classes.dir}"
+           includeantruntime="false">
+      <src path="${src.dir}" />
+      <classpath refid="project.classpath" />
+    </javac>
+  </target>
+
+  <target name="copy-resources" depends="compile" description="Copy resources">
+    <echo>Copying project resources.</echo>
+    <copy todir="${classes.dir}">
+      <fileset dir="${resources.dir}"/>
+    </copy>
+  </target>
+
+  <!-- ****************************************** -->
+  <!-- build artifacts generation -->
+  <!-- ****************************************** -->
+  <target name="jar" depends="copy-resources" description="Create main jar artefact">
+    <echo>Building jar.</echo>
+    <jar destfile="${dist.dir}/${ant.project.name}.jar">
+      <manifest>
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Built-Date" value="${build.current.time}"/>
+        <attribute name="Implementation-Title" value="ant-git-tasks"/>
+        <attribute name="Implementation-Version" value="${project.version}"/>
+        <attribute name="Implementation-Vendor" value="Rimero Solutions Inc."/>
+      </manifest>
+      <fileset dir="${classes.dir}"/>
+    </jar>
+  </target>
+
+  <target name="javadoc" depends="compile" description="Generate Javadoc">
+    <echo>Generating Javadoc documentation.</echo>
+    <javadoc packagenames="smartrics.ant.git.*"
+             sourcepath="${src.dir}"
+             defaultexcludes="yes"
+             destdir="${docs.dir}"
+             author="true"
+             version="true"
+             use="true"
+             windowtitle="Ant Command Line Wrapper API">
+      <classpath>
+        <path refid="ivy.lib.path"/>
+        <fileset dir="${lib.dir}"/>
+      </classpath>
+      <doctitle><![CDATA[<h1>Ant Command Line Wrapper API</h1>]]></doctitle>
+      <bottom><![CDATA[<i>Copyright &#169; 2013 Rimero Solutions Inc. All Rights Reserved.</i>]]></bottom>
+      <link href="http://download.oracle.com/javase/6/docs/api/" />
+            <link href="http://download.eclipse.org/jgit/docs/latest/apidocs/" />
+      <link href="http://javadoc.haefelinger.it/org.apache.ant/1.7.1/"/>
+    </javadoc>
+  </target>
+
+  <target name="sources-jar" depends="compile" description="Generate sources jar">
+    <echo>Generating sources jar.</echo>
+    <zip destfile="${dist.dir}/${ant.project.name}-sources.jar">
+      <zipfileset dir="${src.dir}" />
+      <zipfileset dir="${resources.dir}" />
+    </zip>
+  </target>
+
+  <target name="javadoc-jar" depends="javadoc" description="Generate Javadoc jar">
+    <echo>Generating sources jar.</echo>
+    <zip destfile="${dist.dir}/${ant.project.name}-javadoc.jar">
+      <zipfileset dir="${docs.dir}" />
+    </zip>
+  </target>
+
+  <target name="generate-pom"
+          depends="jar,javadoc-jar,sources-jar"
+          description="Generate the Maven POM for artifacts publishing">
+    <echo>Generating Maven POM.</echo>
+    <ivy:makepom ivyfile="${basedir}/ivy.xml"
+                 pomfile="${dist.dir}/pom.origi">
+      <mapping conf="default" scope="compile"/>
+    </ivy:makepom>
+
+    <!-- fix the pom -->
+    <xslt in="${dist.dir}/pom.origi"
+          out="${dist.dir}/${ant.project.name}.pom"
+          style="xsl/pom.xsl">
+      <param name="version" expression="${project.version}"/>
+      <outputproperty name="method" value="xml"/>
+      <outputproperty name="standalone" value="yes"/>
+      <outputproperty name="encoding" value="utf-8"/>
+      <outputproperty name="indent" value="yes"/>
+    </xslt>
+    <delete file="${dist.dir}/pom.origi"/>
+  </target>
+
+  <!-- ****************************************** -->
+  <!-- maven publishing -->
+  <!-- ****************************************** -->
+  <macrodef name="maven-publish">
+    <attribute name="mavenRepoId"/>
+    <sequential>
+      <echo>Publishing build artifacts to your Maven repository with id @{mavenRepoId}.</echo>
+      <ivy:publish resolver="@{mavenRepoId}"
+                   pubrevision="${project.version}"
+                   overwrite="true"
+                   forcedeliver="true"
+                   publishivy="true">
+        <artifacts pattern="${dist.dir}/[artifact](-[classifier]).[ext]" />
+      </ivy:publish>
+    </sequential>
+  </macrodef>
+
+  <target name="maven-publish-local"
+          depends="generate-pom,-resolve,do-release"
+          description="Publish build artifacts to the local Maven repository">
+    <maven-publish mavenRepoId="${maven.repo.local}"/>
+  </target>
+
+  <target name="maven-publish-sonatype-release"
+          depends="generate-pom,-resolve,do-release"
+          if="sonatype.deployment.releases.enabled"
+          description="Publish build artifacts to the Sonatype Releases repository">
+    <maven-publish mavenRepoId="${maven.repo.sonatype.releases}"/>
+  </target>
+
+  <target name="maven-publish-sonatype-snapshots"
+          depends="generate-pom,-resolve"
+          if="sonatype.deployment.snapshots.enabled,do-release"
+          description="Publish build artifacts to the Sonatype Snapshots repository">
+    <maven-publish mavenRepoId="${maven.repo.sonatype.snapshots}"/>
+  </target>
+</project>

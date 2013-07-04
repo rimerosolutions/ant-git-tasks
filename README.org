@@ -1,4 +1,12 @@
 #+TITLE: Ant tasks for Git
 
 * Summary
-TODO
+This is a set of basic Apache Ant Git tasks to automate the GitHub/Maven release process.
+
+Apache Ant Git tasks will be reused in all rimerosolutions' projects using Apache Ant as build tool.
+
+The big picture is that at some point, some kind of Ant-Git-Release workflow API will be introduced:
+
+- Add ant-git-release-conventions-api as dependency to your Ant Ivy build
+- Add a corporate implementation of ant-git-release-conventions-api or use the rimero-git-release-contentions-api implementation (Java SPI to keep things simple)
+
