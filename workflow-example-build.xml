@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="git"
-         default="release"
+         default="do-release"
          xmlns:git="antlib:smartrics.ant.git">
 
   <taskdef uri="antlib:smartrics.ant.git"
            resource="jgit-ant-lib.xml"
-           classpath="target/ant-git-1.0-SNAPSHOT-jar-with-dependencies.jar"/>
+           classpath="target/ant-git-taks-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
 
   <!-- ****************************************** -->
   <!-- build number related targets -->
   <!-- ****************************************** -->
   <property name="release.properties.filename" value="release.properties"/>
-  <property name="next.release.properties.filename" value="next.release.properties"/>
   <property file="${release.properties.filename}"/>
   <property name="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}"/>
 
@@ -22,20 +21,20 @@
     </and>
   </condition>
 
-  <target name="prepare-release.revision">
+  <target name="new-release-fix">
     <propertyfile file="${release.properties.filename}">
       <entry key="build.revision.number" type="int" operation="+" value="1" pattern="0"/>
     </propertyfile>
   </target>
 
-  <target name="prepare-release.minor">
+  <target name="new-release-feature">
     <propertyfile file="${release.properties.filename}">
       <entry key="build.minor.number" type="int" operation="+" value="1" pattern="0"/>
       <entry key="build.revision.number" type="int" value="0" pattern="0"/>
     </propertyfile>
   </target>
 
-  <target name="prepare-release.major">
+  <target name="new-release-major">
     <propertyfile file="${release.properties.filename}">
       <entry key="build.major.number" type="int" operation="+" value="1" pattern="0"/>
       <entry key="build.minor.number" type="int" value="0" pattern="0"/>
@@ -50,11 +49,12 @@
     </git:git>
   </target>
 
-  <target name="-commit-release" depends="-pre-release" description="git testing" if="tree.modified">
+  <target name="-commit-release" depends="-pre-release" if="tree.modified">
     <echo>Committing before release SCM tagging.</echo>
     <git:git localDirectory="${basedir}" verbose="true">
       <git:commit message="preparing release ${build.number}"/>
       <git:uptodate failOnError="true"/>
+      <git:push/>
     </git:git>
   </target>
 
@@ -66,4 +66,5 @@
     </git:git>
   </target>
 
+  <target name="do-release" depends="-tag-release" description="Perform a release"/>
 </project>
