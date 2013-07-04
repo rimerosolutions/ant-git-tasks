@@ -359,8 +359,5 @@ limitations under the License.
         
         <target name="maven-publish-remote"
                   depends="-maven-publish-sonatype-release,-maven-publish-sonatype-snapshots"
-                  if="sonatype.deployment.snapshots.enabled,do-release"
-                  description="Publish build artifacts to the Sonatype Snapshots repository">
-            <maven-publish mavenRepoId="${maven.repo.sonatype.snapshots}"/>
-          </target>
+                  description="Publish build artifacts to the Sonatype Snapshots repository"/>
 </project>
