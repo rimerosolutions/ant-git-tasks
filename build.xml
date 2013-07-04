@@ -86,13 +86,14 @@ limitations under the License.
   <condition property="sonatype.deployment.snapshots.enabled">
     <and>
       <isset property="sonatype.deployment.enabled"/>
-      <equals casesensitive="false" arg1="${snapshot}" arg2="true"/>
+            <equals casesensitive="false" arg1="${snapshot}" arg2="true"/>
     </and>
   </condition>
 
         <condition property="sonatype.deployment.releases.enabled">
                 <not>
-                       <isset property="sonatype.deployment.snapshots.enabled"/>
+                        <isset property="sonatype.deployment.snapshots.enabled"/>
+                   
                         </not>
          </condition>
 
@@ -101,7 +102,7 @@ limitations under the License.
   </tstamp>
 
 
-        <echo>Ant Git Tasks ${project.version} Build. ${sonatype.deployment.snapshots.enabled}</echo>
+        <echo>Ant Git Tasks ${project.version} Build. ${sonatype.deployment.releases.enabled}</echo>
           <!-- ****************************************** -->
           <!-- build number related targets -->
           <!-- ****************************************** -->
