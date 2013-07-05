@@ -19,10 +19,10 @@ limitations under the License.
          xmlns:ivy="antlib:org.apache.ivy.ant"
          xmlns:git="antlib:smartrics.ant.git">
 
-        <taskdef uri="antlib:smartrics.ant.git"
-                   resource="jgit-ant-lib.xml"
-                   classpath="ant-git-taks-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
-        
+  <taskdef uri="antlib:smartrics.ant.git"
+           resource="jgit-ant-lib.xml"
+           classpath="ant-git-taks-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
+
   <!-- reuse the user's gradle properties if any for sensitive info such as gpg, credentials -->
   <property file="${user.home}/.gradle/gradle.properties"/>
   <property file="${basedir}/build.properties"/>
@@ -31,9 +31,9 @@ limitations under the License.
   <property name="release.properties.filename" value="release.properties"/>
   <property file="${release.properties.filename}"/>
   <property name="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}"/>
-        
+
   <condition property="project.version.classifier" value="-SNAPSHOT">
-      <equals casesensitive="true" arg1="${snapshot}" arg2="true"/>
+    <equals casesensitive="true" arg1="${snapshot}" arg2="true"/>
   </condition>
 
   <property name="project.version.classifier" value=""/>
@@ -76,7 +76,7 @@ limitations under the License.
     <and>
       <isset property="signing.keyId"/>
       <isset property="signing.password"/>
-            <isset property="signing.name"/>
+      <isset property="signing.name"/>
       <isset property="signing.secretKeyRingFile"/>
       <isset property="sonatypeUsername"/>
       <isset property="sonatypePassword"/>
@@ -86,83 +86,82 @@ limitations under the License.
   <condition property="sonatype.deployment.snapshots.enabled">
     <and>
       <isset property="sonatype.deployment.enabled"/>
-            <equals casesensitive="false" arg1="${snapshot}" arg2="true"/>
+      <equals casesensitive="false" arg1="${snapshot}" arg2="true"/>
     </and>
   </condition>
 
-        <condition property="sonatype.deployment.releases.enabled">
-                <not>
-                        <isset property="sonatype.deployment.snapshots.enabled"/>
-                   
-                        </not>
-         </condition>
+  <condition property="sonatype.deployment.releases.enabled">
+    <not>
+      <isset property="sonatype.deployment.snapshots.enabled"/>
+    </not>
+  </condition>
 
   <tstamp>
     <format property="build.current.time" pattern="yyyyMMdd_HHmmss" />
   </tstamp>
 
 
-        <echo>Ant Git Tasks ${project.version} Build. ${sonatype.deployment.releases.enabled}</echo>
-          <!-- ****************************************** -->
-          <!-- build number related targets -->
-          <!-- ****************************************** -->
-          <property name="release.properties.filename" value="release.properties"/>
-          <property file="${release.properties.filename}"/>
-          <property name="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}"/>
+  <echo>Ant Git Tasks ${project.version} Build. ${sonatype.deployment.releases.enabled}</echo>
+  <!-- ****************************************** -->
+  <!-- build number related targets -->
+  <!-- ****************************************** -->
+  <property name="release.properties.filename" value="release.properties"/>
+  <property file="${release.properties.filename}"/>
+  <property name="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}"/>
 
-          <condition property="snapshot-build">
-            <and>
-              <isset property="snapshot"/>
-              <equals arg1="true" arg2="${snapshot}"/>
-            </and>
-          </condition>
+  <condition property="snapshot-build">
+    <and>
+      <isset property="snapshot"/>
+      <equals arg1="true" arg2="${snapshot}"/>
+    </and>
+  </condition>
 
-          <target name="new-release-fix">
-            <propertyfile file="${release.properties.filename}">
-              <entry key="build.revision.number" type="int" operation="+" value="1" pattern="0"/>
-            </propertyfile>
-          </target>
+  <target name="new-release-fix">
+    <propertyfile file="${release.properties.filename}">
+      <entry key="build.revision.number" type="int" operation="+" value="1" pattern="0"/>
+    </propertyfile>
+  </target>
 
-          <target name="new-release-feature">
-            <propertyfile file="${release.properties.filename}">
-              <entry key="build.minor.number" type="int" operation="+" value="1" pattern="0"/>
-              <entry key="build.revision.number" type="int" value="0" pattern="0"/>
-            </propertyfile>
-          </target>
+  <target name="new-release-feature">
+    <propertyfile file="${release.properties.filename}">
+      <entry key="build.minor.number" type="int" operation="+" value="1" pattern="0"/>
+      <entry key="build.revision.number" type="int" value="0" pattern="0"/>
+    </propertyfile>
+  </target>
 
-          <target name="new-release-major">
-            <propertyfile file="${release.properties.filename}">
-              <entry key="build.major.number" type="int" operation="+" value="1" pattern="0"/>
-              <entry key="build.minor.number" type="int" value="0" pattern="0"/>
-              <entry key="build.revision.number" type="int" value="0" pattern="0"/>
-            </propertyfile>
-          </target>
+  <target name="new-release-major">
+    <propertyfile file="${release.properties.filename}">
+      <entry key="build.major.number" type="int" operation="+" value="1" pattern="0"/>
+      <entry key="build.minor.number" type="int" value="0" pattern="0"/>
+      <entry key="build.revision.number" type="int" value="0" pattern="0"/>
+    </propertyfile>
+  </target>
 
-          <target name="-pre-release">
-            <echo>Checking tree modifications before release.</echo>
-            <git:git localDirectory="${basedir}" verbose="true">
-              <git:uptodate modificationExistProperty="tree.modified"/>
-            </git:git>
-          </target>
+  <target name="-pre-release">
+    <echo>Checking tree modifications before release.</echo>
+    <git:git localDirectory="${basedir}" verbose="true">
+      <git:uptodate modificationExistProperty="tree.modified"/>
+    </git:git>
+  </target>
 
-          <target name="-commit-release" depends="-pre-release" if="tree.modified">
-            <echo>Committing before release SCM tagging.</echo>
-            <git:git localDirectory="${basedir}" verbose="true">
-              <git:commit message="preparing release ${build.number}"/>
-              <git:uptodate failOnError="true"/>
-              <git:push/>
-            </git:git>
-          </target>
+  <target name="-commit-release" depends="-pre-release" if="tree.modified">
+    <echo>Committing before release SCM tagging.</echo>
+    <git:git localDirectory="${basedir}" verbose="true">
+      <git:commit message="preparing release ${build.number}"/>
+      <git:uptodate failOnError="true"/>
+      <git:push/>
+    </git:git>
+  </target>
 
-          <target name="-tag-release" depends="-commit-release" unless="snapshot-build">
-            <echo>Tagging release ${build.number}.</echo>
-            <git:git localDirectory="${basedir}" verbose="true">
-              <git:tag name="${build.number}"/>
-              <git:push/>
-            </git:git>
-          </target>
+  <target name="-tag-release" depends="-commit-release" unless="snapshot-build">
+    <echo>Tagging release ${build.number}.</echo>
+    <git:git localDirectory="${basedir}" verbose="true">
+      <git:tag name="${build.number}"/>
+      <git:push/>
+    </git:git>
+  </target>
 
-          <target name="do-release" depends="-tag-release" description="Perform a release"/>
+  <target name="do-release" depends="-tag-release" description="Perform a release"/>
   <!-- ****************************************** -->
   <!-- ivy related targets -->
   <!-- ****************************************** -->
@@ -280,7 +279,7 @@ limitations under the License.
       <doctitle><![CDATA[<h1>Ant Command Line Wrapper API</h1>]]></doctitle>
       <bottom><![CDATA[<i>Copyright &#169; 2013 Rimero Solutions Inc. All Rights Reserved.</i>]]></bottom>
       <link href="http://download.oracle.com/javase/6/docs/api/" />
-            <link href="http://download.eclipse.org/jgit/docs/latest/apidocs/" />
+      <link href="http://download.eclipse.org/jgit/docs/latest/apidocs/" />
       <link href="http://javadoc.haefelinger.it/org.apache.ant/1.7.1/"/>
     </javadoc>
   </target>
@@ -356,8 +355,8 @@ limitations under the License.
           if="sonatype.deployment.snapshots.enabled">
     <maven-publish mavenRepoId="${maven.repo.sonatype.snapshots}"/>
   </target>
-        
-        <target name="maven-publish-remote"
-                  depends="-maven-publish-sonatype-release,-maven-publish-sonatype-snapshots"
-                  description="Publish build artifacts to the Sonatype Snapshots repository"/>
+
+  <target name="maven-publish-remote"
+          depends="-maven-publish-sonatype-release,-maven-publish-sonatype-snapshots"
+          description="Publish build artifacts to the Sonatype Snapshots repository"/>
 </project>
