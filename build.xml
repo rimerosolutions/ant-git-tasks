@@ -271,12 +271,12 @@ limitations under the License.
              author="true"
              version="true"
              use="true"
-             windowtitle="Ant Command Line Wrapper API">
+             windowtitle="Ant Git Taks oriented for GitHub-Sonatype worflow.">
       <classpath>
         <path refid="ivy.lib.path"/>
         <fileset dir="${lib.dir}"/>
       </classpath>
-      <doctitle><![CDATA[<h1>Ant Command Line Wrapper API</h1>]]></doctitle>
+      <doctitle><![CDATA[<h1>Ant Git Tasks API</h1>]]></doctitle>
       <bottom><![CDATA[<i>Copyright &#169; 2013 Rimero Solutions Inc. All Rights Reserved.</i>]]></bottom>
       <link href="http://download.oracle.com/javase/6/docs/api/" />
       <link href="http://download.eclipse.org/jgit/docs/latest/apidocs/" />
