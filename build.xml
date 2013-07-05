@@ -21,7 +21,7 @@ limitations under the License.
 
   <taskdef uri="antlib:com.rimerosolutions.ant.git"
            resource="com/rimerosolutions/ant/git/jgit-ant-lib.xml"
-           classpath="ant-git-taks-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
+           classpath="ant-git-tasks-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
 
   <!-- reuse the user's gradle properties if any for sensitive info such as gpg, credentials -->
   <property file="${user.home}/.gradle/gradle.properties"/>
