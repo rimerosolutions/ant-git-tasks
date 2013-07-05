@@ -17,10 +17,10 @@ limitations under the License.
 <project name="ant-git-tasks"
          default="jar"
          xmlns:ivy="antlib:org.apache.ivy.ant"
-         xmlns:git="antlib:smartrics.ant.git">
+         xmlns:git="antlib:com.rimerosolutions.ant.git">
 
-  <taskdef uri="antlib:smartrics.ant.git"
-           resource="jgit-ant-lib.xml"
+  <taskdef uri="antlib:com.rimerosolutions.ant.git"
+           resource="com/rimerosolutions/ant/git/jgit-ant-lib.xml"
            classpath="ant-git-taks-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
 
   <!-- reuse the user's gradle properties if any for sensitive info such as gpg, credentials -->
@@ -78,8 +78,8 @@ limitations under the License.
       <isset property="signing.password"/>
       <isset property="signing.name"/>
       <isset property="signing.secretKeyRingFile"/>
-      <isset property="sonatypeUsername"/>
-      <isset property="sonatypePassword"/>
+      <isset property="sonatype.username"/>
+      <isset property="sonatype.password"/>
     </and>
   </condition>
 
@@ -147,9 +147,9 @@ limitations under the License.
   <target name="-commit-release" depends="-pre-release" if="tree.modified">
     <echo>Committing before release SCM tagging.</echo>
     <git:git localDirectory="${basedir}" verbose="true">
-      <git:commit message="preparing release ${build.number}"/>
+      <git:commit message="preparing release ${project.version}"/>
       <git:uptodate failOnError="true"/>
-      <git:push/>
+      <git:push username="${github.username}" password="${github.password}"/>
     </git:git>
   </target>
 
@@ -157,7 +157,7 @@ limitations under the License.
     <echo>Tagging release ${build.number}.</echo>
     <git:git localDirectory="${basedir}" verbose="true">
       <git:tag name="${build.number}"/>
-      <git:push/>
+      <git:push username="${github.username}" password="${github.password}"/>
     </git:git>
   </target>
 
@@ -198,13 +198,10 @@ limitations under the License.
              classpathref="ivy.lib.path"/>
   </target>
 
-  <path id="project.classpath">
-    <fileset dir="${lib.dir}"/>
-  </path>
-
   <target name="-resolve" depends="-init-ivy">
     <echo>Fetching dependencies.</echo>
-    <ivy:retrieve sync="true" />
+    <ivy:retrieve  pattern="${ivy.lib.dir}/[conf]/[artifact].[ext]" sync="true" />
+	<ivy:cachepath pathid="project.classpath" conf="compile" />
   </target>
 
   <!-- ****************************************** -->
@@ -273,8 +270,7 @@ limitations under the License.
              use="true"
              windowtitle="Ant Git Taks oriented for GitHub-Sonatype worflow.">
       <classpath>
-        <path refid="ivy.lib.path"/>
-        <fileset dir="${lib.dir}"/>
+        <path refid="project.classpath"/>
       </classpath>
       <doctitle><![CDATA[<h1>Ant Git Tasks API</h1>]]></doctitle>
       <bottom><![CDATA[<i>Copyright &#169; 2013 Rimero Solutions Inc. All Rights Reserved.</i>]]></bottom>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Fabrizio Cannizzo (https://github.com/smartrics/jgit-ant),
+ * Copyright 2013 Rimero Solutions
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,18 +12,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */package smartrics.ant.git;
+ */
+package com.rimerosolutions.ant.git;
 
-import java.io.File;
+import org.apache.tools.ant.BuildException;
 
-import org.eclipse.jgit.lib.ProgressMonitor;
 
-public interface GitTask {
-        void setProgressMonitor(ProgressMonitor pm);
+/**
+ * Git Ant Task Build Exception
+ *
+ * @author Yves Zoundi
+ */
+public class GitBuildException extends BuildException {
 
-        void setDirectory(File dir);
+        private static final long serialVersionUID = 7520461437069898546L;
 
-        void log(String message);
+        public GitBuildException(String msg, Exception e) {
+                super(msg, e);
+        }
 
-        void execute();
+        public GitBuildException(String msg) {
+                super(msg);
+        }
+        
 }

@@ -21,8 +21,8 @@ limitations under the License.
   <credentials
       host="oss.sonatype.org"
       realm="Sonatype Nexus Repository Manager"
-      username="${sonatypeUsername}"
-      passwd="${sonatypePassword}"/>
+      username="${sonatype.username}"
+      passwd="${sonatype.password}"/>
 
   <signers>
     <pgp name="${signing.name}" secring="${signing.secretKeyRingFile}" password="${signing.password}" keyId="${signing.keyId}"/>

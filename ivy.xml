@@ -28,6 +28,7 @@ limitations under the License.
 
   <configurations defaultconfmapping="default">
     <conf name="default" />
+	<conf name="compile" />
   </configurations>
 
   <publications xmlns:e="urn:ant.apache.org:ivy-extras">
@@ -38,8 +39,9 @@ limitations under the License.
   </publications>
 
   <dependencies>
-    <dependency org="org.eclipse.jgit" name="org.eclipse.jgit.ant" rev="3.0.0.201306101825-r"/>
-    <dependency org="org.eclipse.jgit" name="org.eclipse.jgit" rev="3.0.0.201306101825-r"/>
-    <dependency org="com.jcraft" name="jsch" rev="0.1.50"/>
+	<!-- release dependencies -->
+	<dependency org="org.eclipse.jgit" name="org.eclipse.jgit.ant" rev="3.0.0.201306101825-r"  conf="compile->default"/>
+    <dependency org="org.eclipse.jgit" name="org.eclipse.jgit" rev="3.0.0.201306101825-r"  conf="compile->default"/>
+    <dependency org="com.jcraft" name="jsch" rev="0.1.50" conf="compile->default"/>
   </dependencies>
 </ivy-module>

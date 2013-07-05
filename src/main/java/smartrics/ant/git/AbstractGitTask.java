@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 Fabrizio Cannizzo (https://github.com/smartrics/jgit-ant), Rimero Solutions
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package smartrics.ant.git;
 
 import java.io.File;
@@ -10,46 +25,82 @@ import org.eclipse.jgit.transport.URIish;
 
 public abstract class AbstractGitTask extends Task implements GitTask {
 
-    private String uri;
-    private ProgressMonitor progressMonitor;
-    private File directory;
+        private String uri;
+        private ProgressMonitor progressMonitor;
+        private File directory;
+        private String username;
+        private String password;
+        private String unlessCondition;
+        private String ifCondition;
 
-    public void setUri(String uri) {
-        if (uri == null) {
-            throw new BuildException("Can;t set null URI attribute");
+        public void setUnlessCondition(String unlessCondition) {
+                this.unlessCondition = unlessCondition;
         }
-        try {
-            new URIish(uri);
-            this.uri = uri;
-        } catch (URISyntaxException e) {
-            throw new BuildException("Invalid URI: " + uri, e);
+        
+        public void setIfCondition(String ifCondition) {
+                this.ifCondition = ifCondition;
         }
-    }
-
-    @Override
-    public void setDirectory(File dir) {
-        if (dir == null) {
-            throw new BuildException("Can;t set null directory attribute");
+        
+        public String getUnlessCondition() {
+                return unlessCondition;
         }
-        this.directory = new File(dir.getAbsolutePath());
-    }
+        
+        public String getIfCondition() {
+                return ifCondition;
+        }
 
-    @Override
-    public void setProgressMonitor(ProgressMonitor pm) {
-        this.progressMonitor = pm;
-    }
+        public void setPassword(String password) {
+                this.password = password;
+        }
 
-    protected String getUri() {
-        return this.uri;
-    }
+        public void setUsername(String username) {
+                this.username = username;
+        }
 
-    protected File getDirectory() {
-        return this.directory;
-    }
+        public String getUsername() {
+                return username;
+        }
 
-    protected ProgressMonitor getProgressMonitor() {
-        return this.progressMonitor;
-    }
+        public String getPassword() {
+                return password;
+        }
 
-    abstract public void execute();
+        public void setUri(String uri) {
+                if (uri == null) {
+                        throw new BuildException("Can;t set null URI attribute");
+                }
+                try {
+                        new URIish(uri);
+                        this.uri = uri;
+                } catch (URISyntaxException e) {
+                        throw new BuildException("Invalid URI: " + uri, e);
+                }
+        }
+
+        @Override
+        public void setDirectory(File dir) {
+                if (dir == null) {
+                        throw new BuildException("Can;t set null directory attribute");
+                }
+                this.directory = new File(dir.getAbsolutePath());
+        }
+
+        @Override
+        public void setProgressMonitor(ProgressMonitor pm) {
+                this.progressMonitor = pm;
+        }
+
+        protected String getUri() {
+                return this.uri;
+        }
+
+        protected File getDirectory() {
+                return this.directory;
+        }
+
+        protected ProgressMonitor getProgressMonitor() {
+                return this.progressMonitor;
+        }
+
+        abstract public void execute();
 }
