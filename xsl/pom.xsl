@@ -18,7 +18,7 @@
     <xsl:copy>
       <xsl:value-of select="." />
     </xsl:copy>
-    <description>Apache Ant Command Line Wrapper</description>
+    <description>Apache Ant Git Tasks for automated releases with Maven as repository and </description>
     <licenses>
       <license>
         <name>The Apache Software License, Version 2.0</name>
@@ -27,9 +27,9 @@
       </license>
     </licenses>
     <scm>
-      <url>https://github.com/rimerosolutions/ant-wrapper</url>
-      <connection>scm:git:https://github.com/rimerosolutions/ant-wrapper.git</connection>
-      <developerConnection>scm:git:https://github.com/rimerosolutions/ant-wrapper.git</developerConnection>
+      <url>https://github.com/rimerosolutions/ant-git-tasks</url>
+      <connection>scm:git:https://github.com/rimerosolutions/ant-git-tasks.git</connection>
+      <developerConnection>scm:git:https://github.com/rimerosolutions/ant-git-tasks.git</developerConnection>
     </scm>
     <developers>
       <developer>
