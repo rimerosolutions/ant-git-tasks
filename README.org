@@ -1,22 +1,31 @@
 #+TITLE: Ant tasks for Git
 
 * Summary
-This is a set of basic Apache Ant Git tasks to automate the GitHub/Maven release process.
+This is a set of basic [[http://ant.apache.org/][Apache Ant]] tasks for [[http://git-scm.com/][Git]] to automate the GitHub/Maven release and publishing processes.
 
-Apache Ant Git tasks will be reused in all rimerosolutions' projects using Apache Ant as build tool.
+This set of Ant tasks is currently used by the [[https://github.com/rimerosolutions/ant-wrapper][Ant Command Line Wrapper]] project.
 
-The big picture is that at some point, some kind of Ant-Git-Release workflow API will be introduced:
+* Why this project
+For *reusable* Apache Ant projects that use Git as [[https://en.wikipedia.org/wiki/Revision_control][VCS]], the release process is more or less the same:
 
-- Add ant-git-release-conventions-api as dependency to your Ant Ivy build
-- Add a corporate implementation of ant-git-release-conventions-api or use the rimero-git-release-contentions-api implementation (Java SPI to keep things simple)
+- Write code on a dedicated branch or in the trunk or elsewhere.
+- Get ready for a release and increment the release number according to some conventions.
+- Make sure that the Git tree is up to date by committing the file where the version number was changed.
+- Commit the changes to the local repository.
+- Push to the remote repository origin.
+- Push the build artifacts to a Maven/Ivy repository, or some shared repository of some kind.
+- Tag the current branch to trace the new release.
 
+* There's no complete set Git Ant tasks already available
+It looks like the JGit Eclipse project is not going to provide a full ready to use set of Apache Ant tasks anytime soon.
 
-Workflow
+[[https://github.com/smartrics][Fabrizio Cannizzo]] made a decent work in this [[https://github.com/smartrics/jgit-ant][GitHub jgit-ant]] project and this project is just a continuation of it...
 
-  load the release.properties file to get the version information
+* The bigger picture for this project
 
+Apache Ant Git tasks will be reused in all rimerosolutions' projects that are using Apache Ant as build tool.
 
+The idea is that at some point, some kind of Ant-Git-Release workflow API will be introduced:
 
-
-There's a temporary jar at the root of the tree... This will disappear soon enough...
-
+- Add ant-git-release-conventions-api as dependency to your Ant Ivy build.
+- Add a corporate implementation of ant-git-release-conventions-api or use the rimero-git-release-contentions-api implementation ([[http://en.wikipedia.org/wiki/Service_provider_interface][Java SPI]] to keep things simple).

@@ -19,10 +19,11 @@ limitations under the License.
          xmlns:ivy="antlib:org.apache.ivy.ant"
          xmlns:git="antlib:com.rimerosolutions.ant.git">
 
+  <!-- bootstrap the ant-git-tasks release process with a snapshot of itself for now... -->
   <taskdef uri="antlib:com.rimerosolutions.ant.git"
            resource="com/rimerosolutions/ant/git/jgit-ant-lib.xml"
            classpath="ant-git-tasks-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
-
+  
   <!-- reuse the user's gradle properties if any for sensitive info such as gpg, credentials -->
   <property file="${user.home}/.gradle/gradle.properties"/>
   <property file="${basedir}/build.properties"/>
@@ -180,7 +181,7 @@ limitations under the License.
 
     <get src="http://repo1.maven.org/maven2/org/bouncycastle/bcpg-${bountycastle.classifier}/${bountycastle.version}/${bcpg.jar.file}"
          dest="${ivy.home}/lib/${bcpg.jar.file}"
-         usetimestamp="true"/>
+         usetimestamp="true"/>    
   </target>
 
   <target name="-init-ivy" depends="-bootstrap-build">
