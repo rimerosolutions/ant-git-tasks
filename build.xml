@@ -101,8 +101,7 @@ limitations under the License.
     <format property="build.current.time" pattern="yyyyMMdd_HHmmss" />
   </tstamp>
 
-
-  <echo>Ant Git Tasks ${project.version} Build. ${sonatype.deployment.releases.enabled}</echo>
+  <echo>Ant Git Tasks ${project.version} Build.</echo>
   <!-- ****************************************** -->
   <!-- build number related targets -->
   <!-- ****************************************** -->
