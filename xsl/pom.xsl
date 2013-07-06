@@ -8,6 +8,17 @@
                 version="1.0">
   <xsl:param name="version" />
 
+  <xsl:template match="/m:project/m:modelVersion">
+    <xsl:copy>
+      <xsl:apply-templates />
+    </xsl:copy>
+    <parent>
+      <groupId>org.sonatype.oss</groupId>
+      <artifactId>oss-parent</artifactId>
+      <version>7</version>
+    </parent>
+  </xsl:template>
+
   <xsl:template match="/m:project/m:version">
     <xsl:copy>
       <xsl:value-of select="$version" />
@@ -45,5 +56,5 @@
       <xsl:apply-templates select="@*|node()" />
     </xsl:copy>
   </xsl:template>
-  
+
 </xsl:stylesheet>
