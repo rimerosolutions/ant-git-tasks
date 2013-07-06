@@ -1,7 +1,7 @@
-#+TITLE: Ant tasks for Git
+#+TITLE: Ant tasks for Git using JGit
 
 * Summary
-This is a set of basic [[http://ant.apache.org/][Apache Ant]] tasks for [[http://git-scm.com/][Git]] to automate the GitHub/Maven release and publishing processes.
+This is a set of basic [[http://ant.apache.org/][Apache Ant]] tasks for [[http://git-scm.com/][Git]] to automate GitHub/Maven processes.
 
 This set of Ant tasks is currently used by the [[https://github.com/rimerosolutions/ant-wrapper][Ant Command Line Wrapper]] project.
 
@@ -10,16 +10,16 @@ For *reusable* Apache Ant projects that use Git as [[https://en.wikipedia.org/wi
 
 - Write code on a dedicated branch or in the trunk or elsewhere.
 - Get ready for a release and increment the release number according to some conventions.
-- Make sure that the Git tree is up to date by committing the file where the version number was changed.
-- Commit the changes to the local repository.
+- Make sure that the Git tree is up to date
+- Commit the changes to the local repository, only files affected by the version number change.
 - Push to the remote repository origin.
 - Push the build artifacts to a Maven/Ivy repository, or some shared repository of some kind.
-- Tag the current branch to trace the new release.
+- Tag the current branch to trace the new release
 
-* There's no complete set Git Ant tasks already available
-It looks like the JGit Eclipse project is not going to provide a full ready to use set of Apache Ant tasks anytime soon.
+* No full set of Ant tasks for Git available
+It looks like the JGit Eclipse project [[http://wiki.eclipse.org/JGit/User_Guide#Ant_Tasks][is not going to provide a full ready to use set of Apache Ant tasks anytime soon]].
 
-[[https://github.com/smartrics][Fabrizio Cannizzo]] made a decent work in this [[https://github.com/smartrics/jgit-ant][GitHub jgit-ant]] project and this project is just a continuation of it...
+[[https://github.com/smartrics][Fabrizio Cannizzo]] did a decent work in this [[https://github.com/smartrics/jgit-ant][GitHub jgit-ant]] project, this project is just a continuation of it...
 
 * The bigger picture for this project
 
