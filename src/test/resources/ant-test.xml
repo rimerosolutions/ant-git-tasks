@@ -1,0 +1,26 @@
+<project xmlns:au="antlib:org.apache.ant.antunit" xmlns="antlib:org.apache.tools.ant">
+ 
+
+<echo>test classpath ${ant.project.name}</echo>
+<echo> base dir is ${basedir}</echo>
+	
+
+<echo>test</echo>
+	<!-- is called prior to the test -->
+	<target name="setUp">
+		<property name="foo" value="foo" />
+	</target>
+
+	<!-- is called after the test, even if that caused an error -->
+	<target name="tearDown">
+	<echo>Deleting foo....</echo>
+		 <delete file="${foo}" quiet="true" /> 
+	</target>
+
+	<!-- the actual test case -->
+	<target name="testTouchCreatesFile">
+		<au:assertFileDoesntExist file="${foo}" />
+		<touch file="${foo}" />
+		<au:assertFileExists file="${foo}" />
+	</target>
+</project>

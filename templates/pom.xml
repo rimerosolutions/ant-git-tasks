@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
+  <groupId>${ivy.pom.groupId}</groupId>
+  <artifactId>${ivy.pom.artifactId}</artifactId>
+  <packaging>${ivy.pom.packaging}</packaging>
+  <version>${project.version}</version>
+  <name>${ant.project.name}</name>
+  <description>${ivy.pom.description}</description>
+  <url>${ivy.pom.url}</url>
+
+   <licenses>
+    <license>
+      <name>Apache License version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>https://github.com/rimerosolutions/${ant.project.name}</url>
+    <connection>scm:git:https://github.com/rimerosolutions/${ant.project.name}.git</connection>
+    <developerConnection>scm:git:https://github.com/rimerosolutions/${ant.project.name}.git</developerConnection>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>rimerosolutions</id>
+      <name>Yves Zoundi</name>
+      <email>rimerosolutions@gmail.com</email>
+      <url>https://github.com/rimerosolutions</url>
+      <organization>Rimero Solutions</organization>
+      <organizationUrl>http://www.rimerosolutions.com</organizationUrl>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>-5</timezone>
+    </developer>
+  </developers>
+</project>

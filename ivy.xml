@@ -28,7 +28,8 @@ limitations under the License.
 
   <configurations defaultconfmapping="default">
     <conf name="default" />
-	<conf name="compile" />
+    <conf name="compile" visibility="public"/>
+    <conf name="test" visibility="private"/>
   </configurations>
 
   <publications xmlns:e="urn:ant.apache.org:ivy-extras">
@@ -39,9 +40,16 @@ limitations under the License.
   </publications>
 
   <dependencies>
-	<!-- release dependencies -->
-	<dependency org="org.eclipse.jgit" name="org.eclipse.jgit.ant" rev="3.0.0.201306101825-r"  conf="compile->default"/>
+    <!-- compile dependencies -->
+    <dependency org="org.eclipse.jgit" name="org.eclipse.jgit.ant" rev="3.0.0.201306101825-r"  conf="compile->default"/>
     <dependency org="org.eclipse.jgit" name="org.eclipse.jgit" rev="3.0.0.201306101825-r"  conf="compile->default"/>
     <dependency org="com.jcraft" name="jsch" rev="0.1.50" conf="compile->default"/>
+    
+    <!-- test dependencies -->
+    <dependency org="junit" name="junit" rev="3.8.2" conf="test->default"/>
+    <dependency org="org.apache.ant" name="ant-antunit" rev="1.2" conf="test->default"/>
+    <dependency org="org.apache.ant" name="ant-junit" rev="1.7.1" conf="test->default"/>
+    <dependency org="org.apache.ant" name="ant-testutil" rev="1.7.1" conf="test->default"/>
+
   </dependencies>
 </ivy-module>

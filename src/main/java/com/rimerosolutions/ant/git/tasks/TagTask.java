@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.rimerosolutions.ant.git;
+package com.rimerosolutions.ant.git.tasks;
 
 import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.api.Git;

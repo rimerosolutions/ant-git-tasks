@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.rimerosolutions.ant.git;
+package com.rimerosolutions.ant.git.tasks;
 
 import java.util.List;
+
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+
+import com.rimerosolutions.ant.git.GitBuildException;
 
 
 /**

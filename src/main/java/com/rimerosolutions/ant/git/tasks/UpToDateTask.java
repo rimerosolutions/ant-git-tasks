@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.rimerosolutions.ant.git;
+package com.rimerosolutions.ant.git.tasks;
 
 import java.io.IOException;
+
 import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.treewalk.FileTreeIterator;
+
+import com.rimerosolutions.ant.git.GitBuildException;
 
 
 /**

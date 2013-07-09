@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.rimerosolutions.ant.git;
+package com.rimerosolutions.ant.git.tasks;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -23,10 +23,9 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
 import smartrics.ant.git.AbstractGitTask;
-import smartrics.ant.git.CloneTask;
 import smartrics.ant.git.GitTask;
 import smartrics.ant.git.PullTask;
-import smartrics.ant.git.SimpleProgressMonitor; 
+import smartrics.ant.git.SimpleProgressMonitor;
 
 public class GitTasks extends Task {
 

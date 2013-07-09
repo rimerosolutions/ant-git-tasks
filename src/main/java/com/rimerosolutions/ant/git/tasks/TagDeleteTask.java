@@ -13,34 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.rimerosolutions.ant.git;
+package com.rimerosolutions.ant.git.tasks;
 
 import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
-
 /**
- * Commits all local changes
+ * Delete tags
  * 
  * @author Yves Zoundi
+ *
  */
-public class CommitTask extends AbstractGitRepoAwareTask {
+public class TagDeleteTask extends AbstractGitRepoAwareTask {
 
-        private String message = "Commit message";
+        private String tags;
 
-        public void setMessage(String message) {
-                this.message = message;
-        } 
-        
+        /**
+         * Sets the tags to delete (comma-separated list)
+         * 
+         * @param tags Comma-separted list of tags to delete
+         */
+        public void setTags(String tags) {
+                this.tags = tags;
+        }
+
         @Override
         protected void doExecute() throws BuildException {
                 try {
-                        setFailOnError(true); 
-                        Git.wrap(repo).commit().setAll(true).setMessage(message).call();
-                } catch (GitAPIException ex) {
-                        throw new GitBuildException("Cannot commit to Git repository", ex);
-                } 
+                        Git.wrap(repo).tagDelete().setTags(tags.split(",")).call();
+                } catch (GitAPIException e) {
+                        throw new BuildException("Could not delete specified tags", e);
+                }
         }
-        
+
 }

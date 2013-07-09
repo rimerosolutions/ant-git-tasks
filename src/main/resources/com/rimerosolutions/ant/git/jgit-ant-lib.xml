@@ -15,5 +15,5 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <antlib>
-  <taskdef name="git" classname="com.rimerosolutions.ant.git.GitTasks"/>
+  <taskdef name="git" classname="com.rimerosolutions.ant.git.tasks.GitTasks"/>
 </antlib>
