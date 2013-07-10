@@ -26,10 +26,11 @@ limitations under the License.
     </description>
   </info>
 
-  <configurations defaultconfmapping="default">
-    <conf name="default" />
-    <conf name="compile" visibility="public"/>
-    <conf name="test" visibility="private"/>
+  <configurations>
+    <conf name="compile"/>
+    <conf name="test"      visibility="private" description="Tests dependencies"/>
+    <conf name="findbugs"  visibility="private" description="Findbugs dependencies"/>
+    <conf name="cobertura" visibility="private" description="Cobertura dependencies"/>
   </configurations>
 
   <publications xmlns:e="urn:ant.apache.org:ivy-extras">
@@ -39,17 +40,27 @@ limitations under the License.
     <artifact name="ant-git-tasks" type="javadoc" ext="jar" e:classifier="javadoc"/>
   </publications>
 
-  <dependencies>
-    <!-- compile dependencies -->
-    <dependency org="org.eclipse.jgit" name="org.eclipse.jgit.ant" rev="3.0.0.201306101825-r"  conf="compile->default"/>
-    <dependency org="org.eclipse.jgit" name="org.eclipse.jgit" rev="3.0.0.201306101825-r"  conf="compile->default"/>
-    <dependency org="com.jcraft" name="jsch" rev="0.1.50" conf="compile->default"/>
-    
-    <!-- test dependencies -->
-    <dependency org="junit" name="junit" rev="3.8.2" conf="test->default"/>
-    <dependency org="org.apache.ant" name="ant-antunit" rev="1.2" conf="test->default"/>
-    <dependency org="org.apache.ant" name="ant-junit" rev="1.7.1" conf="test->default"/>
-    <dependency org="org.apache.ant" name="ant-testutil" rev="1.7.1" conf="test->default"/>
+  <dependencies defaultconfmapping="*->default">
+    <!-- compile -->
+    <dependency org="org.eclipse.jgit" name="org.eclipse.jgit.ant" rev="3.0.0.201306101825-r"  conf="compile"/>
+    <dependency org="org.eclipse.jgit" name="org.eclipse.jgit" rev="3.0.0.201306101825-r"  conf="compile"/>
+    <dependency org="com.jcraft" name="jsch" rev="0.1.50" conf="compile"/>
+
+    <!-- test -->
+    <dependency org="junit" name="junit" rev="3.8.2" conf="test, compile"/>
+    <dependency org="org.apache.ant" name="ant-testutil" rev="1.7.1" conf="test, compile"/>
+    <dependency org="org.apache.ant" name="ant-antunit" rev="1.2" conf="test, compile"/>
+    <dependency org="org.apache.ant" name="ant-junit" rev="1.7.1" conf="test, compile"/>
+
+    <!-- cobertura -->
+    <dependency org="net.sourceforge.cobertura" name="cobertura" rev="1.9.4" conf="cobertura, test" />
+    <dependency org="net.java.dev.msv" name="msv" rev="2013.6.1" conf="cobertura, test" />
+    <dependency org="net.java.dev.msv" name="msv-core" rev="2013.6.1" conf="cobertura, test" />
+
+
+    <!-- findbugs -->
+          <dependency org="com.google.code.findbugs" name="findbugs-ant" rev="2.0.1" conf="findbugs"/>
+    <!-- <dependency org="commons-lang" name="commons-lang" rev="2.2" conf="findbugs" /> -->
 
   </dependencies>
 </ivy-module>
