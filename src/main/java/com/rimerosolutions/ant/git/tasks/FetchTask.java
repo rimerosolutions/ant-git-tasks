@@ -18,32 +18,40 @@ package com.rimerosolutions.ant.git.tasks;
 import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
+import com.rimerosolutions.ant.git.GitBuildException;
 
+/**
+ * Git fetch Ant task
+ *
+ * @author Yves Zoundi
+ */
 public class FetchTask extends AbstractGitRepoAwareTask {
         private boolean dryRun = true;
         private boolean removeDeletedRefs = true;
-        private boolean thinPack = false;
-        
+        private boolean thinPack = true;
+
         /**
          * Sets the thin-pack preference for fetch operation.
-         * 
-         * @param thinPack
+         *
+         * @param thinPack (Default value is true)
          */
         public void setThinPack(boolean thinPack) {
                 this.thinPack = thinPack;
         }
-        
+
         /**
-         * (Default value is true)
-         * @param removeDeletedRefs 
+         * If set to true, refs are removed which no longer exist in the source
+         * 
+         * @param removeDeletedRefs (Default value is true)
          */
         public void setRemoveDeletedRefs(boolean removeDeletedRefs) {
                 this.removeDeletedRefs = removeDeletedRefs;
         }
 
         /**
-         * (Default value is true)
-         * @param dryRun
+         * Sets whether the fetch operation should be a dry run
+         *
+         * @param dryRun (Default value is true)
          */
         public void setDryRun(boolean dryRun) {
                 this.dryRun = dryRun;
@@ -51,20 +59,22 @@ public class FetchTask extends AbstractGitRepoAwareTask {
 
         @Override
         public void doExecute() {
-
                 try {
-                        FetchCommand cmd = Git.wrap(repo).fetch().setDryRun(dryRun).setThin(thinPack).setRemote(getUri()).setRemoveDeletedRefs(removeDeletedRefs);
-                        
+                        FetchCommand cmd = Git.wrap(repo).
+                                fetch().
+                                setDryRun(dryRun).
+                                setThin(thinPack).
+                                setRemote(getUri()).
+                                setRemoveDeletedRefs(removeDeletedRefs);
+
                         if (getProgressMonitor() != null) {
                                 cmd.setProgressMonitor(getProgressMonitor());
                         }
-                        
+
                         cmd.call();
                 } catch (Exception e) {
-                        e.printStackTrace();
-                        throw new BuildException("Unexpected exception: " + e.getMessage(), e);
+                        throw new GitBuildException("Unexpected exception: " + e.getMessage(), e);
                 }
-
         }
 
 }

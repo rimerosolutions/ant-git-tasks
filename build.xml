@@ -45,8 +45,8 @@ limitations under the License.
   <property name="test.src.dir" value="src/test/java"/>
   <property name="resources.dir" value="src/main/resources"/>
   <property name="test.resources.dir" value="src/test/resources"/>
-  <property name="test.data.dir" value="${target.dir}/testdata"/>
   <property name="target.dir" value="target"/>
+  <property name="test.data.dir" value="${target.dir}/testdata"/>
   <property name="dist.dir" value="dist"/>
   <property name="docs.dir" value="${target.dir}/docs"/>
   <property name="cobertura.data.filename" value="cobertura.ser"/>
@@ -160,7 +160,7 @@ limitations under the License.
     </propertyfile>
   </target>
 
-  <target name="-pre-release" unless="snapshot-build">
+  <target name="-pre-release">
     <echo>Checking tree modifications before release.</echo>
     <git:git localDirectory="${basedir}" verbose="true">
       <git:uptodate modificationExistProperty="tree.modified"/>
@@ -170,7 +170,7 @@ limitations under the License.
   <target name="-commit-release" depends="-pre-release" if="tree.modified">
     <echo>Committing before release SCM tagging.</echo>
     <git:git localDirectory="${basedir}" verbose="true">
-      <git:commit message="preparing release ${project.version}"/>
+      <git:commit message="[${ant.project.name}] Preparing release ${project.version}"/>
       <git:uptodate failOnError="true"/>
       <git:push username="${github.username}" password="${github.password}"/>
     </git:git> 
@@ -327,7 +327,7 @@ limitations under the License.
              classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
              classpathref="test.classpath"/>
 
-    <junit fork="yes"
+    <junit fork="true"
            dir="${basedir}"
            printsummary="yes"
            showoutput="true"

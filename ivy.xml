@@ -42,8 +42,8 @@ limitations under the License.
 
   <dependencies defaultconfmapping="*->default">
     <!-- compile -->
-    <dependency org="org.eclipse.jgit" name="org.eclipse.jgit.ant" rev="3.0.0.201306101825-r"  conf="compile"/>
-    <dependency org="org.eclipse.jgit" name="org.eclipse.jgit" rev="3.0.0.201306101825-r"  conf="compile"/>
+    <dependency org="org.eclipse.jgit" name="org.eclipse.jgit.ant" rev="3.0.0.201306101825-r" conf="compile"/>
+    <dependency org="org.eclipse.jgit" name="org.eclipse.jgit" rev="3.0.0.201306101825-r" conf="compile"/>
     <dependency org="com.jcraft" name="jsch" rev="0.1.50" conf="compile"/>
 
     <!-- test -->
@@ -54,13 +54,9 @@ limitations under the License.
 
     <!-- cobertura -->
     <dependency org="net.sourceforge.cobertura" name="cobertura" rev="1.9.4" conf="cobertura, test" />
-    <dependency org="net.java.dev.msv" name="msv" rev="2013.6.1" conf="cobertura, test" />
-    <dependency org="net.java.dev.msv" name="msv-core" rev="2013.6.1" conf="cobertura, test" />
-
 
     <!-- findbugs -->
-          <dependency org="com.google.code.findbugs" name="findbugs-ant" rev="2.0.1" conf="findbugs"/>
-    <!-- <dependency org="commons-lang" name="commons-lang" rev="2.2" conf="findbugs" /> -->
+    <dependency org="com.google.code.findbugs" name="findbugs-ant" rev="2.0.1" conf="findbugs"/>
 
   </dependencies>
 </ivy-module>

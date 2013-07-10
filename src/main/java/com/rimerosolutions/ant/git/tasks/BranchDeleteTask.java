@@ -21,31 +21,31 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
- * Create a git tag and commit unless conditions are not met.
+ * Delete branches
  * 
  * @author Yves Zoundi
+ *
  */
-public class TagTask extends AbstractGitRepoAwareTask {
+public class BranchDeleteTask extends AbstractGitRepoAwareTask {
 
-        private String name;
+        private String branches;
 
         /**
-         * Sets the Git Tag name
+         * Sets the branches to delete (comma-separated list)
          * 
-         * @param name The tag name
+         * @param branches Comma-separted list of branches to delete
          */
-        public void setName(String name) {
-                this.name = name;
+        public void setBranches(String branches) {
+                this.branches = branches;
         }
 
         @Override
-        protected void doExecute() {
-                String message = String.format("[ant-git-tasks] Creating tag '%s'", name);
-                
+        protected void doExecute() throws BuildException {
                 try {
-                        Git.wrap(repo).tag().setName(name).setMessage(message).call();
-                } catch (GitAPIException ex) {
-                         throw new GitBuildException(String.format("Could not create tag %s", name), ex);
-                } 
+                        Git.wrap(repo).branchDelete().setBranchNames(branches.split(",")).call();
+                } catch (GitAPIException e) {
+                        throw new GitBuildException("Could not delete specified branches", e);
+                }
         }
+
 }

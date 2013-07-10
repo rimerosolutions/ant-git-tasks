@@ -49,8 +49,7 @@ public class PushTask extends AbstractGitRepoAwareTask {
                 try {
                         List<RemoteConfig> remoteConfigs = RemoteConfig.getAllRemoteConfigs(repo.getConfig());
 
-                        if (!remoteConfigs.isEmpty()) { 
-                               
+                        if (!remoteConfigs.isEmpty()) {                               
                                 log("Pushing tags");
                                 
                                 PushCommand cmd = Git.wrap(repo).push();
@@ -71,8 +70,6 @@ public class PushTask extends AbstractGitRepoAwareTask {
                         if (pushFailedProperty != null) {
                                 getProject().setProperty(pushFailedProperty, e.getMessage());
                         }
-                        
-                        log(e.getMessage());
 
                         throw new GitBuildException("Git push failed", e);
                 }

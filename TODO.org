@@ -1,0 +1,9 @@
+#+TITLE: TODO LIST
+
+- Implement unit tests for Git tasks using [[http://ant.apache.org/antlibs/antunit/][antunit]] if possible.
+- Implement most of the possible useful [[http://eclipse.org/jgit/][JGit]] commands as Ant tasks.
+- Cleanup error handling and inheritance hierarchy.
+- Rewrite code borrowed from [[https://github.com/smartrics/jgit-ant][jgit-ant]]. [IN PROGRESS].
+- Autogenerate documentation for Ant tasks using [[http://antdoclet.neuroning.com/][antdoclet]].
+
+Last modification date : <2013-07-10 Wed>

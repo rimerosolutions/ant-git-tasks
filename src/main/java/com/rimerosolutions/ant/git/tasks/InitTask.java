@@ -19,33 +19,36 @@ import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import com.rimerosolutions.ant.git.GitBuildException;
+import java.io.File;
 
 /**
- * Create a git tag and commit unless conditions are not met.
- * 
+ * Task to initialize a git repository
+ *
  * @author Yves Zoundi
  */
-public class TagTask extends AbstractGitRepoAwareTask {
+public class InitTask extends AbstractGitRepoAwareTask {
 
-        private String name;
+        private boolean bare = false;
 
         /**
-         * Sets the Git Tag name
-         * 
-         * @param name The tag name
+         * Whether the repository is bare or not
+         *
+         * @param bare (Default false)
          */
-        public void setName(String name) {
-                this.name = name;
+        public void setBare(boolean bare) {
+                this.bare = bare;
         }
 
         @Override
         protected void doExecute() {
-                String message = String.format("[ant-git-tasks] Creating tag '%s'", name);
-                
                 try {
-                        Git.wrap(repo).tag().setName(name).setMessage(message).call();
-                } catch (GitAPIException ex) {
-                         throw new GitBuildException(String.format("Could not create tag %s", name), ex);
-                } 
+                        Git.wrap(repo).init().
+                                setBare(bare).
+                                setDirectory(new File(getDirectory().getAbsolutePath())).
+                                call();
+                } catch (GitAPIException e) {
+                        throw new GitBuildException("Could not delete specified tags", e);
+                }
         }
+
 }

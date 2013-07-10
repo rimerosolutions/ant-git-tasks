@@ -20,9 +20,14 @@ import java.util.Arrays;
 
 import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.api.CloneCommand;
-
+import com.rimerosolutions.ant.git.GitBuildException;
 import smartrics.ant.git.AbstractGitTask;
 
+/**
+ * Clone a repository
+ *
+ * @author Yves Zoundi
+ */
 public class CloneTask extends AbstractGitTask {
 
         private String branchToTrack;
@@ -32,11 +37,10 @@ public class CloneTask extends AbstractGitTask {
         private boolean noCheckout = false;
         private String  branchesToCloneCommaSeparated;
 
-
         public void setBranchesToCloneCommaSeparated(String branchesToCloneCommaSeparated) {
                 this.branchesToCloneCommaSeparated = branchesToCloneCommaSeparated;
         }
-        
+
         public void setBranchToTrack(String branchToTrack) {
                 this.branchToTrack = branchToTrack;
         }
@@ -56,33 +60,40 @@ public class CloneTask extends AbstractGitTask {
         public void setNoCheckout(boolean noCheckout) {
                 this.noCheckout = noCheckout;
         }
-        
+
         @Override
         public void execute() {
-
                 try {
-                        CloneCommand clone = new CloneCommand();
-                        if (branchToTrack != null) {
-                                clone.setBranch(branchToTrack);
-                        }
+                        CloneCommand cloneCommand = new CloneCommand();
                         
+                        if (branchToTrack != null) {
+                                cloneCommand.setBranch(branchToTrack);
+                        }
+
                         if (branchesToCloneCommaSeparated != null) {
                                 String[] branchNames = branchesToCloneCommaSeparated.split(",");
-                                
+
                                 if (branchNames.length > 0) {
-                                        clone.setBranchesToClone(Arrays.asList(branchNames));
+                                        cloneCommand.setBranchesToClone(Arrays.asList(branchNames));
                                 }
                         }
-                        
-                        clone.setURI(getUri()).setBare(bare).setCloneAllBranches(cloneAllBranches).setCloneSubmodules(cloneSubModules)
-                                        .setNoCheckout(noCheckout).setDirectory(new File(getDirectory().getAbsolutePath()))
-                                        .setProgressMonitor(getProgressMonitor());
-                        clone.call();
-                } catch (Exception e) {
-                        e.printStackTrace();
-                        throw new BuildException("Unexpected exception: " + e.getMessage(), e);
-                }
 
+                        cloneCommand.setURI(getUri()).
+                                setBare(bare).
+                                setCloneAllBranches(cloneAllBranches).
+                                setCloneSubmodules(cloneSubModules).
+                                setNoCheckout(noCheckout).
+                                setDirectory(new File(getDirectory().getAbsolutePath()));
+
+                        if (getProgressMonitor() != null) {
+                                cloneCommand.setProgressMonitor(getProgressMonitor());
+                        }
+
+                        cloneCommand.call();
+                }
+                catch (Exception e) {
+                        throw new GitBuildException("Could not clone repository: " + e.getMessage(), e);
+                }
         }
 
 }
