@@ -373,11 +373,11 @@ limitations under the License.
                          classpathref="test.classpath"/>
 
                 <path id="classes.location">
-                <pathelement location="${classes.dir}"/>
+                        <pathelement location="${classes.dir}"/>
                 </path>
-                
+
                 <path id="testData.location">
-                <pathelement location="${test.data.dir}"/>
+                        <pathelement location="${test.data.dir}"/>
                 </path>
 
                 <au:antunit failonerror="false" errorproperty="antunit.failed">
@@ -408,7 +408,7 @@ limitations under the License.
                 <taskdef name="findbugs"
                          classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
                          classpathref="findbugs.classpath"/>
-                
+
                 <findbugs classpath="findbugs.classpath"
                           classpathref="findbugs.classpath"
                           workHard="true"
