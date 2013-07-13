@@ -28,7 +28,8 @@ import com.rimerosolutions.ant.git.GitUtils;
  * Pull changes from a repository.
  *
  * <a href="http://www.kernel.org/pub/software/scm/git/docs/git-pull.html">Git Pull documentation</a>
- * <a href="http://download.eclipse.org/jgit/docs/jgit-2.0.0.201206130900-r/apidocs/org/eclipse/jgit/api/PullCommand.html">JGit PullCommand</a>
+ *
+ * <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/PullCommand.html">JGit PullCommand</a>
  *
  * @author Yves Zoundi
  */

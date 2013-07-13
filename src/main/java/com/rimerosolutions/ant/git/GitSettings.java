@@ -29,26 +29,48 @@ public class GitSettings {
         private PersonIdent identity;
         private CredentialsProvider credentials;
 
+        /**
+         * Sets the Git credentials
+         *
+         * @param username The username
+         * @param password The password
+         */
         public void setCredentials(String username, String password) {
                 if (username == null || password == null) {
-                        throw new IllegalArgumentException("Credentials must not be empty");
+                        throw new IllegalArgumentException("Credentials must not be empty.");
                 }
 
                 credentials = new UsernamePasswordCredentialsProvider(username, password);
         }
 
+        /**
+         * Sets the name and email for the Git commands user
+         *
+         * @param name The Git user's name
+         * @param email The Git user's email
+         */
         public void setIdentity(String name, String email) {
                 if (name == null || email == null) {
-                        throw new IllegalArgumentException("Identity information must not be empty");
+                        throw new IllegalArgumentException("Both the username and password must be provided.");
                 }
 
                 identity = new PersonIdent(name, email);
         }
 
+        /**
+         * Returns the Git user's identity
+         *
+         * @return The user's identity
+         */
         public PersonIdent getIdentity() {
                 return identity;
         }
 
+        /**
+         * Returns the Git user's credentials
+         *
+         * @return The user's credentials
+         */
         public CredentialsProvider getCredentials() {
                 return credentials;
         }

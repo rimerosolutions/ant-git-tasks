@@ -17,7 +17,6 @@ package com.rimerosolutions.ant.git;
 
 import org.apache.tools.ant.BuildException;
 
-
 /**
  * Git Ant Task Build Exception
  *

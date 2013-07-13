@@ -24,5 +24,4 @@ For *reusable* Apache Ant projects that use Git for version control, the release
 
 * No full set of Ant tasks for Git available
 It looks like the JGit Eclipse project [[http://wiki.eclipse.org/JGit/User_Guide#Ant_Tasks][is not going to provide a full ready to use set of Apache Ant tasks anytime soon]].
-
 Luckily the JGit API can be wrapped without much pain.

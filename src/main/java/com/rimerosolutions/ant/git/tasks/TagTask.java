@@ -22,6 +22,10 @@ import com.rimerosolutions.ant.git.GitBuildException;
 /**
  * Create a git tag and commit unless conditions are not met.
  *
+ * <a href="http://www.kernel.org/pub/software/scm/git/docs/git-tag.html">Git documentation about tag</a>
+ *
+ * <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/TagCommand.html">JGit TagCommand javadoc</a>
+ *
  * @author Yves Zoundi
  */
 public class TagTask extends AbstractGitRepoAwareTask {
@@ -35,6 +39,11 @@ public class TagTask extends AbstractGitRepoAwareTask {
                 return TASK_NAME;
         }
 
+        /**
+         * Sets the commit message
+         *
+         * @param message The message
+         */
         public void setMessage(String message) {
                 this.message = message;
         }

@@ -16,8 +16,8 @@
 package com.rimerosolutions.ant.git.tasks;
 
 import java.io.File;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
@@ -32,104 +32,120 @@ import com.rimerosolutions.ant.git.GitUtils;
  */
 public class GitTasks extends Task {
 
+        private static final String UNSUPPORTED_TASK_TEMPLATE = "The git task only supports nested Git related tasks: '%s'";
         private boolean verbose = true;
         private File localDirectory;
         private String settingsRef;
 
-        private Queue<GitTask> tasks = new LinkedList<GitTask>();
+        private List<Task> tasks = new ArrayList<Task>();
 
+        /**
+         * Unable/Disable Git commands verbosity
+         *
+         * @param verbose Whether or not the Git commands output should be verbose
+         */
         public void setVerbose(boolean verbose) {
                 this.verbose = verbose;
         }
 
+        /**
+         * Sets a settings reference ID to lookup git settings
+         *
+         * @param settingsRef A git settings reference ID
+         */
         public void setSettingsRef(String settingsRef) {
                 this.settingsRef = settingsRef;
         }
 
+        /**
+         * Sets the Git local directory
+         *
+         * @param dir The local directory to set
+         */
         public void setLocalDirectory(File dir) {
                 this.localDirectory = dir;
         }
 
         public BranchDeleteTask createBranchDelete() {
                 BranchDeleteTask c = new BranchDeleteTask();
-                tasks.offer(c);
+                tasks.add(c);
 
                 return c;
         }
 
         public CheckoutTask createCheckout() {
                 CheckoutTask c = new CheckoutTask();
-                tasks.offer(c);
+                tasks.add(c);
 
                 return c;
         }
 
         public CleanTask createClean() {
                 CleanTask c = new CleanTask();
-                tasks.offer(c);
+                tasks.add(c);
 
                 return c;
         }
 
         public CloneTask createClone() {
                 CloneTask c = new CloneTask();
-                tasks.offer(c);
+                tasks.add(c);
 
                 return c;
         }
 
         public CommitTask createCommit() {
                 CommitTask c = new CommitTask();
-                tasks.offer(c);
+                tasks.add(c);
 
                 return c;
         }
 
         public FetchTask createFetch() {
                 FetchTask c = new FetchTask();
-                tasks.offer(c);
+                tasks.add(c);
 
                 return c;
         }
 
         public InitTask createInit() {
                 InitTask c = new InitTask();
-                tasks.offer(c);
+                tasks.add(c);
 
                 return c;
         }
 
         public PullTask createPull() {
                 PullTask p = new PullTask();
-                tasks.offer(p);
+                tasks.add(p);
 
                 return p;
         }
 
         public PushTask createPush() {
                 PushTask c = new PushTask();
-                tasks.offer(c);
+                tasks.add(c);
 
                 return c;
         }
 
         public UpToDateTask createUpToDate() {
                 UpToDateTask c = new UpToDateTask();
-                tasks.offer(c);
+                tasks.add(c);
 
                 return c;
         }
 
         public TagTask createTag() {
                 TagTask c = new TagTask();
-                tasks.offer(c);
+                tasks.add(c);
 
                 return c;
         }
 
         public TagDeleteTask createTagDelete() {
                 TagDeleteTask c = new TagDeleteTask();
-                tasks.offer(c);
+                tasks.add(c);
 
                 return c;
         }
@@ -137,11 +153,11 @@ public class GitTasks extends Task {
         @Override
         public void execute() throws BuildException {
                 if (localDirectory == null) {
-                        throw new BuildException("Please specify a local repository directory.");
+                        throw new BuildException("Please specify a localDirectory attribute.");
                 }
 
-                while (!tasks.isEmpty()) {
-                        GitTask t = tasks.poll();
+                for (Task task : tasks) {
+                        GitTask t = (GitTask) task;
                         GitUtils.validateTaskConditions(t);
 
                         if (!GitUtils.nullOrEmptyString(t.getIf())) {
@@ -167,7 +183,7 @@ public class GitTasks extends Task {
                         t.setDirectory(localDirectory);
 
                         try {
-                                t.execute();
+                                task.perform();
                         } catch (Exception e) {
                                 throw new BuildException("Unexpected exception occurred!", e);
                         }

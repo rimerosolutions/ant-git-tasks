@@ -22,6 +22,10 @@ import com.rimerosolutions.ant.git.GitBuildException;
 /**
  * Git fetch Ant task
  *
+ * <a href="http://www.kernel.org/pub/software/scm/git/docs/git-fetch.html">Git documentation about fetch</a>
+ *
+ * <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/FetchCommand.html">JGit FetchCommand javadoc</a>
+ *
  * @author Yves Zoundi
  */
 public class FetchTask extends AbstractGitRepoAwareTask {

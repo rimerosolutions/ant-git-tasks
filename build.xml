@@ -49,9 +49,14 @@ limitations under the License.
         <property name="target.dir" value="target"/>
         <property name="test.data.dir" value="${target.dir}/testData"/>
         <property name="dist.dir" value="dist"/>
-        <property name="docs.dir" value="${target.dir}/docs"/>
+        <property name="apidocs.dir" value="${target.dir}/apidocs"/>
         <property name="cobertura.data.filename" value="cobertura.ser"/>
         <property name="cobertura.data.file" value="${test.data.dir}/${cobertura.data.filename}"/>
+        <property name="javadoc.overview.html" value="${resources.dir}/com/rimerosolutions/ant/git/overview.html"/>
+
+        <property name="company.name" value="Rimero Solutions Inc."/>
+        <property name="product.description" value="Apache Ant Git tasks"/>
+        <property name="template.pom.location" value="templates/pom.xml"/>
 
         <!-- reports -->
         <property name="reports.dir" value="${target.dir}/reports"/>
@@ -240,7 +245,7 @@ limitations under the License.
                 <echo>Setting up build layout.</echo>
                 <mkdir dir="${target.dir}"/>
                 <mkdir dir="${lib.dir}"/>
-                <mkdir dir="${docs.dir}"/>
+                <mkdir dir="${apidocs.dir}"/>
                 <mkdir dir="${classes.dir}"/>
                 <mkdir dir="${test.classes.dir}"/>
                 <mkdir dir="${test.data.dir}"/>
@@ -270,8 +275,8 @@ limitations under the License.
                        encoding="${javac.encoding}"
                        destdir="${classes.dir}"
                        includeantruntime="false">
-                        <src path="${src.dir}" />
-                        <classpath refid="compile.classpath" />
+                        <src path="${src.dir}"/>
+                        <classpath refid="compile.classpath"/>
                 </javac>
         </target>
 
@@ -367,8 +372,13 @@ limitations under the License.
                          resource="org/apache/ant/antunit/antlib.xml"
                          classpathref="test.classpath"/>
 
-                <path id="classes.location"><pathelement location="${classes.dir}"/></path>
-                <path id="testData.location"><pathelement location="${test.data.dir}"/></path>
+                <path id="classes.location">
+                <pathelement location="${classes.dir}"/>
+                </path>
+                
+                <path id="testData.location">
+                <pathelement location="${test.data.dir}"/>
+                </path>
 
                 <au:antunit failonerror="false" errorproperty="antunit.failed">
                         <referenceset>
@@ -376,7 +386,7 @@ limitations under the License.
                                 <reference refid="classes.location"/>
                                 <reference refid="testData.location"/>
                         </referenceset>
-                        <fileset dir="src/test/resources" includes="*.xml"/>
+                        <fileset dir="${test.resources.dir}" includes="*.xml"/>
                         <au:plainlistener />
                         <au:xmllistener todir="${reports.junit.xml.dir}" />
                 </au:antunit>
@@ -395,8 +405,10 @@ limitations under the License.
         <!-- code quality -->
         <!-- ****************************************** -->
         <target name="report-findbugs" depends="compile" description="Generate FindBugs report">
-                <taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
+                <taskdef name="findbugs"
+                         classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
                          classpathref="findbugs.classpath"/>
+                
                 <findbugs classpath="findbugs.classpath"
                           classpathref="findbugs.classpath"
                           workHard="true"
@@ -423,7 +435,10 @@ limitations under the License.
         </target>
 
         <target name="report-cobertura" depends="tests" description="Generate Cobertura report">
-                <cobertura-report format="html" destdir="${reports.cobertura.dir}" srcdir="${src.dir}" datafile="${cobertura.data.file}"/>
+                <cobertura-report format="html"
+                                  destdir="${reports.cobertura.dir}"
+                                  srcdir="${src.dir}"
+                                  datafile="${cobertura.data.file}"/>
         </target>
 
         <target name="reports" depends="report-findbugs,report-junit,report-cobertura" description="Generate reports(JUnit, FindBugs, Cobertura)">
@@ -439,9 +454,9 @@ limitations under the License.
                         <manifest>
                                 <attribute name="Built-By" value="${user.name}"/>
                                 <attribute name="Built-Date" value="${build.current.time}"/>
-                                <attribute name="Implementation-Title" value="ant-git-tasks"/>
+                                <attribute name="Implementation-Title" value="${ant.project.name}"/>
                                 <attribute name="Implementation-Version" value="${project.version}"/>
-                                <attribute name="Implementation-Vendor" value="Rimero Solutions Inc."/>
+                                <attribute name="Implementation-Vendor" value="${company.name}"/>
                         </manifest>
                         <fileset dir="${classes.dir}"/>
                 </jar>
@@ -454,11 +469,12 @@ limitations under the License.
                 <javadoc packagenames="**/*.*"
                          sourcepath="${src.dir}"
                          defaultexcludes="yes"
-                         destdir="${docs.dir}"
+                         destdir="${apidocs.dir}"
+                         overview="${javadoc.overview.html}"
                          author="true"
                          version="true"
                          use="true"
-                         windowtitle="Ant Git Taks oriented for GitHub-Sonatype worflow.">
+                         windowtitle="${product.description}">
                         <classpath>
                                 <path refid="compile.classpath"/>
                         </classpath>
@@ -481,7 +497,7 @@ limitations under the License.
         <target name="jar-javadoc" depends="javadoc" description="Generate javadocs jar">
                 <echo>Generating sources jar.</echo>
                 <zip destfile="${dist.dir}/${ant.project.name}-javadoc.jar">
-                        <zipfileset dir="${docs.dir}" />
+                        <zipfileset dir="${apidocs.dir}" />
                 </zip>
         </target>
 
@@ -494,8 +510,8 @@ limitations under the License.
                 description="Generate the Maven POM for artifacts publishing">
                 <echo>Generating Maven POM.</echo>
                 <ivy:makepom ivyfile="${basedir}/ivy.xml"
-                             description="Apache Ant Git Tasks"
-                             templatefile="templates/pom.xml"
+                             description="${product.description}"
+                             templatefile="${template.pom.location}"
                              pomfile="${dist.dir}/${ant.project.name}.pom">
                         <mapping conf="compile" scope="compile"/>
                 </ivy:makepom>

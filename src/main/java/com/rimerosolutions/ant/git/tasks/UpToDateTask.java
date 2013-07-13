@@ -26,7 +26,6 @@ import org.eclipse.jgit.treewalk.FileTreeIterator;
 
 import com.rimerosolutions.ant.git.GitBuildException;
 
-
 /**
  * Checks whether or not the Git Tree is up to date.
  *

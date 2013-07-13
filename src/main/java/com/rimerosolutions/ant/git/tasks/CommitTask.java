@@ -24,6 +24,10 @@ import com.rimerosolutions.ant.git.GitBuildException;
 /**
  * Commits all local changes
  *
+ * <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/CommitCommand.html">JGit CommitCommand javadoc</a>
+ *
+ * <a href="http://www.kernel.org/pub/software/scm/git/docs/git-commit.html">Git documentation about commit</a>
+ *
  * @author Yves Zoundi
  */
 public class CommitTask extends AbstractGitRepoAwareTask {

@@ -29,6 +29,10 @@ import com.rimerosolutions.ant.git.GitBuildException;
 /**
  * Perform a git checkout
  *
+ * <a href="https://www.kernel.org/pub/software/scm/git/docs/git-checkout.html">git-checkout Manual Page</a>
+ *
+ * <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/CheckoutCommand.html">JGit CheckoutCommand javadoc</a>
+ *
  * @author Yves Zoundi
  */
 public class CheckoutTask extends AbstractGitRepoAwareTask {

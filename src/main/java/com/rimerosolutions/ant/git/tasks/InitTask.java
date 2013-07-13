@@ -27,7 +27,7 @@ import com.rimerosolutions.ant.git.GitBuildException;
  *
  * <a href="https://www.kernel.org/pub/software/scm/git/docs/git-init.html">git-init Manual Page</a>
  *
- * <a href="http://download.eclipse.org/jgit/docs/jgit-2.3.1.201302201838-r/apidocs/index.html?org/eclipse/jgit/api/FetchCommand.html">Underlying wrapped JGit command</a>
+ * <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/index.html?org/eclipse/jgit/api/FetchCommand.html">Underlying wrapped JGit command</a>
  *
  * @author Yves Zoundi
  */

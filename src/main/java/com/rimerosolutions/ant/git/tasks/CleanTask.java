@@ -24,6 +24,10 @@ import com.rimerosolutions.ant.git.GitBuildException;
 /**
  * Git clean Ant task
  *
+ * <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/CleanCommand.html">JGit CleanCommand javadoc</a>
+ *
+ * <a href="http://www.kernel.org/pub/software/scm/git/docs/git-clean.html">Git documentation about clean</a>
+ *
  * @author Yves Zoundi
  */
 public class CleanTask extends AbstractGitRepoAwareTask {

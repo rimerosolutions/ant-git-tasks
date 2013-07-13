@@ -29,6 +29,12 @@ import org.eclipse.jgit.transport.URIish;
 import com.rimerosolutions.ant.git.GitSettings;
 import com.rimerosolutions.ant.git.GitTask;
 
+/**
+ * Abstract Git task
+ *
+ * @author Fabrizio Cannizzo
+ * @author Yves Zoundi
+ */
 public abstract class AbstractGitTask extends Task implements GitTask {
 
         private String uri;
@@ -133,8 +139,6 @@ public abstract class AbstractGitTask extends Task implements GitTask {
 
                 return null;
         }
-
-
 
         protected void setupCredentials(GitCommand<?> command) {
                 GitSettings settings = lookupSettings();
