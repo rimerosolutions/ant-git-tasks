@@ -15,23 +15,33 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
-import org.apache.tools.ant.BuildException;
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
  * Create a git tag and commit unless conditions are not met.
- * 
+ *
  * @author Yves Zoundi
  */
 public class TagTask extends AbstractGitRepoAwareTask {
 
         private String name;
+        private String message;
+        private static final String TASK_NAME = "git-tag";
+
+        @Override
+        public String getName() {
+                return TASK_NAME;
+        }
+
+        public void setMessage(String message) {
+                this.message = message;
+        }
 
         /**
          * Sets the Git Tag name
-         * 
+         *
          * @param name The tag name
          */
         public void setName(String name) {
@@ -40,12 +50,16 @@ public class TagTask extends AbstractGitRepoAwareTask {
 
         @Override
         protected void doExecute() {
-                String message = String.format("[ant-git-tasks] Creating tag '%s'", name);
-                
+                if (message == null) {
+                        message = String.format("Creating tag '%s'", name);
+                }
+
+                message = "[ant-git-tasks] " + message;
+
                 try {
-                        Git.wrap(repo).tag().setName(name).setMessage(message).call();
+                        git.tag().setName(name).setMessage(message).call();
                 } catch (GitAPIException ex) {
-                         throw new GitBuildException(String.format("Could not create tag %s", name), ex);
-                } 
+                        throw new GitBuildException(String.format("Could not create tag %s", name), ex);
+                }
         }
 }

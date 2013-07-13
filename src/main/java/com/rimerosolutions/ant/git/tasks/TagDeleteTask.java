@@ -15,9 +15,8 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
-import org.apache.tools.ant.BuildException;
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
@@ -29,6 +28,12 @@ import com.rimerosolutions.ant.git.GitBuildException;
 public class TagDeleteTask extends AbstractGitRepoAwareTask {
 
         private String tags;
+        private static final String TASK_NAME = "git-tag-delete";
+
+        @Override
+        public String getName() {
+                return TASK_NAME;
+        }
 
         /**
          * Sets the tags to delete (comma-separated list)
@@ -42,7 +47,7 @@ public class TagDeleteTask extends AbstractGitRepoAwareTask {
         @Override
         protected void doExecute() {
                 try {
-                        Git.wrap(repo).tagDelete().setTags(tags.split(",")).call();
+                        git.tagDelete().setTags(tags.split(",")).call();
                 } catch (GitAPIException e) {
                         throw new GitBuildException("Could not delete specified tags", e);
                 }

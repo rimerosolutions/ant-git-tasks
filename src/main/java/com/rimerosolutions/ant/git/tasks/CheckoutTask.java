@@ -18,12 +18,12 @@ package com.rimerosolutions.ant.git.tasks;
 import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.CreateBranchCommand;
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.CheckoutConflictException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRefNameException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.api.errors.RefNotFoundException;
+
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
@@ -36,6 +36,12 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
         private String branchName;
         private boolean createBranch = false;
         private boolean trackBranchOnCreate = false;
+        private static final String TASK_NAME = "git-checkout";
+
+        @Override
+        public String getName() {
+                return TASK_NAME;
+        }
 
         public void setTrackBranchOnCreate(boolean trackBranchOnCreate) {
                 this.trackBranchOnCreate = trackBranchOnCreate;
@@ -52,18 +58,19 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
         @Override
         protected void doExecute() throws BuildException {
                 try {
-                        CheckoutCommand cmd = Git.wrap(repo).checkout();
+                        CheckoutCommand checkoutCommand = git.checkout();
 
                         if (createBranch) {
-                                cmd.setCreateBranch(true);
+                                checkoutCommand.setCreateBranch(true);
                         }
-                        cmd.setName(branchName);
+                        checkoutCommand.setName(branchName);
 
                         if (trackBranchOnCreate) {
-                                cmd.setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK).setStartPoint("origin/" + branchName);
+                                checkoutCommand.setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK).
+                                        setStartPoint("origin/" + branchName);
                         }
 
-                        cmd.call();
+                        checkoutCommand.call();
                 } catch (RefAlreadyExistsException e) {
                         throw new GitBuildException(String.format("Cannot create branch '%s', as it already exists!", branchName), e);
                 } catch (RefNotFoundException e) {

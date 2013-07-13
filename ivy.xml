@@ -17,46 +17,46 @@ limitations under the License.
 <ivy-module version="2.0"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-  <info organisation="com.rimerosolutions.ant" module="ant-git-tasks" status="release" >
-    <license name="The Apache Software License, Version 2.0"
-             url="http://www.apache.org/licenses/LICENSE-2.0.txt" />
-    <ivyauthor name="Rimero Solutions" url="rimerosolutions@gmail.com"/>
-    <description homepage="https://github.com/rimerosolutions/ant-git-tasks">
-      This is a set of basic Apache Ant Git tasks.
-    </description>
-  </info>
+        <info organisation="com.rimerosolutions.ant" module="ant-git-tasks" status="release" >
+                <license name="The Apache Software License, Version 2.0"
+                         url="http://www.apache.org/licenses/LICENSE-2.0.txt" />
+                <ivyauthor name="Rimero Solutions" url="rimerosolutions@gmail.com"/>
+                <description homepage="https://github.com/rimerosolutions/ant-git-tasks">
+                        This is a set of basic Apache Ant Git tasks.
+                </description>
+        </info>
 
-  <configurations>
-    <conf name="compile"/>
-    <conf name="test"      visibility="private" description="Tests dependencies"/>
-    <conf name="findbugs"  visibility="private" description="Findbugs dependencies"/>
-    <conf name="cobertura" visibility="private" description="Cobertura dependencies"/>
-  </configurations>
+        <configurations>
+                <conf name="compile"/>
+                <conf name="test"      visibility="private" description="Tests dependencies"/>
+                <conf name="findbugs"  visibility="private" description="Findbugs dependencies"/>
+                <conf name="cobertura" visibility="private" description="Cobertura dependencies"/>
+        </configurations>
 
-  <publications xmlns:e="urn:ant.apache.org:ivy-extras">
-    <artifact name="ant-git-tasks" type="jar" ext="jar"/>
-    <artifact name="ant-git-tasks" type="pom" ext="pom"/>
-    <artifact name="ant-git-tasks" type="source" ext="jar" e:classifier="sources"/>
-    <artifact name="ant-git-tasks" type="javadoc" ext="jar" e:classifier="javadoc"/>
-  </publications>
+        <publications xmlns:e="urn:ant.apache.org:ivy-extras">
+                <artifact name="ant-git-tasks" type="jar" ext="jar"/>
+                <artifact name="ant-git-tasks" type="pom" ext="pom"/>
+                <artifact name="ant-git-tasks" type="source" ext="jar" e:classifier="sources"/>
+                <artifact name="ant-git-tasks" type="javadoc" ext="jar" e:classifier="javadoc"/>
+        </publications>
 
-  <dependencies defaultconfmapping="*->default">
-    <!-- compile -->
-    <dependency org="org.eclipse.jgit" name="org.eclipse.jgit.ant" rev="3.0.0.201306101825-r" conf="compile"/>
-    <dependency org="org.eclipse.jgit" name="org.eclipse.jgit" rev="3.0.0.201306101825-r" conf="compile"/>
-    <dependency org="com.jcraft" name="jsch" rev="0.1.50" conf="compile"/>
+        <dependencies defaultconfmapping="*->default">
+                <!-- compile -->
+                <dependency org="org.eclipse.jgit" name="org.eclipse.jgit.ant" rev="3.0.0.201306101825-r" conf="compile"/>
+                <dependency org="org.eclipse.jgit" name="org.eclipse.jgit" rev="3.0.0.201306101825-r" conf="compile"/>
+                <dependency org="com.jcraft" name="jsch" rev="0.1.50" conf="compile"/>
 
-    <!-- test -->
-    <dependency org="junit" name="junit" rev="3.8.2" conf="test, compile"/>
-    <dependency org="org.apache.ant" name="ant-testutil" rev="1.7.1" conf="test, compile"/>
-    <dependency org="org.apache.ant" name="ant-antunit" rev="1.2" conf="test, compile"/>
-    <dependency org="org.apache.ant" name="ant-junit" rev="1.7.1" conf="test, compile"/>
+                <!-- test -->
+                <dependency org="junit" name="junit" rev="4.4" conf="test, compile"/>
+                <dependency org="org.apache.ant" name="ant-testutil" rev="1.7.1" conf="test"/>
+                 <dependency org="org.apache.ant" name="ant-junit" rev="1.7.1" conf="test"/>
+                <dependency org="org.apache.ant" name="ant-antunit" rev="1.2" conf="test"/>
 
-    <!-- cobertura -->
-    <dependency org="net.sourceforge.cobertura" name="cobertura" rev="1.9.4" conf="cobertura, test" />
+                <!-- cobertura -->
+                <dependency org="net.sourceforge.cobertura" name="cobertura" rev="1.9.4" conf="cobertura, test" />
 
-    <!-- findbugs -->
-    <dependency org="com.google.code.findbugs" name="findbugs-ant" rev="2.0.1" conf="findbugs"/>
+                <!-- findbugs -->
+                <dependency org="com.google.code.findbugs" name="findbugs-ant" rev="2.0.1" conf="findbugs"/>
 
-  </dependencies>
+        </dependencies>
 </ivy-module>

@@ -17,25 +17,31 @@ package com.rimerosolutions.ant.git.tasks;
 
 import java.util.List;
 
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PushCommand;
-import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RemoteConfig;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 import com.rimerosolutions.ant.git.GitBuildException;
+import com.rimerosolutions.ant.git.GitUtils;
 
 
 /**
  * Pushes a Git tag to a remote repository
- * 
+ *
  * @author Yves Zoundi
  */
 public class PushTask extends AbstractGitRepoAwareTask {
 
         private String pushFailedProperty;
         private boolean includeTags = true;
-        
+
+        private static final String TASK_NAME = "git-push";
+
+        @Override
+        public String getName() {
+                return TASK_NAME;
+        }
+
         public void setIncludeTags(boolean includeTags) {
                 this.includeTags = includeTags;
         }
@@ -47,23 +53,25 @@ public class PushTask extends AbstractGitRepoAwareTask {
         @Override
         protected void doExecute() {
                 try {
-                        List<RemoteConfig> remoteConfigs = RemoteConfig.getAllRemoteConfigs(repo.getConfig());
+                        List<RemoteConfig> remoteConfigs = RemoteConfig.getAllRemoteConfigs(git.getRepository().getConfig());
 
-                        if (!remoteConfigs.isEmpty()) {                               
+                        if (remoteConfigs != null && !remoteConfigs.isEmpty()) {
                                 log("Pushing tags");
-                                
-                                PushCommand cmd = Git.wrap(repo).push();
-                                
-                                if (getUsername() != null && getPassword() != null && getUsername().trim().length() != 0 && getPassword().trim().length() !=0) {
-                                        CredentialsProvider cp = new UsernamePasswordCredentialsProvider(getUsername(), getPassword());
-                                        cmd.setCredentialsProvider(cp); 
-                                }
-                                
+
+                                PushCommand pushCommand = git.push();
+
+                                setupCredentials(pushCommand);
+
+
                                 if (includeTags) {
-                                        cmd.setPushTags();
-                                } 
-                                
-                                cmd.setForce(true).call();
+                                        pushCommand.setPushTags();
+                                }
+
+                                Iterable<PushResult> pushResults = pushCommand.setForce(true).call();
+
+                                for (PushResult pushResult : pushResults) {
+                                        GitUtils.validateTrackingRefUpdates("Push failed",  pushResult.getTrackingRefUpdates());
+                                }
                         }
 
                 } catch (Exception e) {

@@ -1,22 +1,51 @@
-<project xmlns:au="antlib:org.apache.ant.antunit" xmlns="antlib:org.apache.tools.ant">
+<project basedir="../../../" xmlns:au="antlib:org.apache.ant.antunit" xmlns:git="antlib:com.rimerosolutions.ant.git" xmlns="antlib:org.apache.tools.ant">
+        <taskdef uri="antlib:com.rimerosolutions.ant.git" resource="com/rimerosolutions/ant/git/jgit-ant-lib.xml">
+                <classpath>
+                        <path refid="compile.classpath" />
+                        <path refid="classes.location" />
+                </classpath>
+        </taskdef>
 
+        <pathconvert property="testData.folder" refid="testData.location"/>
+        <property name="testRemoteRepo" value="${testData.folder}/testRemoteRepo" />
+        <property name="testLocalRepo" value="${testData.folder}/testLocalRepo" />
 
-  <echo>test</echo>
-  <!-- is called prior to the test -->
-  <target name="setUp">
-    <property name="foo" value="foo" />
-  </target>
+        <!-- is called prior to the test -->
+        <target name="setUp">
+                <mkdir dir="${testRemoteRepo}" />
+                <mkdir dir="${testLocalRepo}" />
+        </target>
 
-  <!-- is called after the test, even if that caused an error -->
-  <target name="tearDown">
-    <echo>Deleting foo....</echo>
-    <delete file="${foo}" quiet="true" />
-  </target>
+        <!-- is called after the test, even if that caused an error -->
+        <target name="tearDown">
+                <delete dir="${testLocalRepo}" quiet="true" />
+                <delete dir="${testRemoteRepo}" quiet="true" />
+        </target>
 
-  <!-- the actual test case -->
-  <target name="testTouchCreatesFile">
-    <au:assertFileDoesntExist file="${foo}" />
-    <touch file="${foo}" />
-    <au:assertFileExists file="${foo}" />
-  </target>
+        <target name="testClone" description="Test repository clone">
+                <git:git localDirectory="${testRemoteRepo}" verbose="true">
+                        <git:clone uri="https://github.com/rimerosolutions/playground-repo.git" directory="${testRemoteRepo}" />
+                        <git:pull />
+                        <git:uptodate failOnError="true" />
+                </git:git>
+                <au:assertFileExists file="${testRemoteRepo}/README.md" />
+        </target>
+
+        <target name="testUpToDateFailure" description="Test clean status failure">
+                <au:expectfailure>
+                        <git:git localDirectory="${testRemoteRepo}" verbose="true">
+                                <git:clone uri="https://github.com/rimerosolutions/playground-repo.git" directory="${testRemoteRepo}" />
+                                <echo file="${testRemoteRepo}/test.txt">test</echo>
+                                <git:uptodate failOnError="true" />
+                        </git:git>
+                </au:expectfailure>
+        </target>
+
+        <target name="testInit" description="Tests git-init">
+                <git:settings refId="git.testing" username="xxxtesting" password="xxxtesting" name="xxxtesting" email="xxxtesting@gmail.com" />
+                <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
+                        <git:init directory="${testLocalRepo}" bare="false" />
+                </git:git>
+                <au:assertFileExists file="${testLocalRepo}/.git" />
+        </target>
 </project>

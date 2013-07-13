@@ -15,11 +15,10 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
-import org.apache.tools.ant.BuildException;
-import org.eclipse.jgit.api.Git;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
@@ -32,7 +31,12 @@ public class CleanTask extends AbstractGitRepoAwareTask {
         private boolean cleanDirectories = true;
         private boolean ignore = true;
         private List<String> pathList = new ArrayList<String>();
+        private static final String TASK_NAME = "git-clean";
 
+        @Override
+        public String getName() {
+                return TASK_NAME;
+        }
         /**
          * If paths are set, only these paths are affected by the cleaning.
          *
@@ -75,8 +79,7 @@ public class CleanTask extends AbstractGitRepoAwareTask {
         @Override
         public void doExecute() {
                 try {
-                        Git.wrap(repo).
-                                clean().
+                        git.clean().
                                 setDryRun(dryRun).
                                 setIgnore(ignore).
                                 setCleanDirectories(cleanDirectories).

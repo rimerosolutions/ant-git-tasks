@@ -16,33 +16,39 @@
 package com.rimerosolutions.ant.git.tasks;
 
 import org.apache.tools.ant.BuildException;
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
  * Delete branches
- * 
+ *
  * @author Yves Zoundi
  *
  */
 public class BranchDeleteTask extends AbstractGitRepoAwareTask {
 
-        private String branches;
+        private static final String TASK_NAME = "git-branch-delete";
+        private String[] branchNames;
+
+        @Override
+        public String getName() {
+                return TASK_NAME;
+        }
 
         /**
          * Sets the branches to delete (comma-separated list)
-         * 
+         *
          * @param branches Comma-separted list of branches to delete
          */
         public void setBranches(String branches) {
-                this.branches = branches;
+                this.branchNames = branches.split(",");
         }
 
         @Override
         protected void doExecute() throws BuildException {
                 try {
-                        Git.wrap(repo).branchDelete().setBranchNames(branches.split(",")).call();
+                        git.branchDelete().setBranchNames(branchNames).call();
                 } catch (GitAPIException e) {
                         throw new GitBuildException("Could not delete specified branches", e);
                 }

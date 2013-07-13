@@ -21,6 +21,7 @@ import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.IndexDiff;
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.treewalk.FileTreeIterator;
 
 import com.rimerosolutions.ant.git.GitBuildException;
@@ -28,16 +29,22 @@ import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
  * Checks whether or not the Git Tree is up to date.
- * 
+ *
  * @author Yves Zoundi
  */
 public class UpToDateTask extends AbstractGitRepoAwareTask {
 
         private String modificationExistProperty;
+        private static final String TASK_NAME = "git-status";
+
+        @Override
+        public String getName() {
+                return TASK_NAME;
+        }
 
         /**
          * Sets a given project property if the tree is modified
-         * 
+         *
          * @param p Property name to set
          */
         public void setModificationExistProperty(String p) {
@@ -46,6 +53,8 @@ public class UpToDateTask extends AbstractGitRepoAwareTask {
 
         @Override
         protected void doExecute() throws BuildException {
+                Repository repo = git.getRepository();
+
                 FileTreeIterator workingTreeIterator = new FileTreeIterator(repo);
 
                 try {

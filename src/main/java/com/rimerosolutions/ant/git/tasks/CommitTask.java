@@ -17,64 +17,50 @@ package com.rimerosolutions.ant.git.tasks;
 
 import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.api.CommitCommand;
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
  * Commits all local changes
- * 
+ *
  * @author Yves Zoundi
  */
 public class CommitTask extends AbstractGitRepoAwareTask {
 
         private String message = "Commit message";
-        private String username;
-        private String email;
         private boolean all = true;
         private boolean amend = false;
         private String reflogComment;
+        private static final String TASK_NAME = "git-commit";
 
-
+        @Override
+        public String getName() {
+                return TASK_NAME;
+        }
 
         @Override
         protected void doExecute() throws BuildException {
                 try {
                         setFailOnError(true);
-                        CommitCommand cmd = Git.wrap(repo).commit();
-                        if (username != null && email != null) {
-                               cmd.setAuthor(username, email);
-                        }
-                        
+                        CommitCommand cmd = git.commit();
+
                         if (message != null) {
                                 cmd.setMessage(message);
                         }
-                        
+
                         cmd.setAll(all).setAmend(amend);
-                        
+
+                        cmd.setAuthor(lookupSettings().getIdentity());
+
                         if (reflogComment != null) {
                                 cmd.setReflogComment(reflogComment);
                         }
-                        
+
                         cmd.call();
                 } catch (GitAPIException ex) {
                         throw new GitBuildException("Cannot commit to Git repository", ex);
                 }
-        }
-        
-        /**
-         * @param username The name of the author used for the commit
-         */
-        public void setUsername(String username) {
-                this.username = username;
-        }
-
-        /**
-         * @param email The email of the author used for the commit
-         */
-        public void setEmail(String email) {
-                this.email = email;
         }
 
         /**

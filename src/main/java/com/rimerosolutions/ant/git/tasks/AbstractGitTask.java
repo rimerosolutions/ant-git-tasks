@@ -13,58 +13,76 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package smartrics.ant.git;
+package com.rimerosolutions.ant.git.tasks;
 
 import java.io.File;
 import java.net.URISyntaxException;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.Reference;
+import org.eclipse.jgit.api.GitCommand;
+import org.eclipse.jgit.api.TransportCommand;
 import org.eclipse.jgit.lib.ProgressMonitor;
 import org.eclipse.jgit.transport.URIish;
+
+import com.rimerosolutions.ant.git.GitSettings;
+import com.rimerosolutions.ant.git.GitTask;
 
 public abstract class AbstractGitTask extends Task implements GitTask {
 
         private String uri;
         private ProgressMonitor progressMonitor;
         private File directory;
-        private String username;
-        private String password;
         private String unlessCondition;
         private String ifCondition;
+        private String settingsRef;
 
-        public void setUnlessCondition(String unlessCondition) {
+        /**
+         * @return the settingsRef
+         */
+        public String getSettingsRef() {
+                return settingsRef;
+        }
+
+        /**
+         * @param settingsRef
+         *                the settingsRef to set
+         */
+        public void setSettingsRef(String settingsRef) {
+                if (this.settingsRef == null) {
+                        this.settingsRef = settingsRef;
+                }
+        }
+
+        /**
+         *
+         * @param unlessCondition
+         */
+        public void setUnless(String unlessCondition) {
                 this.unlessCondition = unlessCondition;
         }
-        
-        public void setIfCondition(String ifCondition) {
+
+        /**
+         *
+         * @param ifCondition
+         */
+        public void setIf(String ifCondition) {
                 this.ifCondition = ifCondition;
         }
-        
-        public String getUnlessCondition() {
+
+        public String getUnless() {
                 return unlessCondition;
         }
-        
-        public String getIfCondition() {
+
+        public String getIf() {
                 return ifCondition;
         }
 
-        public void setPassword(String password) {
-                this.password = password;
-        }
-
-        public void setUsername(String username) {
-                this.username = username;
-        }
-
-        public String getUsername() {
-                return username;
-        }
-
-        public String getPassword() {
-                return password;
-        }
-
+        /**
+         *
+         * @param uri
+         */
         public void setUri(String uri) {
                 if (uri == null) {
                         throw new BuildException("Can;t set null URI attribute");
@@ -80,7 +98,7 @@ public abstract class AbstractGitTask extends Task implements GitTask {
         @Override
         public void setDirectory(File dir) {
                 if (dir == null) {
-                        throw new BuildException("Can;t set null directory attribute");
+                        throw new BuildException("Cannot set null directory attribute");
                 }
                 this.directory = new File(dir.getAbsolutePath());
         }
@@ -100,6 +118,32 @@ public abstract class AbstractGitTask extends Task implements GitTask {
 
         protected ProgressMonitor getProgressMonitor() {
                 return this.progressMonitor;
+        }
+
+        protected GitSettings lookupSettings() {
+                if (getProject() != null && settingsRef != null) {
+                        Reference ref = (Reference) getProject().getReference(settingsRef);
+
+                        if (ref != null) {
+                                GitSettings settings = (GitSettings) ref.getReferencedObject();
+
+                                return settings;
+                        }
+                }
+
+                return null;
+        }
+
+
+
+        protected void setupCredentials(GitCommand<?> command) {
+                GitSettings settings = lookupSettings();
+
+                if (settings != null && command instanceof TransportCommand) {
+                        @SuppressWarnings("rawtypes")
+                        TransportCommand cmd = (TransportCommand) command;
+                        cmd.setCredentialsProvider(settings.getCredentials());
+                }
         }
 
         abstract public void execute();
