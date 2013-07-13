@@ -7,9 +7,9 @@ This set of Ant tasks is currently used by the [[https://github.com/rimerosoluti
 
 Below is the current workflow:
 
-: ant release-prepare-[fix|feature|major] (increment version number, semantic versioning rules)
-: ant maven-publish-local (local testing -> build,, publish to local maven cache)
-: ant maven-publish-remote (build, commit version changes, tag, publish to local maven repository)
+: ant release-prepare-[fix|feature|major] (increment version number)
+: ant maven-publish-local (local testing -> build, publish to local maven repo)
+: ant maven-publish-remote (build, commit and tag, push to remote maven repo)
 
 * Why this project
 For *reusable* Apache Ant projects that use Git for version control, the release process is more or less the same:
