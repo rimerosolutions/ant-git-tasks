@@ -83,6 +83,7 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
                         if (createBranch) {
                                 checkoutCommand.setCreateBranch(true);
                         }
+                        
                         checkoutCommand.setName(branchName);
 
                         if (trackBranchOnCreate) {

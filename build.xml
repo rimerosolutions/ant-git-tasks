@@ -171,9 +171,16 @@ limitations under the License.
                 <git:git localDirectory="${basedir}" verbose="true">
                         <git:uptodate modificationExistProperty="tree.modified"/>
                 </git:git>
+
+                <condition property="tree.modified.but.not.snapshot">
+                        <and>
+                                <isset property="tree.modified"/>
+                                <not><isset property="snapshot-build"/></not>
+                        </and>
+                </condition>
         </target>
 
-        <target name="-commit-release" depends="-pre-release" if="tree.modified">
+        <target name="-commit-release" depends="-pre-release" if="tree.modified.but.not.snapshot">
                 <echo>Committing before release SCM tagging.</echo>
                 <git:git localDirectory="${basedir}" verbose="true">
                         <git:commit message="[${ant.project.name}] Preparing release ${project.version}"/>
@@ -315,7 +322,7 @@ limitations under the License.
                          classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
                          classpathref="test.classpath"/>
 
-                <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+                <taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
 
                 <cobertura-instrument todir="${instrumentation.dir}" datafile="${cobertura.data.file}">
                         <includeClasses regex=".*" />
@@ -457,8 +464,6 @@ limitations under the License.
                 </jar>
         </target>
 
-        <target name="build" depends="jar,jar-javadoc,jar-sources,reports" description="Create the jar and generate build reports"/>
-
         <target name="javadoc" depends="compile" description="Generate javadocs">
                 <echo>Generating Javadoc documentation.</echo>
                 <javadoc packagenames="**/*.*"
@@ -497,9 +502,24 @@ limitations under the License.
                 </zip>
         </target>
 
+        <target name="build" depends="jar,jar-javadoc,jar-sources,reports" description="Create the jar and generate build reports"/>
+
         <!-- ****************************************** -->
         <!-- maven related -->
         <!-- ****************************************** -->
+        <macrodef name="maven-publish" description="Macro to publish to Maven repositories based on a provided Ivy resolver">
+                <attribute name="mavenRepoId"/>
+                <sequential>
+                        <echo>Publishing build artifacts to your Maven repository with id @{mavenRepoId}.</echo>
+                        <ivy:publish resolver="@{mavenRepoId}"
+                                     pubrevision="${project.version}"
+                                     overwrite="true"
+                                     forcedeliver="true"
+                                     publishivy="true">
+                                <artifacts pattern="${dist.dir}/[artifact](-[classifier]).[ext]" />
+                        </ivy:publish>
+                </sequential>
+        </macrodef>
 
         <target name="maven-pom"
                 depends="build"
@@ -514,22 +534,8 @@ limitations under the License.
                 </ivy:makepom>
         </target>
 
-        <macrodef name="maven-publish">
-                <attribute name="mavenRepoId"/>
-                <sequential>
-                        <echo>Publishing build artifacts to your Maven repository with id @{mavenRepoId}.</echo>
-                        <ivy:publish resolver="@{mavenRepoId}"
-                                     pubrevision="${project.version}"
-                                     overwrite="true"
-                                     forcedeliver="true"
-                                     publishivy="true">
-                                <artifacts pattern="${dist.dir}/[artifact](-[classifier]).[ext]" />
-                        </ivy:publish>
-                </sequential>
-        </macrodef>
-
         <target name="maven-publish-local"
-                depends="maven-pom,-resolve,release-perform"
+                depends="maven-pom,-resolve"
                 description="Publish build artifacts to the local Maven repository">
                 <maven-publish mavenRepoId="${maven.repo.local}"/>
         </target>
@@ -541,7 +547,7 @@ limitations under the License.
         </target>
 
         <target name="-maven-publish-sonatype-snapshots"
-                depends="maven-pom,-resolve"
+                depends="maven-pom,-resolve,release-perform"
                 if="sonatype.deployment.snapshots.enabled">
                 <maven-publish mavenRepoId="${maven.repo.sonatype.snapshots}"/>
         </target>

@@ -1,76 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright 2013 Rimero Solutions
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 <project basedir="../../../"
          xmlns:au="antlib:org.apache.ant.antunit"
          xmlns:git="antlib:com.rimerosolutions.ant.git"
          xmlns="antlib:org.apache.tools.ant">
-        
+
         <taskdef uri="antlib:com.rimerosolutions.ant.git"
                  resource="com/rimerosolutions/ant/git/jgit-ant-lib.xml">
                 <classpath>
-                        <path refid="compile.classpath" />
-                        <path refid="classes.location" />
+                        <path refid="compile.classpath"/>
+                        <path refid="classes.location"/>
                 </classpath>
         </taskdef>
 
         <pathconvert property="testData.folder" refid="testData.location"/>
-        
-        <property name="testLocalRepo" value="${testData.folder}/testLocalRepo" />
-        <property name="testLocalRepoClone" value="${testData.folder}/testLocalRepoClone" />
+        <property name="testLocalRepo" value="${testData.folder}/testLocalRepo"/>
+        <property name="testLocalRepoClone" value="${testData.folder}/testLocalRepoClone"/>
+        <property name="dummy.commit.message" value="Initial commit"/>
 
         <!-- is called prior to the test -->
         <target name="setUp">
-                <mkdir dir="${testLocalRepo}" />
-                <mkdir dir="${testLocalRepoClone}" />
+                <mkdir dir="${testLocalRepo}"/>
+                <mkdir dir="${testLocalRepoClone}"/>
         </target>
 
         <!-- is called after the test, even if that caused an error -->
         <target name="tearDown">
-                <delete dir="${testLocalRepo}" quiet="true" />
+                <delete dir="${testLocalRepo}" quiet="true"/>
                 <delete dir="${testLocalRepoClone}" quiet="true"/>
         </target>
 
-        <macrodef name="initLocalRepo">
+        <macrodef name="initLocalRepo" description="Macro to ensure good setUp-tearDown behavior">
                 <sequential>
                         <git:settings refId="git.testing"
                                       username="xxxtesting"
                                       password="xxxtesting"
                                       name="xxxtesting"
-                                      email="xxxtesting@gmail.com" />
-                        
+                                      email="xxxtesting@gmail.com"/>
+
                         <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
                                 <git:init directory="${testLocalRepo}" bare="false" />
-                                <git:commit message="Initial commit" revCommitIdProperty="revcommit"/>
+                                <git:commit message="${dummy.commit.message}" revCommitIdProperty="revcommit"/>
                         </git:git>
                 </sequential>
         </macrodef>
-
-        <target name="initLocalRepo">
-
-        </target>
 
         <target name="testClone" description="Test repository clone">
                 <initLocalRepo/>
 
                 <git:git localDirectory="${testLocalRepoClone}" verbose="true">
-                        <git:clone uri="file://${testLocalRepo}/.git" directory="${testLocalRepoClone}" />
+                        <git:clone uri="file://${testLocalRepo}/.git" directory="${testLocalRepoClone}"/>
                 </git:git>
 
-                <au:assertFileExists file="${testLocalRepoClone}/.git/index" />
+                <au:assertFileExists file="${testLocalRepoClone}/.git/index"/>
         </target>
 
         <target name="testUpToDateFailure" description="Test clean status failure">
                 <initLocalRepo/>
 
+                <echo file="${testLocalRepo}/test.txt" message="test"/>
+
                 <au:expectfailure>
                         <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
-                                <echo file="${testLocalRepo}/test.txt">test</echo>
-                                <git:uptodate failOnError="true" />
+                                <git:uptodate failOnError="true"/>
                         </git:git>
                 </au:expectfailure>
         </target>
 
-        <target name="testInit" depends="initLocalRepo" description="Tests git-init">
+        <target name="testInit" description="Tests git-init">
                 <initLocalRepo/>
 
-                <au:assertFileExists file="${testLocalRepo}/.git/index" />
+                <au:assertFileExists file="${testLocalRepo}/.git/index"/>
         </target>
 </project>
