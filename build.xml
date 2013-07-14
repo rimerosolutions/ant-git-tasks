@@ -333,11 +333,6 @@ limitations under the License.
                          classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
                          classpathref="test.classpath"/>
 
-                <taskdef uri="antlib:org.apache.ant.antunit"
-                         resource="org/apache/ant/antunit/antlib.xml"
-                         classpathref="test.classpath"/>
-
-
                 <junit fork="true"
                        dir="${basedir}"
                        printsummary="yes"
@@ -442,7 +437,7 @@ limitations under the License.
         </target>
 
         <target name="reports" depends="report-findbugs,report-junit,report-cobertura" description="Generate reports(JUnit, FindBugs, Cobertura)">
-                <fail unless="test.passed">Some test failed please take a look at the reports.</fail>
+                <fail unless="test.passed">Some tests failed, please take a look at the reports.</fail>
         </target>
 
         <!-- ****************************************** -->
