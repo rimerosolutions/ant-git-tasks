@@ -28,10 +28,10 @@ limitations under the License.
 
         <!-- reuse the user's gradle properties if any for sensitive info such as gpg, credentials -->
         <property file="${user.home}/.gradle/gradle.properties"/>
-        <property file="${basedir}/build.properties"/>
+        <property file="${basedir}/properties/build.properties"/>
 
         <!-- release and version properties -->
-        <property name="release.properties.filename" value="release.properties"/>
+        <property name="release.properties.filename" value="${basedir}/properties/release.properties"/>
         <property file="${release.properties.filename}"/>
         <property name="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}"/>
 
@@ -536,7 +536,7 @@ limitations under the License.
                 depends="build"
                 description="Generate the Maven POM for artifacts publishing">
                 <echo>Generating Maven POM.</echo>
-                <ivy:makepom ivyfile="${basedir}/ivy/ivy.xml"
+                <ivy:makepom ivyfile="${ivy.dep.file}"
                              description="${product.description}"
                              templatefile="${template.pom.location}"
                              pomfile="${dist.dir}/${ant.project.name}.pom">
