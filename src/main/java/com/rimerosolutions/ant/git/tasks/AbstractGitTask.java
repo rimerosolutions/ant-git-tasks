@@ -45,15 +45,18 @@ public abstract class AbstractGitTask extends Task implements GitTask {
         private String settingsRef;
 
         /**
-         * @return the settingsRef
+         * Returns a reference to git settings
+         *
+         * @return the settingsRef A reference to git settings
          */
         public String getSettingsRef() {
                 return settingsRef;
         }
 
         /**
-         * @param settingsRef
-         *                the settingsRef to set
+         * Sets a git settings reference
+         *
+         * @param settingsRef the settingsRef to set
          */
         public void setSettingsRef(String settingsRef) {
                 if (this.settingsRef == null) {
@@ -62,36 +65,49 @@ public abstract class AbstractGitTask extends Task implements GitTask {
         }
 
         /**
+         * Do not execute unless a given condition is met
          *
-         * @param unlessCondition
+         * @param unlessCondition The condition veto execution
          */
         public void setUnless(String unlessCondition) {
                 this.unlessCondition = unlessCondition;
         }
 
         /**
+         * Continue execution only if a condition is met
          *
-         * @param ifCondition
+         * @param ifCondition The condition to meet
          */
         public void setIf(String ifCondition) {
                 this.ifCondition = ifCondition;
         }
 
+        /**
+         * Returns the condition to veto task execution
+         *
+         * @return the condition to veto task execution
+         */
         public String getUnless() {
                 return unlessCondition;
         }
 
+        /**
+         * Returns the condition to meet prior to task execution
+         *
+         * @return The condition to meet prior to task execution
+         */
         public String getIf() {
                 return ifCondition;
         }
 
         /**
+         * Sets the git repository uri
          *
-         * @param uri
+         * @param uri The repository uri
          */
         public void setUri(String uri) {
                 if (uri == null) {
-                        throw new BuildException("Can;t set null URI attribute");
+                        throw new BuildException("Can't set null URI attribute");
                 }
                 try {
                         new URIish(uri);
@@ -100,7 +116,12 @@ public abstract class AbstractGitTask extends Task implements GitTask {
                         throw new BuildException("Invalid URI: " + uri, e);
                 }
         }
-
+        
+        /**
+         * Sets the Git repository directory
+         *
+         * @param dir The repository directory
+         */
         @Override
         public void setDirectory(File dir) {
                 if (dir == null) {
@@ -109,23 +130,49 @@ public abstract class AbstractGitTask extends Task implements GitTask {
                 this.directory = new File(dir.getAbsolutePath());
         }
 
+        
+        /**
+         * Sets the Git command progress monitor
+         *
+         * @param pm The progress monitor
+         */
         @Override
         public void setProgressMonitor(ProgressMonitor pm) {
                 this.progressMonitor = pm;
         }
 
+        /**
+         * Returns the repository uri
+         *
+         * @return The repository uri
+         */
         protected String getUri() {
                 return this.uri;
         }
 
+        /**
+         * Returns the repository directory
+         *
+         * @return the repository directory
+         */
         protected File getDirectory() {
                 return this.directory;
         }
 
+        /**
+         * Returns the Git command progress monitor
+         *
+         * @return the Git command progress monitor
+         */
         protected ProgressMonitor getProgressMonitor() {
                 return this.progressMonitor;
         }
 
+        /**
+         * Lookup the git settings for this task via a project reference
+         *
+         * @return The configured git settings for this task
+         */ 
         protected GitSettings lookupSettings() {
                 if (getProject() != null && settingsRef != null) {
                         Reference ref = (Reference) getProject().getReference(settingsRef);
@@ -140,6 +187,11 @@ public abstract class AbstractGitTask extends Task implements GitTask {
                 return null;
         }
 
+        /**
+         * Setups the Git credentials if specified and needed
+         *
+         * @param command The git command to configure
+         */
         protected void setupCredentials(GitCommand<?> command) {
                 GitSettings settings = lookupSettings();
 
@@ -150,5 +202,6 @@ public abstract class AbstractGitTask extends Task implements GitTask {
                 }
         }
 
+        /** Execute the task */
         abstract public void execute();
 }

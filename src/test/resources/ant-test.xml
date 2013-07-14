@@ -7,45 +7,63 @@
         </taskdef>
 
         <pathconvert property="testData.folder" refid="testData.location"/>
-        <property name="testRemoteRepo" value="${testData.folder}/testRemoteRepo" />
         <property name="testLocalRepo" value="${testData.folder}/testLocalRepo" />
+        <property name="testLocalRepoClone" value="${testData.folder}/testLocalRepoClone" />
 
         <!-- is called prior to the test -->
         <target name="setUp">
-                <mkdir dir="${testRemoteRepo}" />
                 <mkdir dir="${testLocalRepo}" />
+                <mkdir dir="${testLocalRepoClone}" />
         </target>
 
         <!-- is called after the test, even if that caused an error -->
         <target name="tearDown">
                 <delete dir="${testLocalRepo}" quiet="true" />
-                <delete dir="${testRemoteRepo}" quiet="true" />
+                <delete dir="${testLocalRepoClone}" quiet="true"/>
+        </target>
+
+        <macrodef name="initLocalRepo">
+                <sequential>
+                        <git:settings refId="git.testing"
+                                      username="xxxtesting"
+                                      password="xxxtesting"
+                                      name="xxxtesting"
+                                      email="xxxtesting@gmail.com" />
+                        <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
+                                <git:init directory="${testLocalRepo}" bare="false" />
+                                <git:commit message="Initial commit"/>
+                        </git:git>
+                </sequential>
+        </macrodef>
+
+        <target name="initLocalRepo">
+
         </target>
 
         <target name="testClone" description="Test repository clone">
-                <git:git localDirectory="${testRemoteRepo}" verbose="true">
-                        <git:clone uri="https://github.com/rimerosolutions/playground-repo.git" directory="${testRemoteRepo}" />
-                        <git:pull />
-                        <git:uptodate failOnError="true" />
+                <initLocalRepo/>
+
+                <git:git localDirectory="${testLocalRepoClone}" verbose="true">
+                        <git:clone uri="file://${testLocalRepo}/.git" directory="${testLocalRepoClone}" />
                 </git:git>
-                <au:assertFileExists file="${testRemoteRepo}/README.md" />
+                
+                <au:assertFileExists file="${testLocalRepoClone}/.git/index" />
         </target>
 
         <target name="testUpToDateFailure" description="Test clean status failure">
+                <initLocalRepo/>
+
                 <au:expectfailure>
-                        <git:git localDirectory="${testRemoteRepo}" verbose="true">
-                                <git:clone uri="https://github.com/rimerosolutions/playground-repo.git" directory="${testRemoteRepo}" />
-                                <echo file="${testRemoteRepo}/test.txt">test</echo>
+                        <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
+                                <echo file="${testLocalRepo}/test.txt">test</echo>
                                 <git:uptodate failOnError="true" />
                         </git:git>
                 </au:expectfailure>
         </target>
 
-        <target name="testInit" description="Tests git-init">
-                <git:settings refId="git.testing" username="xxxtesting" password="xxxtesting" name="xxxtesting" email="xxxtesting@gmail.com" />
-                <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
-                        <git:init directory="${testLocalRepo}" bare="false" />
-                </git:git>
-                <au:assertFileExists file="${testLocalRepo}/.git" />
+        <target name="testInit" depends="initLocalRepo" description="Tests git-init">
+                <initLocalRepo/>
+                
+                <au:assertFileExists file="${testLocalRepo}/.git/index" />
         </target>
 </project>

@@ -39,7 +39,7 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
 
         private String branchName;
         private boolean createBranch = false;
-        private boolean trackBranchOnCreate = false;
+        private boolean trackBranchOnCreate = true;
         private static final String TASK_NAME = "git-checkout";
 
         @Override
@@ -47,14 +47,30 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
                 return TASK_NAME;
         }
 
+        /**
+         * Whether or not to track the branch automatically when created
+         * 
+         * @param trackBranchOnCreate Track branch after creation(Default true)
+         *
+         */
         public void setTrackBranchOnCreate(boolean trackBranchOnCreate) {
                 this.trackBranchOnCreate = trackBranchOnCreate;
         }
 
+        /**
+         * Whether or not to create the branch if it doesn't exist
+         *
+         * @param createBranch Whether or not to create the branch (Default false)
+         */
         public void setCreateBranch(boolean createBranch) {
                 this.createBranch = createBranch;
         }
 
+        /**
+         * The branch to checkout
+         *
+         * @param branchName The branch name
+         */
         public void setBranchName(String branchName) {
                 this.branchName = branchName;
         }

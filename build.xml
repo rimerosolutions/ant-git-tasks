@@ -475,6 +475,7 @@ limitations under the License.
                          version="true"
                          use="true"
                          windowtitle="${product.description}">
+
                         <classpath>
                                 <path refid="compile.classpath"/>
                         </classpath>
@@ -514,6 +515,7 @@ limitations under the License.
                              templatefile="${template.pom.location}"
                              pomfile="${dist.dir}/${ant.project.name}.pom">
                         <mapping conf="compile" scope="compile"/>
+                        <mapping conf="test" scope="test"/>
                 </ivy:makepom>
         </target>
 

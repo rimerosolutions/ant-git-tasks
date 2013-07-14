@@ -68,29 +68,37 @@ public class CommitTask extends AbstractGitRepoAwareTask {
         }
 
         /**
-         * @param all
-         *                the all to set
+         * Whether or not to commit everything
+         *
+         * @param all Commit all files
          */
         public void setAll(boolean all) {
                 this.all = all;
         }
 
         /**
-         * @param amend
-         *                the amend to set
+         * Used to amend the tip of the current branch.
+         *
+         * @param amend Whether or not to amend the tip for the current branch
          */
         public void setAmend(boolean amend) {
                 this.amend = amend;
         }
 
         /**
-         * @param reflogComment
-         *                the reflogComment to set
+         * Override the default reflogComment
+         *
+         * @param reflogComment the reflogComment to set
          */
         public void setReflogComment(String reflogComment) {
                 this.reflogComment = reflogComment;
         }
 
+        /**
+         * Sets the commit message
+         *
+         * @param message The commit message
+         */
         public void setMessage(String message) {
                 this.message = message;
         }

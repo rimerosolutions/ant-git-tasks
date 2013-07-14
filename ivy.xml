@@ -27,8 +27,8 @@ limitations under the License.
         </info>
 
         <configurations>
-                <conf name="compile"/>
-                <conf name="test"      visibility="private" description="Tests dependencies"/>
+                <conf name="compile"   description="Compile dependencies"/>
+                <conf name="test"      description="Tests dependencies"/>
                 <conf name="findbugs"  visibility="private" description="Findbugs dependencies"/>
                 <conf name="cobertura" visibility="private" description="Cobertura dependencies"/>
         </configurations>
@@ -47,13 +47,13 @@ limitations under the License.
                 <dependency org="com.jcraft" name="jsch" rev="0.1.50" conf="compile"/>
 
                 <!-- test -->
-                <dependency org="junit" name="junit" rev="4.4" conf="test, compile"/>
+                <dependency org="junit" name="junit" rev="4.4" conf="test"/>
                 <dependency org="org.apache.ant" name="ant-testutil" rev="1.7.1" conf="test"/>
-                 <dependency org="org.apache.ant" name="ant-junit" rev="1.7.1" conf="test"/>
+                <dependency org="org.apache.ant" name="ant-junit" rev="1.7.1" conf="test"/>
                 <dependency org="org.apache.ant" name="ant-antunit" rev="1.2" conf="test"/>
 
                 <!-- cobertura -->
-                <dependency org="net.sourceforge.cobertura" name="cobertura" rev="1.9.4" conf="cobertura, test" />
+                <dependency org="net.sourceforge.cobertura" name="cobertura" rev="1.9.4.1" conf="cobertura" />
 
                 <!-- findbugs -->
                 <dependency org="com.google.code.findbugs" name="findbugs-ant" rev="2.0.1" conf="findbugs"/>
