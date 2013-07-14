@@ -1,5 +1,10 @@
-<project basedir="../../../" xmlns:au="antlib:org.apache.ant.antunit" xmlns:git="antlib:com.rimerosolutions.ant.git" xmlns="antlib:org.apache.tools.ant">
-        <taskdef uri="antlib:com.rimerosolutions.ant.git" resource="com/rimerosolutions/ant/git/jgit-ant-lib.xml">
+<project basedir="../../../"
+         xmlns:au="antlib:org.apache.ant.antunit"
+         xmlns:git="antlib:com.rimerosolutions.ant.git"
+         xmlns="antlib:org.apache.tools.ant">
+        
+        <taskdef uri="antlib:com.rimerosolutions.ant.git"
+                 resource="com/rimerosolutions/ant/git/jgit-ant-lib.xml">
                 <classpath>
                         <path refid="compile.classpath" />
                         <path refid="classes.location" />
@@ -7,6 +12,7 @@
         </taskdef>
 
         <pathconvert property="testData.folder" refid="testData.location"/>
+        
         <property name="testLocalRepo" value="${testData.folder}/testLocalRepo" />
         <property name="testLocalRepoClone" value="${testData.folder}/testLocalRepoClone" />
 
@@ -29,9 +35,10 @@
                                       password="xxxtesting"
                                       name="xxxtesting"
                                       email="xxxtesting@gmail.com" />
+                        
                         <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
                                 <git:init directory="${testLocalRepo}" bare="false" />
-                                <git:commit message="Initial commit"/>
+                                <git:commit message="Initial commit" revCommitIdProperty="revcommit"/>
                         </git:git>
                 </sequential>
         </macrodef>
@@ -46,7 +53,7 @@
                 <git:git localDirectory="${testLocalRepoClone}" verbose="true">
                         <git:clone uri="file://${testLocalRepo}/.git" directory="${testLocalRepoClone}" />
                 </git:git>
-                
+
                 <au:assertFileExists file="${testLocalRepoClone}/.git/index" />
         </target>
 
@@ -63,7 +70,7 @@
 
         <target name="testInit" depends="initLocalRepo" description="Tests git-init">
                 <initLocalRepo/>
-                
+
                 <au:assertFileExists file="${testLocalRepo}/.git/index" />
         </target>
 </project>

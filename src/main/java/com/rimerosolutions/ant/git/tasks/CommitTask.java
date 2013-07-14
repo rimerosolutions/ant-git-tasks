@@ -18,7 +18,8 @@ package com.rimerosolutions.ant.git.tasks;
 import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
-
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.lib.ObjectId;
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
@@ -32,15 +33,26 @@ import com.rimerosolutions.ant.git.GitBuildException;
  */
 public class CommitTask extends AbstractGitRepoAwareTask {
 
+        private static final String TASK_NAME = "git-commit";
+
         private String message = "Commit message";
         private boolean all = true;
         private boolean amend = false;
         private String reflogComment;
-        private static final String TASK_NAME = "git-commit";
+        private String revCommitIdProperty;
 
         @Override
         public String getName() {
                 return TASK_NAME;
+        }
+
+        /**
+         * Assign the commit revision id to a property
+         *
+         * @param revCommitIdProperty The property to set the commit id value to
+         */
+        public void setRevCommitIdProperty(String revCommitIdProperty) {
+                this.revCommitIdProperty = revCommitIdProperty;
         }
 
         @Override
@@ -61,7 +73,11 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                                 cmd.setReflogComment(reflogComment);
                         }
 
-                        cmd.call();
+                        RevCommit revCommit = cmd.call();
+
+                        if (revCommitIdProperty != null) {
+                                getProject().setProperty(revCommitIdProperty, ObjectId.toString(revCommit.getId()));
+                        }
                 } catch (GitAPIException ex) {
                         throw new GitBuildException("Cannot commit to Git repository", ex);
                 }
