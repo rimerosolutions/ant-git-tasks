@@ -20,13 +20,10 @@ import java.io.IOException;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.GitCommand;
-import org.eclipse.jgit.api.TransportCommand;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
 
 import com.rimerosolutions.ant.git.GitBuildException;
-import com.rimerosolutions.ant.git.GitSettings;
 
 /**
  * Base Ant Task with a managed reference to the Git repository.

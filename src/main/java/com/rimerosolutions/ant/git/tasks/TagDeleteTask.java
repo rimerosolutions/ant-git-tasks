@@ -22,12 +22,11 @@ import com.rimerosolutions.ant.git.GitBuildException;
 /**
  * Delete tags
  *
- * <a href="http://www.kernel.org/pub/software/scm/git/docs/git-tag.html">Git documentation about tag</a>
+ * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-tag.html">Git documentation about tag</a></p>
  *
- * <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/DeleteTagCommand.html">JGit DeleteTagCommand javadoc</a>
+ * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/DeleteTagCommand.html">JGit DeleteTagCommand</a></p>
  *
  * @author Yves Zoundi
- *
  */
 public class TagDeleteTask extends AbstractGitRepoAwareTask {
 

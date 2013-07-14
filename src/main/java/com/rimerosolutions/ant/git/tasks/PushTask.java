@@ -28,9 +28,9 @@ import com.rimerosolutions.ant.git.GitUtils;
 /**
  * Pushes a Git tag to a remote repository
  *
- * <a href="http://www.kernel.org/pub/software/scm/git/docs/git-push.html">Git documentation about push</a>
+ * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-push.html">Git documentation about push</a></p>
  *
- * <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/PushCommand.html">JGit PushCommand javadoc</a>
+ * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/PushCommand.html">JGit PushCommand</a></p>
  *
  * @author Yves Zoundi
  */

@@ -23,9 +23,9 @@ import com.rimerosolutions.ant.git.GitBuildException;
 /**
  * Delete branches
  *
- * <a href="http://www.kernel.org/pub/software/scm/git/docs/git-branch.html">Git branch documentation</a>
+ * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-branch.html">Git branch documentation</a></p>
  *
- * See <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/DeleteBranchCommand.html">JGit DeleteBranchCommand javadoc</a>
+ * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/DeleteBranchCommand.html">JGit DeleteBranchCommand</a></p>
  *
  * @author Yves Zoundi
  */

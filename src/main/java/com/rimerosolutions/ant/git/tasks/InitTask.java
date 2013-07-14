@@ -25,9 +25,9 @@ import com.rimerosolutions.ant.git.GitBuildException;
 /**
  * Task to initialize a git repository
  *
- * <a href="https://www.kernel.org/pub/software/scm/git/docs/git-init.html">git-init Manual Page</a>
+ * <p><a href="https://www.kernel.org/pub/software/scm/git/docs/git-init.html">Git documentation about init</a></p>
  *
- * <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/index.html?org/eclipse/jgit/api/FetchCommand.html">Underlying wrapped JGit command</a>
+ * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/index.html?org/eclipse/jgit/api/InitCommand.html">JGit Initcommand</a></p>
  *
  * @author Yves Zoundi
  */
@@ -56,10 +56,6 @@ public class InitTask extends AbstractGitTask {
                         Git.init().
                                 setBare(bare).
                                 setDirectory(new File(getDirectory().getAbsolutePath())).
-                                call().
-                                commit().
-                                setAuthor(lookupSettings().getIdentity()).
-                                setMessage("Initial commit").
                                 call();
                 } catch (GitAPIException e) {
                         throw new GitBuildException("Could not delete specified tags", e);

@@ -27,9 +27,9 @@ import com.rimerosolutions.ant.git.GitBuildException;
 /**
  * Clone a repository
  *
- * <a href="http://www.kernel.org/pub/software/scm/git/docs/git-clone.html">Git Clone documentations</a>
+ * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-clone.html">Git documentation about clone</a></p>
  *
- * <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/CloneCommand.html">JGit CloneCommand</a>
+ * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/CloneCommand.html">JGit CloneCommand</a></p>
  *
  * @author Yves Zoundi
  */

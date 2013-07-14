@@ -32,7 +32,6 @@ import com.rimerosolutions.ant.git.GitUtils;
  */
 public class GitTasks extends Task {
 
-        private static final String UNSUPPORTED_TASK_TEMPLATE = "The git task only supports nested Git related tasks: '%s'";
         private boolean verbose = true;
         private File localDirectory;
         private String settingsRef;
@@ -64,6 +63,13 @@ public class GitTasks extends Task {
          */
         public void setLocalDirectory(File dir) {
                 this.localDirectory = dir;
+        }
+        
+        public BranchTask createBranch() {
+                BranchTask c = new BranchTask();
+                tasks.add(c);
+
+                return c;
         }
 
         public BranchDeleteTask createBranchDelete() {

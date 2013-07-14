@@ -22,9 +22,9 @@ import com.rimerosolutions.ant.git.GitBuildException;
 /**
  * Create a git tag and commit unless conditions are not met.
  *
- * <a href="http://www.kernel.org/pub/software/scm/git/docs/git-tag.html">Git documentation about tag</a>
+ * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-tag.html">Git documentation about tag</a></p>
  *
- * <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/TagCommand.html">JGit TagCommand javadoc</a>
+ * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/TagCommand.html">JGit TagCommand</a></p>
  *
  * @author Yves Zoundi
  */

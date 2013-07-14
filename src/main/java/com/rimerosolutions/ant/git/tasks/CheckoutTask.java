@@ -27,11 +27,11 @@ import org.eclipse.jgit.api.errors.RefNotFoundException;
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
- * Perform a git checkout
+ * Perform a checkout
  *
- * <a href="https://www.kernel.org/pub/software/scm/git/docs/git-checkout.html">git-checkout Manual Page</a>
+ * <p><a href="https://www.kernel.org/pub/software/scm/git/docs/git-checkout.html">Git documentation about checkout</a></p>
  *
- * <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/CheckoutCommand.html">JGit CheckoutCommand javadoc</a>
+ * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/CheckoutCommand.html">JGit CheckoutCommand</a></p>
  *
  * @author Yves Zoundi
  */

@@ -28,6 +28,12 @@ import org.eclipse.jgit.transport.TrackingRefUpdate;
  */
 public class GitUtils {
         
+        /**
+         * Checks whether or not a string is null or empty (as in blank)
+         *  
+         * @param s The string to check
+         * @return whether or not a string is null or empty (as in blank)
+         */
         public static boolean nullOrEmptyString(String s) {
                 if (s == null) {
                         return true;
@@ -36,6 +42,11 @@ public class GitUtils {
                 return s.trim().length() == 0;
         }
         
+        /**
+         * Validate <code>if</code> and <code>else</code> conditions on a Git task
+         * 
+         * @param t The git task to check
+         */
         public static void validateTaskConditions(GitTask t) {
 
                 if (t.getIf() != null || t.getUnless() != null) {
@@ -46,6 +57,12 @@ public class GitUtils {
 
         }
         
+        /**
+         * Check references updates for any errors
+         * 
+         * @param errorPrefix The error prefix for any error message
+         * @param refUpdates A collection of tracking references updates
+         */
         public static void validateTrackingRefUpdates(String errorPrefix, Collection<TrackingRefUpdate> refUpdates) { 
                 for (TrackingRefUpdate refUpdate : refUpdates) {
                         RefUpdate.Result result = refUpdate.getResult();
