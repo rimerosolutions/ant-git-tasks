@@ -31,6 +31,7 @@ limitations under the License.
                 <conf name="test"      description="Tests dependencies"/>
                 <conf name="findbugs"  visibility="private" description="Findbugs dependencies"/>
                 <conf name="cobertura" visibility="private" description="Cobertura dependencies"/>
+                <conf name="wrapper"   visibility="private" description="Ant wrapper dependencies"/>
         </configurations>
 
         <publications xmlns:e="urn:ant.apache.org:ivy-extras">
@@ -58,5 +59,7 @@ limitations under the License.
                 <!-- findbugs -->
                 <dependency org="com.google.code.findbugs" name="findbugs-ant" rev="2.0.1" conf="findbugs"/>
 
+                <!-- wrapper -->
+                <dependency org="com.rimerosolutions.ant" name="ant-wrapper" rev="0.0.1-SNAPSHOT" changing="true" conf="wrapper"/>
         </dependencies>
 </ivy-module>

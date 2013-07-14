@@ -16,6 +16,7 @@ limitations under the License.
 -->
 <project xmlns:ivy="antlib:org.apache.ivy.ant"
          xmlns:git="antlib:com.rimerosolutions.ant.git"
+         xmlns:wrapper="antlib:com.rimerosolutions.ant.wrapper.tasks"
          xmlns:au="antlib:org.apache.ant.antunit"
          name="ant-git-tasks"
          default="jar">
@@ -84,6 +85,13 @@ limitations under the License.
         <property name="bountycastle.classifier" value="jdk16"/>
         <property name="bcpg.jar.file" value="bcpg-${bountycastle.classifier}-${bountycastle.version}.jar"/>
         <property name="bcprov.jar.file" value="bcprov-${bountycastle.classifier}-${bountycastle.version}.jar"/>
+
+        <!-- wrapper file name properties -->
+        <property name="unix.wrapper.file" value="antw"/>
+        <property name="windows.wrapper.file" value="antw.bat"/>
+        <property name="windows.wrapper.cmd" value="antw.cmd"/>
+        <property name="windows.wrapper.helper" value="lcp.bat"/>
+        <property name="wrapper.dir" value="wrapper"/>
 
         <!-- ivy properties -->
         <property name="ivy.install.version" value="2.3.0" />
@@ -239,10 +247,11 @@ limitations under the License.
         <target name="-resolve" depends="-init-ivy">
                 <echo>Fetching dependencies.</echo>
                 <ivy:retrieve  pattern="${ivy.lib.dir}/[conf]/[artifact].[ext]" sync="true"/>
-                <ivy:cachepath pathid="compile.classpath" conf="compile" />
-                <ivy:cachepath pathid="test.classpath" conf="test" />
+                <ivy:cachepath pathid="compile.classpath" conf="compile"/>
+                <ivy:cachepath pathid="test.classpath" conf="test"/>
                 <ivy:cachepath pathid="findbugs.classpath" conf="findbugs"/>
-                <ivy:cachepath pathid="cobertura.classpath" conf="cobertura" />
+                <ivy:cachepath pathid="cobertura.classpath" conf="cobertura"/>
+                <ivy:cachepath pathid="wrapper.classpath" conf="wrapper"/>
         </target>
 
         <!-- ****************************************** -->
@@ -555,4 +564,22 @@ limitations under the License.
         <target name="maven-publish-remote"
                 depends="-maven-publish-sonatype-release,-maven-publish-sonatype-snapshots"
                 description="Publish build artifacts to the Sonatype Snapshots repository"/>
+
+        <!-- ****************************************** -->
+        <!-- wrapper related -->
+        <!-- ****************************************** -->
+        <target name="wrapper" depends="-resolve" description="Generate Ant wrapper">
+                <taskdef uri="antlib:com.rimerosolutions.ant.wrapper.tasks"
+                         resource="com/rimerosolutions/ant/wrapper/tasks/antlib.xml"
+                         classpathref="wrapper.classpath"/>
+                <wrapper:wrapper/>
+        </target>
+
+        <target name="wrapper-clean" description="Removes Ant wrapper files">
+                <delete dir="${wrapper.dir}" quiet="true"/>
+                <delete file="${unix.wrapper.file}" quiet="true"/>
+                <delete file="${windows.wrapper.file}" quiet="true"/>
+                <delete file="${windows.wrapper.cmd}" quiet="true"/>
+                <delete file="${windows.wrapper.helper}" quiet="true"/>
+        </target>
 </project>
