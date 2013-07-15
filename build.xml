@@ -172,15 +172,6 @@ limitations under the License.
         </target>
 
         <target name="-git-settings" depends="compile">
-                <git:settings refId="github.settings"
-                              username="${github.username}"
-                              password="${github.password}"
-                              name="${github.name}"
-                              email="${github.email}"/>
-        </target>
-
-        <target name="-pre-release" depends="-git-settings">
-                <echo>Checking tree modifications before release.</echo>
                 <!-- bootstrap the ant-git-tasks release process with a snapshot of itself for now... -->
                 <path id="bootstrap.classpath">
                         <path refid="compile.classpath"/>
@@ -192,6 +183,15 @@ limitations under the License.
                         <classpath refid="bootstrap.classpath"/>
                 </taskdef>
 
+                <git:settings refId="github.settings"
+                              username="${github.username}"
+                              password="${github.password}"
+                              name="${github.name}"
+                              email="${github.email}"/>
+        </target>
+
+        <target name="-pre-release" depends="-git-settings">
+                <echo>Checking tree modifications before release.</echo>
 
                 <git:git localDirectory="${basedir}" verbose="true">
                         <git:uptodate modificationExistProperty="tree.modified"/>
