@@ -23,14 +23,17 @@ import org.eclipse.jgit.transport.TrackingRefUpdate;
 
 /**
  * Utility class
- * 
+ *
  * @author Yves Zoundi
  */
-public class GitUtils {
-        
+public final class GitUtils {
+
+        /** Branding prefix to pre-prend to commit messages */
+        public static final String BRANDING_MESSAGE = "[ant-git-tasks]";
+
         /**
          * Checks whether or not a string is null or empty (as in blank)
-         *  
+         *
          * @param s The string to check
          * @return whether or not a string is null or empty (as in blank)
          */
@@ -38,32 +41,30 @@ public class GitUtils {
                 if (s == null) {
                         return true;
                 }
-                
+
                 return s.trim().length() == 0;
         }
-        
+
         /**
          * Validate <code>if</code> and <code>else</code> conditions on a Git task
-         * 
+         *
          * @param t The git task to check
          */
         public static void validateTaskConditions(GitTask t) {
-
                 if (t.getIf() != null || t.getUnless() != null) {
                         if (!(t.getIf() == null ^ t.getUnless() == null)) {
                                 throw new GitBuildException("Either if or unless should be specified for a git task.");
                         }
                 }
-
         }
-        
+
         /**
          * Check references updates for any errors
-         * 
+         *
          * @param errorPrefix The error prefix for any error message
          * @param refUpdates A collection of tracking references updates
          */
-        public static void validateTrackingRefUpdates(String errorPrefix, Collection<TrackingRefUpdate> refUpdates) { 
+        public static void validateTrackingRefUpdates(String errorPrefix, Collection<TrackingRefUpdate> refUpdates) {
                 for (TrackingRefUpdate refUpdate : refUpdates) {
                         RefUpdate.Result result = refUpdate.getResult();
 

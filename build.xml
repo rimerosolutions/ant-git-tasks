@@ -21,11 +21,6 @@ limitations under the License.
          name="ant-git-tasks"
          default="jar">
 
-        <!-- bootstrap the ant-git-tasks release process with a snapshot of itself for now... -->
-        <taskdef uri="antlib:com.rimerosolutions.ant.git"
-                 resource="com/rimerosolutions/ant/git/jgit-ant-lib.xml"
-                 classpath="ant-git-tasks-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
-
         <!-- reuse the user's gradle properties if any for sensitive info such as gpg, credentials -->
         <property file="${user.home}/.gradle/gradle.properties"/>
         <property file="${basedir}/properties/build.properties"/>
@@ -80,7 +75,7 @@ limitations under the License.
         <property name="javac.debuglevel" value="lines,vars,source" />
         <property name="javac.encoding" value="utf-8" />
 
-        <!-- bountycastle properties, ivy signing with pgp -->
+        <!-- bountycastle properties, ivy signing with pgp, git tasks self-bootstrapping -->
         <property name="bountycastle.version" value="1.45"/>
         <property name="bountycastle.classifier" value="jdk16"/>
         <property name="bcpg.jar.file" value="bcpg-${bountycastle.classifier}-${bountycastle.version}.jar"/>
@@ -176,8 +171,28 @@ limitations under the License.
                 </propertyfile>
         </target>
 
-        <target name="-pre-release">
+        <target name="-git-settings" depends="compile">
+                <git:settings refId="github.settings"
+                              username="${github.username}"
+                              password="${github.password}"
+                              name="${github.name}"
+                              email="${github.email}"/>
+        </target>
+
+        <target name="-pre-release" depends="-git-settings">
                 <echo>Checking tree modifications before release.</echo>
+                <!-- bootstrap the ant-git-tasks release process with a snapshot of itself for now... -->
+                <path id="bootstrap.classpath">
+                        <path refid="compile.classpath"/>
+                        <path location="${classes.dir}"/>
+                </path>
+
+                <taskdef uri="antlib:com.rimerosolutions.ant.git"
+                         resource="com/rimerosolutions/ant/git/jgit-ant-lib.xml">
+                        <classpath refid="bootstrap.classpath"/>
+                </taskdef>
+
+
                 <git:git localDirectory="${basedir}" verbose="true">
                         <git:uptodate modificationExistProperty="tree.modified"/>
                 </git:git>
@@ -192,18 +207,18 @@ limitations under the License.
 
         <target name="-commit-release" depends="-pre-release" if="tree.modified.but.not.snapshot">
                 <echo>Committing before release SCM tagging.</echo>
-                <git:git localDirectory="${basedir}" verbose="true">
+                <git:git localDirectory="${basedir}" verbose="true" settingsRef="github.settings">
                         <git:commit message="[${ant.project.name}] Preparing release ${project.version}"/>
                         <git:uptodate failOnError="true"/>
-                        <git:push username="${github.username}" password="${github.password}"/>
+                        <git:push />
                 </git:git>
         </target>
 
         <target name="-tag-release" depends="-commit-release" unless="snapshot-build">
                 <echo>Tagging release ${build.number}.</echo>
-                <git:git localDirectory="${basedir}" verbose="true">
+                <git:git localDirectory="${basedir}" verbose="true" settingsRef="github.settings">
                         <git:tag name="${build.number}"/>
-                        <git:push username="${github.username}" password="${github.password}"/>
+                        <git:push />
                 </git:git>
         </target>
 
@@ -223,12 +238,13 @@ limitations under the License.
                 <echo>Fetching gpg signing libraries.</echo>
                 <!-- bootstrap ivy gpg signing -->
                 <get src="http://repo1.maven.org/maven2/org/bouncycastle/bcprov-${bountycastle.classifier}/${bountycastle.version}/${bcprov.jar.file}"
-                     dest="${ivy.home}/lib/${bcprov.jar.file}"
+                     dest="${ivy.jar.dir}/${bcprov.jar.file}"
                      usetimestamp="true"/>
 
                 <get src="http://repo1.maven.org/maven2/org/bouncycastle/bcpg-${bountycastle.classifier}/${bountycastle.version}/${bcpg.jar.file}"
-                     dest="${ivy.home}/lib/${bcpg.jar.file}"
+                     dest="${ivy.jar.dir}/${bcpg.jar.file}"
                      usetimestamp="true"/>
+
         </target>
 
         <target name="-init-ivy" depends="-bootstrap-build">
@@ -296,9 +312,7 @@ limitations under the License.
                         <src path="${src.dir}"/>
                         <classpath refid="compile.classpath"/>
                 </javac>
-        </target>
 
-        <target name="copy-resources" depends="compile" description="Copy resources">
                 <echo>Copying project resources.</echo>
                 <copy todir="${classes.dir}">
                         <fileset dir="${resources.dir}"/>
@@ -308,7 +322,7 @@ limitations under the License.
         <!-- ****************************************** -->
         <!-- testing -->
         <!-- ****************************************** -->
-        <target name="compile-tests" depends="compile,copy-resources" description="Compile test sources">
+        <target name="compile-tests" depends="compile" description="Compile test sources">
                 <echo>Compiling test sources.</echo>
                 <javac source="${javac.source}"
                        target="${javac.target}"
@@ -401,7 +415,7 @@ limitations under the License.
                         </referenceset>
                         <fileset dir="${test.resources.dir}" includes="*.xml"/>
                         <au:plainlistener />
-                        <au:xmllistener todir="${reports.junit.xml.dir}" />
+                        <au:xmllistener todir="${reports.junit.xml.dir}"/>
                 </au:antunit>
         </target>
 
@@ -461,7 +475,7 @@ limitations under the License.
         <!-- ****************************************** -->
         <!-- build artifacts -->
         <!-- ****************************************** -->
-        <target name="jar" depends="copy-resources" description="Create main jar artefact">
+        <target name="jar" depends="compile" description="Create main jar artefact">
                 <echo>Building jar.</echo>
                 <jar destfile="${dist.dir}/${ant.project.name}.jar">
                         <manifest>
@@ -513,7 +527,9 @@ limitations under the License.
                 </zip>
         </target>
 
-        <target name="build" depends="jar,jar-javadoc,jar-sources,reports" description="Create the jar and generate build reports"/>
+        <target name="build"
+                depends="jar,jar-javadoc,jar-sources,reports"
+                description="Create the jar and generate build reports"/>
 
         <!-- ****************************************** -->
         <!-- maven related -->

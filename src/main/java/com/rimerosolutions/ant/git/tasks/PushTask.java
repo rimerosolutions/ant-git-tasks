@@ -66,7 +66,6 @@ public class PushTask extends AbstractGitRepoAwareTask {
 
                                 setupCredentials(pushCommand);
 
-
                                 if (includeTags) {
                                         pushCommand.setPushTags();
                                 }

@@ -21,6 +21,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.lib.ObjectId;
 import com.rimerosolutions.ant.git.GitBuildException;
+import com.rimerosolutions.ant.git.GitUtils;
 
 /**
  * Commits all local changes
@@ -62,7 +63,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                         CommitCommand cmd = git.commit();
 
                         if (message != null) {
-                                cmd.setMessage(message);
+                                cmd.setMessage(GitUtils.BRANDING_MESSAGE + " " + message);
                         }
 
                         cmd.setAll(all).setAmend(amend);
