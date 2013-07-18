@@ -28,6 +28,7 @@ limitations under the License.
         </taskdef>
 
         <pathconvert property="testData.folder" refid="testData.location"/>
+        <property name="dummy.patch.file" value="${testData.folder}/data-patch.txt"/>
         <property name="testLocalRepo" value="${testData.folder}/testLocalRepo"/>
         <property name="testLocalRepoClone" value="${testData.folder}/testLocalRepoClone"/>
         <property name="dummy.commit.message" value="Initial commit"/>
@@ -69,6 +70,32 @@ limitations under the License.
                 <au:assertFileExists file="${testLocalRepoClone}/.git/index"/>
         </target>
 
+        <target name="testAdd" description="Add a file to the repo">
+                <initLocalRepo/>
+                <echo file="${testLocalRepo}/test.txt" message="test"/>
+                <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+                        <git:add>
+                                <fileset dir="${testLocalRepo}" includes="*.txt"/>
+                        </git:add>
+                        <git:commit message="${dummy.commit.message}" revCommitIdProperty="testAdd.revcommit"/>
+                        <git:uptodate failOnError="true"/>
+                </git:git>
+        </target>
+
+        <target name="testPatch" description="Test patch">
+                <initLocalRepo/>
+
+                <echo file="${testLocalRepo}/file.txt" message="test file"/>
+
+                <git:git localDirectory="${testLocalRepo}" verbose="true">
+                        <git:patch updatedCountProperty="updatedCountProperty" patchfile="${dummy.patch.file}"/>
+                </git:git>
+
+                <au:assertTrue message="Only one file impacted by patch">
+                        <equals arg1="${updatedCountProperty}" arg2="1"/>
+                </au:assertTrue>
+        </target>
+
         <target name="testUpToDateFailure" description="Test clean status failure">
                 <initLocalRepo/>
 
@@ -83,7 +110,6 @@ limitations under the License.
 
         <target name="testInit" description="Tests git-init">
                 <initLocalRepo/>
-
                 <au:assertFileExists file="${testLocalRepo}/.git/index"/>
         </target>
 </project>

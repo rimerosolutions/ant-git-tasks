@@ -23,7 +23,9 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRefNameException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.api.errors.RefNotFoundException;
+import org.eclipse.jgit.api.CheckoutResult;
 
+import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
@@ -41,6 +43,7 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
         private boolean createBranch = false;
         private boolean trackBranchOnCreate = true;
         private static final String TASK_NAME = "git-checkout";
+        private static final String BRANCH_ORIGIN_TEMPLATE = "origin/%s";
 
         @Override
         public String getName() {
@@ -49,7 +52,7 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
 
         /**
          * Whether or not to track the branch automatically when created
-         * 
+         *
          * @param trackBranchOnCreate Track branch after creation(Default true)
          *
          */
@@ -83,15 +86,24 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
                         if (createBranch) {
                                 checkoutCommand.setCreateBranch(true);
                         }
-                        
+
                         checkoutCommand.setName(branchName);
 
                         if (trackBranchOnCreate) {
                                 checkoutCommand.setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK).
-                                        setStartPoint("origin/" + branchName);
+                                        setStartPoint(String.format(BRANCH_ORIGIN_TEMPLATE, branchName));
                         }
 
                         checkoutCommand.call();
+
+                        CheckoutResult checkoutResult = checkoutCommand.getResult();
+                        
+                        if (checkoutResult.getStatus().equals(CheckoutResult.Status.CONFLICTS)) {
+                                throw new GitBuildException(String.format("Conflicts were found:%s", checkoutResult.getConflictList().toString()));
+                        }
+                        else if (checkoutResult.getStatus().equals(CheckoutResult.Status.NONDELETED)) {
+                                throw new GitBuildException(String.format("Some files could not be deleted:%s", checkoutResult.getUndeletedList().toString()));
+                        }
                 } catch (RefAlreadyExistsException e) {
                         throw new GitBuildException(String.format("Cannot create branch '%s', as it already exists!", branchName), e);
                 } catch (RefNotFoundException e) {

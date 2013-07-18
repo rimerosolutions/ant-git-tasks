@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.rimerosolutions.ant.git.tasks;
+package com.rimerosolutions.ant.git;
 
 import org.eclipse.jgit.lib.ProgressMonitor;
 
-import com.rimerosolutions.ant.git.GitTask;
 
 
 /**

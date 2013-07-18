@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.eclipse.jgit.api.CloneCommand;
 
+import com.rimerosolutions.ant.git.AbstractGitTask;
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**

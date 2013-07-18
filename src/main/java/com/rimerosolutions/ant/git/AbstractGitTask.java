@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.rimerosolutions.ant.git.tasks;
+package com.rimerosolutions.ant.git;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -26,8 +26,6 @@ import org.eclipse.jgit.api.TransportCommand;
 import org.eclipse.jgit.lib.ProgressMonitor;
 import org.eclipse.jgit.transport.URIish;
 
-import com.rimerosolutions.ant.git.GitSettings;
-import com.rimerosolutions.ant.git.GitTask;
 
 /**
  * Abstract Git task

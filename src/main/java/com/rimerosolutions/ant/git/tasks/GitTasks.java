@@ -23,6 +23,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
 import com.rimerosolutions.ant.git.GitTask;
+import com.rimerosolutions.ant.git.GitTaskMonitor;
 import com.rimerosolutions.ant.git.GitUtils;
 
 /**
@@ -64,7 +65,21 @@ public class GitTasks extends Task {
         public void setLocalDirectory(File dir) {
                 this.localDirectory = dir;
         }
-        
+
+        public PatchTask createPatch() {
+                PatchTask c = new PatchTask();
+                tasks.add(c);
+
+                return c;
+        }
+
+        public AddTask createAdd() {
+                AddTask c = new AddTask();
+                tasks.add(c);
+
+                return c;
+        }
+
         public BranchTask createBranch() {
                 BranchTask c = new BranchTask();
                 tasks.add(c);

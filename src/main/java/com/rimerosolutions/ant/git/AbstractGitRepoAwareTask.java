@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.rimerosolutions.ant.git.tasks;
+package com.rimerosolutions.ant.git;
 
 import java.io.IOException;
 
@@ -23,7 +23,6 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
 
-import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
  * Base Ant Task with a managed reference to the Git repository.

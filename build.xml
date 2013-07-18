@@ -264,7 +264,7 @@ limitations under the License.
 
         <target name="-resolve" depends="-init-ivy">
                 <echo>Fetching dependencies.</echo>
-                <ivy:retrieve  pattern="${ivy.lib.dir}/[conf]/[artifact].[ext]" sync="true"/>
+                <ivy:retrieve  pattern="${ivy.lib.dir}/[conf]/[artifact].[ext]" sync="true" log="quiet"/>
                 <ivy:cachepath pathid="compile.classpath" conf="compile"/>
                 <ivy:cachepath pathid="test.classpath" conf="test"/>
                 <ivy:cachepath pathid="findbugs.classpath" conf="findbugs"/>
@@ -407,6 +407,7 @@ limitations under the License.
                         <pathelement location="${test.data.dir}"/>
                 </path>
 
+                <copy file="${test.resources.dir}/data-patch.txt" todir="${test.data.dir}" overwrite="true"/>
                 <au:antunit failonerror="false" errorproperty="antunit.failed">
                         <referenceset>
                                 <reference refid="compile.classpath"/>

@@ -20,6 +20,7 @@ import java.io.File;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
+import com.rimerosolutions.ant.git.AbstractGitTask;
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**

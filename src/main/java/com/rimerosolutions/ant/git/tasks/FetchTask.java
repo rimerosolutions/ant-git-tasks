@@ -17,6 +17,7 @@ package com.rimerosolutions.ant.git.tasks;
 
 import org.eclipse.jgit.api.FetchCommand;
 
+import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**

@@ -30,6 +30,10 @@ public class GitBuildException extends BuildException {
                 super(msg, e);
         }
 
+        public GitBuildException(Exception e) {
+                super(e);
+        }
+
         public GitBuildException(String msg) {
                 super(msg);
         }
