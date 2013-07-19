@@ -83,7 +83,9 @@ public class AddTask extends AbstractGitRepoAwareTask {
                                 processResourceIterator(fileset.iterator(), cb);
                         }
 
-                        addCommand.call();
+                        DirCache dirCache = addCommand.call();
+                        
+                        log(String.format("The cache contains %d entries", dirCache.getEntryCount()));
                 }
                 catch (GitAPIException e) {
                         throw new GitBuildException(e);

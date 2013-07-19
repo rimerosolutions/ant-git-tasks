@@ -93,8 +93,7 @@ limitations under the License.
         <condition property="ivy.home" value="${env.IVY_HOME}">
                 <isset property="env.IVY_HOME" />
         </condition>
-        <property name="ivy.dep.file" value="${basedir}/ivy/ivy.xml"/>
-        <property name="ivy.settings.file" value="${basedir}/ivy/ivysettings.xml"/>
+        <property name="ivyxml.file" value="${basedir}/ivy.xml"/>
         <property name="ivy.home" value="${user.home}/.ant" />
         <property name="ivy.jar.dir" value="${ivy.home}/lib" />
         <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
@@ -553,7 +552,7 @@ limitations under the License.
                 depends="build"
                 description="Generate the Maven POM for artifacts publishing">
                 <echo>Generating Maven POM.</echo>
-                <ivy:makepom ivyfile="${ivy.dep.file}"
+                <ivy:makepom ivyfile="${ivyxml.file}"
                              description="${product.description}"
                              templatefile="${template.pom.location}"
                              pomfile="${dist.dir}/${ant.project.name}.pom">
