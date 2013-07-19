@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.rimerosolutions.ant.git.tasks;
+package com.rimerosolutions.ant.git;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import org.apache.tools.ant.BuildException;
 import org.junit.Test;
-
-import com.rimerosolutions.ant.git.GitUtils;
+import org.apache.tools.ant.BuildException;
+import com.rimerosolutions.ant.git.tasks.InitTask;
 
 /**
  * Unit test for some utility classes
