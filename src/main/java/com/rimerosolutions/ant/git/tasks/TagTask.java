@@ -34,7 +34,7 @@ public class TagTask extends AbstractGitRepoAwareTask {
 
         private String name;
         private String message;
-        private static final String TASK_NAME = "git-tag";
+        private static final String TASK_NAME = "git-tag-add";
 
         @Override
         public String getName() {

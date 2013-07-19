@@ -33,7 +33,7 @@ import com.rimerosolutions.ant.git.GitBuildException;
  */
 public class BranchTask extends AbstractGitRepoAwareTask {
 
-        private static final String TASK_NAME = "git-branch-create";
+        private static final String TASK_NAME = "git-branch-add";
         private String branchName;
         private boolean force = true;
         private String upstreamMode = CreateBranchCommand.SetupUpstreamMode.TRACK.name();        

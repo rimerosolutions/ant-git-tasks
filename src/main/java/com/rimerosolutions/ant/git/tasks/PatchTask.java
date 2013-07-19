@@ -30,11 +30,11 @@ import com.rimerosolutions.ant.git.GitUtils;
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
- * Delete branches
+ * Apply a patch
  *
- * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-branch.html">Git branch documentation</a></p>
+ * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-apply.html">Git documentation about apply</a></p>
  *
- * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/DeleteBranchCommand.html">JGit DeleteBranchCommand</a></p>
+ * <p><a href="http://download.eclipse.org/jgit/docs/latet/apidocs/org/eclipse/jgit/api/ApplyCommand.html">JGit ApplyCommand</a></p>
  *
  * @author Yves Zoundi
  */
@@ -89,10 +89,10 @@ public class PatchTask extends AbstractGitRepoAwareTask {
                         throw new GitBuildException("Failed to apply patch.", pae);
                 }
                 catch (GitAPIException gae) {
-                        throw new GitBuildException("Could not delete specified branches.", gae);
+                        throw new GitBuildException("Unexpected runtime error.", gae);
                 }
                 catch (IOException ioe) {
-                        throw new GitBuildException("Unexpected IO/Error", ioe);
+                        throw new GitBuildException("Unexpected IO/Error.", ioe);
                 }
                 finally {
                         if (in != null) {
@@ -100,7 +100,7 @@ public class PatchTask extends AbstractGitRepoAwareTask {
                                         in.close();
                                 }
                                 catch(IOException ioe) {
-                                        throw new GitBuildException("Cannot close patch file.", ioe);
+                                        throw new GitBuildException("Cannot close patch file IO stream.", ioe);
                                 }
                         }
                 }
