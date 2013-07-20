@@ -406,15 +406,20 @@ limitations under the License.
                         <pathelement location="${test.data.dir}"/>
                 </path>
 
-                <copy file="${test.resources.dir}/data-patch.txt" todir="${test.data.dir}" overwrite="true"/>
+                <copy todir="${test.data.dir}" overwrite="true">
+                        <fileset dir="${test.resources.dir}" includes="*.txt"/>
+                </copy>
+                
                 <au:antunit failonerror="false" errorproperty="antunit.failed">
                         <referenceset>
                                 <reference refid="compile.classpath"/>
                                 <reference refid="classes.location"/>
                                 <reference refid="testData.location"/>
                         </referenceset>
+
                         <fileset dir="${test.resources.dir}" includes="*.xml"/>
-                        <au:plainlistener />
+                        
+                        <au:plainlistener/>
                         <au:xmllistener todir="${reports.junit.xml.dir}"/>
                 </au:antunit>
         </target>

@@ -85,19 +85,17 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
 
                         if (createBranch) {
                                 checkoutCommand.setCreateBranch(true);
+
+                                if (trackBranchOnCreate) {
+                                        checkoutCommand.setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK);
+                                }
                         }
 
                         checkoutCommand.setName(branchName);
-
-                        if (trackBranchOnCreate) {
-                                checkoutCommand.setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK).
-                                        setStartPoint(String.format(BRANCH_ORIGIN_TEMPLATE, branchName));
-                        }
-
                         checkoutCommand.call();
 
                         CheckoutResult checkoutResult = checkoutCommand.getResult();
-                        
+
                         if (checkoutResult.getStatus().equals(CheckoutResult.Status.CONFLICTS)) {
                                 throw new GitBuildException(String.format("Conflicts were found:%s", checkoutResult.getConflictList().toString()));
                         }

@@ -38,9 +38,9 @@ import com.rimerosolutions.ant.git.GitBuildException;
  *
  * @author Yves Zoundi
  */
-public class PatchTask extends AbstractGitRepoAwareTask {
+public class ApplyTask extends AbstractGitRepoAwareTask {
 
-        private static final String TASK_NAME = "git-patch";
+        private static final String TASK_NAME = "git-apply";
         private File patchFile;
         private String updatedCountProperty;
 

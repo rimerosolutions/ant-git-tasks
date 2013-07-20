@@ -29,6 +29,8 @@ limitations under the License.
 
         <pathconvert property="testData.folder" refid="testData.location"/>
         <property name="dummy.patch.file" value="${testData.folder}/data-patch.txt"/>
+        <property name="branchlist.file" value="${testData.folder}/branch-list.txt"/>
+        <property name="branchlist.file.baseline" value="${testData.folder}/branch-list-baseline.txt"/>
         <property name="testLocalRepo" value="${testData.folder}/testLocalRepo"/>
         <property name="testLocalRepoClone" value="${testData.folder}/testLocalRepoClone"/>
         <property name="dummy.commit.message" value="Initial commit"/>
@@ -43,6 +45,7 @@ limitations under the License.
         <target name="tearDown">
                 <delete dir="${testLocalRepo}" quiet="true"/>
                 <delete dir="${testLocalRepoClone}" quiet="true"/>
+                <delete file="${branchlist.file}" quiet="true"/>
         </target>
 
         <macrodef name="initLocalRepo" description="Macro to ensure good setUp-tearDown behavior">
@@ -60,7 +63,24 @@ limitations under the License.
                 </sequential>
         </macrodef>
 
-        <target name="testClone" description="Test repository clone">
+        <target name="testCheckout" description="Test git-checkout">
+                <initLocalRepo/>
+
+                <git:git localDirectory="${testLocalRepo}" verbose="true">
+                        <git:checkout branchName="feature/checkout" createBranch="true"/>
+                        <git:branchlist  verifycontainbranches="refs/heads/feature/checkout"
+                                         outputfilename="${branchlist.file}"
+                                         failonerror="true"/>
+                </git:git>
+
+                <au:assertFileExists file="${branchlist.file}"/>
+                
+                <au:assertFilesMatch expected="${branchlist.file.baseline}"
+                                     actual="${branchlist.file}"
+                                     message="Branches list don't match baseline"/>
+        </target>
+
+        <target name="testClone" description="Test git-clone">
                 <initLocalRepo/>
 
                 <git:git localDirectory="${testLocalRepoClone}" verbose="true">
@@ -70,9 +90,10 @@ limitations under the License.
                 <au:assertFileExists file="${testLocalRepoClone}/.git/index"/>
         </target>
 
-        <target name="testAdd" description="Add a file to the repo">
+        <target name="testAdd" description="Test git-add">
                 <initLocalRepo/>
                 <echo file="${testLocalRepo}/test.txt" message="test"/>
+
                 <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
                         <git:add>
                                 <fileset dir="${testLocalRepo}" includes="*.txt"/>
@@ -82,13 +103,13 @@ limitations under the License.
                 </git:git>
         </target>
 
-        <target name="testPatch" description="Test patch">
+        <target name="testApply" description="Test git-apply">
                 <initLocalRepo/>
 
                 <echo file="${testLocalRepo}/file.txt" message="test file"/>
 
                 <git:git localDirectory="${testLocalRepo}" verbose="true">
-                        <git:patch updatedCountProperty="updatedCountProperty" patchfile="${dummy.patch.file}"/>
+                        <git:apply updatedCountProperty="updatedCountProperty" patchfile="${dummy.patch.file}"/>
                 </git:git>
 
                 <au:assertTrue message="Only one file impacted by patch">
@@ -96,7 +117,7 @@ limitations under the License.
                 </au:assertTrue>
         </target>
 
-        <target name="testUpToDateFailure" description="Test clean status failure">
+        <target name="testUpToDateFailure" description="Test git-status">
                 <initLocalRepo/>
 
                 <echo file="${testLocalRepo}/test.txt" message="test"/>
@@ -108,7 +129,7 @@ limitations under the License.
                 </au:expectfailure>
         </target>
 
-        <target name="testInit" description="Tests git-init">
+        <target name="testInit" description="Test git-init">
                 <initLocalRepo/>
                 <au:assertFileExists file="${testLocalRepo}/.git/index"/>
         </target>

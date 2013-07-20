@@ -66,8 +66,16 @@ public class GitTasks extends Task {
                 this.localDirectory = dir;
         }
 
-        public PatchTask createPatch() {
-                PatchTask c = new PatchTask();
+        
+        public BranchListTask createBranchList() {
+                BranchListTask c = new BranchListTask();
+                tasks.add(c);
+
+                return c;
+        }
+
+        public ApplyTask createApply() {
+                ApplyTask c = new ApplyTask();
                 tasks.add(c);
 
                 return c;
