@@ -75,6 +75,7 @@ limitations under the License.
         <!-- ================================ -->
         <target name="testTagDelete" description="Test git-tag-delete">
                 <initLocalRepo/>
+                
                 <git:git localDirectory="${testLocalRepo}" verbose="true">
                         <git:tag name="${dummy.tag.name}"/>
                         <git:tagdelete tags="${dummy.tag.name}"/>
@@ -88,6 +89,8 @@ limitations under the License.
         </target>
 
         <target name="testTagAdd" description="Test git-tag-add">
+                <initLocalRepo/>
+                
                 <git:git localDirectory="${testLocalRepo}" verbose="true">
                         <git:tag name="${dummy.tag.name}"/>
                         <git:taglist outputfilename="${taglist.file}" verifycontainnames="${dummy.tag.name}" failonerror="true"/>

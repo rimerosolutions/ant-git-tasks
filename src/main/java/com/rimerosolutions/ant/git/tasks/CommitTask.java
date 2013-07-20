@@ -81,6 +81,8 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                         if (revCommitIdProperty != null) {
                                 getProject().setProperty(revCommitIdProperty, ObjectId.toString(revCommit.getId()));
                         }
+
+                        log(revCommit.getFullMessage());
                 } catch (GitAPIException ex) {
                         throw new GitBuildException("Cannot commit to Git repository", ex);
                 }
