@@ -16,8 +16,8 @@
 package com.rimerosolutions.ant.git.tasks;
 
 import java.io.File;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
@@ -28,7 +28,19 @@ import com.rimerosolutions.ant.git.GitUtils;
 
 /**
  * Git tasks container
- *
+ * 
+ * <pre>{@code
+ * <git:settings refId="git.testing"
+ *               username="xxxtesting"
+ *               password="xxxtesting"
+ *               name="xxxtesting"
+ *               email="xxxtesting@gmail.com"/>
+ * 
+ *  <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
+ *     <git:init directory="${testLocalRepo}" bare="false" />
+ *     <git:commit message="${dummy.commit.message}" revCommitIdProperty="revcommit"/>
+ *  </git:git>}</pre>
+ *                       
  * @author Yves Zoundi
  */
 public class GitTasks extends Task {
@@ -42,6 +54,7 @@ public class GitTasks extends Task {
         /**
          * Unable/Disable Git commands verbosity
          *
+         * @antdoc.notrequired
          * @param verbose Whether or not the Git commands output should be verbose
          */
         public void setVerbose(boolean verbose) {
@@ -196,19 +209,19 @@ public class GitTasks extends Task {
                         GitTask t = (GitTask) task;
                         GitUtils.validateTaskConditions(t);
 
-                        if (!GitUtils.nullOrEmptyString(t.getIf())) {
+                        if (!GitUtils.isNullOrBlankString(t.getIf())) {
                                 if (getProject().getProperty(t.getIf()) == null) {
                                         continue;
                                 }
                         }
 
-                        if (!GitUtils.nullOrEmptyString(t.getUnless())) {
+                        if (!GitUtils.isNullOrBlankString(t.getUnless())) {
                                 if (getProject().getProperty(t.getUnless()) != null) {
                                         continue;
                                 }
                         }
 
-                        if (!GitUtils.nullOrEmptyString(settingsRef)) {
+                        if (!GitUtils.isNullOrBlankString(settingsRef)) {
                                 t.setSettingsRef(settingsRef);
                         }
 

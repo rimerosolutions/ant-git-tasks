@@ -15,18 +15,22 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
-import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
-import com.rimerosolutions.ant.git.GitUtils;
 import com.rimerosolutions.ant.git.GitBuildException;
+import com.rimerosolutions.ant.git.GitUtils;
 
 /**
  * Delete branches
- *
+ * 
+ * <pre>{@code 
+ * <git:git localDirectory="${testLocalRepo}" verbose="true">
+ *    <git:checkout branchName="${master.branch.name}"/>
+ *    <git:branchDelete failonerror="true" branches="${dummy.checkout.branch}"/>
+ * </git:git>}</pre>
+ * 
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-branch.html">Git branch documentation</a></p>
- *
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/DeleteBranchCommand.html">JGit DeleteBranchCommand</a></p>
  *
  * @author Yves Zoundi
@@ -44,14 +48,14 @@ public class BranchDeleteTask extends AbstractGitRepoAwareTask {
         /**
          * Sets the branches to delete (comma-separated list)
          *
-         * @param branches Comma-separted list of branches to delete
+         * @param branches comma-separated list of branches to delete
          */
         public void setBranches(String branches) {
-                if (!GitUtils.nullOrEmptyString(branches)) {
+                if (!GitUtils.isNullOrBlankString(branches)) {
                         this.branchNames = branches.split(",");
                 }
                 else {
-                        throw new GitBuildException("Cannot delete unspecified branches");
+                        throw new GitBuildException("Cannot delete unspecified branches.");
                 }
         }
 
@@ -60,7 +64,7 @@ public class BranchDeleteTask extends AbstractGitRepoAwareTask {
                 try {
                         git.branchDelete().setBranchNames(branchNames).call();
                 } catch (GitAPIException e) {
-                        throw new GitBuildException("Could not delete specified branches", e);
+                        throw new GitBuildException("Could not delete specified branches.", e);
                 }
         }
 

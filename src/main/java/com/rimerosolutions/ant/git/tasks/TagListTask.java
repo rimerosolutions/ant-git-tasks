@@ -15,21 +15,19 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.taskdefs.Echo;
 import org.apache.tools.ant.util.FileUtils;
-
-import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.api.errors.GitAPIException;
-
-import java.util.List;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.io.IOException;
+import org.eclipse.jgit.lib.Ref;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
-import com.rimerosolutions.ant.git.GitUtils;
 import com.rimerosolutions.ant.git.GitBuildException;
+import com.rimerosolutions.ant.git.GitUtils;
 
 /**
  * List tags
@@ -43,6 +41,8 @@ import com.rimerosolutions.ant.git.GitBuildException;
 public class TagListTask extends AbstractGitRepoAwareTask {
 
         private static final String TASK_NAME = "git-tag-list";
+        private static final String REF_NAME_TEMPLATE = "* %s" + System.getProperty("line.separator");
+        private static final String MISSING_REFS_TEMPLATE = "Some references could not be found '%s'.";
         private List<String> namesToCheck = new ArrayList<String>();
         private String outputFilename;
 
@@ -54,11 +54,12 @@ public class TagListTask extends AbstractGitRepoAwareTask {
         /**
          * Sets the output file that will contain the list of branches
          *
+         * @antdoc.notrequired
          * @param outputFilename The output file name to use
          */
         public void setOutputFilename(String outputFilename) {
-                if (GitUtils.nullOrEmptyString(outputFilename)) {
-                        throw new BuildException("Invalid output file name");
+                if (GitUtils.isNullOrBlankString(outputFilename)) {
+                        throw new BuildException("Invalid output file name.");
                 }
 
                 this.outputFilename = outputFilename;
@@ -67,14 +68,15 @@ public class TagListTask extends AbstractGitRepoAwareTask {
         /**
          * Sets the comma separated list of reference names to check in the list returned by the command
          *
+         * @antdoc.notrequired
          * @param names The command separated list of references names
          */
         public void setVerifyContainNames(String names) {
-                if (!GitUtils.nullOrEmptyString(names)) {
+                if (!GitUtils.isNullOrBlankString(names)) {
                         namesToCheck.addAll(Arrays.asList(names.split(",")));
                 }
                 else {
-                        throw new BuildException("Invalid references names");
+                        throw new BuildException("Invalid references names.");
                 }
         }
 
@@ -84,7 +86,7 @@ public class TagListTask extends AbstractGitRepoAwareTask {
                         List<Ref> tagRefList = git.tagList().call();
                         processReferencesAndOutput(tagRefList);
                 } catch (GitAPIException e) {
-                        throw new GitBuildException("Could not list tags", e);
+                        throw new GitBuildException("Could not list tags.", e);
                 }
         }
 
@@ -105,12 +107,12 @@ public class TagListTask extends AbstractGitRepoAwareTask {
                                 List<String> namesCopy = new ArrayList<String>(namesToCheck);
                                 namesCopy.removeAll(refNames);
 
-                                throw new GitBuildException(String.format("Some references could not be found '%s'", namesCopy.toString()));
+                                throw new GitBuildException(String.format(MISSING_REFS_TEMPLATE, namesCopy.toString()));
                         }
                 }
 
-                if (!GitUtils.nullOrEmptyString(outputFilename)) {
-                        FileUtils fileUtils = FileUtils.newFileUtils();
+                if (!GitUtils.isNullOrBlankString(outputFilename)) {
+                        FileUtils fileUtils = FileUtils.getFileUtils();
 
                         Echo echo = new Echo();
                         echo.setProject(getProject());
@@ -118,7 +120,7 @@ public class TagListTask extends AbstractGitRepoAwareTask {
 
                         for (int i = 0; i < refNames.size(); i++) {
                                 String refName = refNames.get(i);
-                                echo.addText("* " + refName + System.getProperty("line.separator"));
+                                echo.addText(String.format(REF_NAME_TEMPLATE, refName));
                         }
 
                         echo.perform();

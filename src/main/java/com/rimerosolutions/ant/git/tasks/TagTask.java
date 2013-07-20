@@ -44,6 +44,7 @@ public class TagTask extends AbstractGitRepoAwareTask {
         /**
          * Sets the commit message
          *
+         * @antdoc.notrequired
          * @param message The message
          */
         public void setMessage(String message) {

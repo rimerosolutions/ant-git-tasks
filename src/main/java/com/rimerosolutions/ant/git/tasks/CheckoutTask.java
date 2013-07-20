@@ -17,22 +17,27 @@ package com.rimerosolutions.ant.git.tasks;
 
 import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.api.CheckoutCommand;
+import org.eclipse.jgit.api.CheckoutResult;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.errors.CheckoutConflictException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRefNameException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.api.errors.RefNotFoundException;
-import org.eclipse.jgit.api.CheckoutResult;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
  * Perform a checkout
- *
+ * 
+ * <pre>{@code 
+ * <git:git localDirectory="${testLocalRepo}" verbose="true">
+ *  <git:checkout branchName="${dummy.checkout.branch}" createBranch="true"/>
+ *  <git:branchDelete failonerror="true" branches="${dummy.checkout.branch}"/>
+ * </git:git>}</pre>
+ * 
  * <p><a href="https://www.kernel.org/pub/software/scm/git/docs/git-checkout.html">Git documentation about checkout</a></p>
- *
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/CheckoutCommand.html">JGit CheckoutCommand</a></p>
  *
  * @author Yves Zoundi
@@ -43,7 +48,6 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
         private boolean createBranch = false;
         private boolean trackBranchOnCreate = true;
         private static final String TASK_NAME = "git-checkout";
-        private static final String BRANCH_ORIGIN_TEMPLATE = "origin/%s";
 
         @Override
         public String getName() {
@@ -53,8 +57,8 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
         /**
          * Whether or not to track the branch automatically when created
          *
+         * @antdoc.notrequired
          * @param trackBranchOnCreate Track branch after creation(Default true)
-         *
          */
         public void setTrackBranchOnCreate(boolean trackBranchOnCreate) {
                 this.trackBranchOnCreate = trackBranchOnCreate;
@@ -63,6 +67,7 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
         /**
          * Whether or not to create the branch if it doesn't exist
          *
+         * @antdoc.notrequired
          * @param createBranch Whether or not to create the branch (Default false)
          */
         public void setCreateBranch(boolean createBranch) {
@@ -97,21 +102,21 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
                         CheckoutResult checkoutResult = checkoutCommand.getResult();
 
                         if (checkoutResult.getStatus().equals(CheckoutResult.Status.CONFLICTS)) {
-                                throw new GitBuildException(String.format("Conflicts were found:%s", checkoutResult.getConflictList().toString()));
+                                throw new GitBuildException(String.format("Conflicts were found:%s.", checkoutResult.getConflictList().toString()));
                         }
                         else if (checkoutResult.getStatus().equals(CheckoutResult.Status.NONDELETED)) {
-                                throw new GitBuildException(String.format("Some files could not be deleted:%s", checkoutResult.getUndeletedList().toString()));
+                                throw new GitBuildException(String.format("Some files could not be deleted:%s.", checkoutResult.getUndeletedList().toString()));
                         }
                 } catch (RefAlreadyExistsException e) {
                         throw new GitBuildException(String.format("Cannot create branch '%s', as it already exists!", branchName), e);
                 } catch (RefNotFoundException e) {
-                        throw new GitBuildException(String.format("The branch '%s' was not found", branchName), e);
+                        throw new GitBuildException(String.format("The branch '%s' was not found.", branchName), e);
                 } catch (InvalidRefNameException e) {
-                        throw new GitBuildException("An invalid branch name was specified", e);
+                        throw new GitBuildException("An invalid branch name was specified.", e);
                 } catch (CheckoutConflictException e) {
-                        throw new GitBuildException("Some checkout conflicts were found", e);
+                        throw new GitBuildException("Some checkout conflicts were found.", e);
                 } catch (GitAPIException e) {
-                        throw new GitBuildException(String.format("Could not checkout branch '%s'", branchName), e);
+                        throw new GitBuildException(String.format("Could not checkout branch '%s'.", branchName), e);
                 }
 
         }

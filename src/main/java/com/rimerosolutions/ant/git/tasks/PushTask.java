@@ -47,10 +47,22 @@ public class PushTask extends AbstractGitRepoAwareTask {
                 return TASK_NAME;
         }
 
+        /**
+         * Whether or not to include all tags while pushing
+         * 
+         * @antdoc.notrequired
+         * @param includeTags Default is true
+         */
         public void setIncludeTags(boolean includeTags) {
                 this.includeTags = includeTags;
         }
 
+        /**
+         * Sets a boolean property if the git push fails
+         * 
+         * @antdoc.notrequired
+         * @param pushFailedProperty Property to set
+         */
         public void setPushFailedProperty(String pushFailedProperty) {
                 this.pushFailedProperty = pushFailedProperty;
         }
@@ -61,7 +73,7 @@ public class PushTask extends AbstractGitRepoAwareTask {
                         List<RemoteConfig> remoteConfigs = RemoteConfig.getAllRemoteConfigs(git.getRepository().getConfig());
 
                         if (remoteConfigs != null && !remoteConfigs.isEmpty()) {
-                                log("Pushing tags");
+                                log("Pushing tags.");
 
                                 PushCommand pushCommand = git.push();
 
@@ -83,7 +95,7 @@ public class PushTask extends AbstractGitRepoAwareTask {
                                 getProject().setProperty(pushFailedProperty, e.getMessage());
                         }
 
-                        throw new GitBuildException("Git push failed", e);
+                        throw new GitBuildException("Git push failed.", e);
                 }
         }
 }

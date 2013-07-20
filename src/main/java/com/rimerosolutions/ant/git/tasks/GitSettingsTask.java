@@ -26,6 +26,14 @@ import com.rimerosolutions.ant.git.GitUtils;
 /**
  * Sets reusable Git settings (credentials and identity)
  *
+ * <pre>{@code 
+ *<git:settings refId="git.testing"
+ *              username="xxxtesting"
+ *              password="xxxtesting"
+ *              name="xxxtesting"
+ *              email="xxxtesting@gmail.com"/>
+ *}</pre>
+ *
  * @author Yves Zoundi
  */
 public class GitSettingsTask extends Task {
@@ -85,11 +93,11 @@ public class GitSettingsTask extends Task {
         public void execute() throws BuildException {
                 final GitSettings settings = new GitSettings();
 
-                if (!GitUtils.nullOrEmptyString(username) && !GitUtils.nullOrEmptyString(password)) {
+                if (!GitUtils.isNullOrBlankString(username) && !GitUtils.isNullOrBlankString(password)) {
                         settings.setCredentials(username, password);
                 }
 
-                if (!GitUtils.nullOrEmptyString(name) && !GitUtils.nullOrEmptyString(email)) {
+                if (!GitUtils.isNullOrBlankString(name) && !GitUtils.isNullOrBlankString(email)) {
                         settings.setIdentity(name, email);
                 }
 

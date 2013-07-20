@@ -54,6 +54,7 @@ public abstract class AbstractGitTask extends Task implements GitTask {
         /**
          * Sets a git settings reference
          *
+         * @antdoc.notrequired
          * @param settingsRef the settingsRef to set
          */
         public void setSettingsRef(String settingsRef) {
@@ -65,6 +66,7 @@ public abstract class AbstractGitTask extends Task implements GitTask {
         /**
          * Do not execute unless a given condition is met
          *
+         * @antdoc.notrequired
          * @param unlessCondition The condition veto execution
          */
         public void setUnless(String unlessCondition) {
@@ -74,6 +76,7 @@ public abstract class AbstractGitTask extends Task implements GitTask {
         /**
          * Continue execution only if a condition is met
          *
+         * @antdoc.notrequired
          * @param ifCondition The condition to meet
          */
         public void setIf(String ifCondition) {
@@ -101,11 +104,12 @@ public abstract class AbstractGitTask extends Task implements GitTask {
         /**
          * Sets the git repository uri
          *
+         * @antdoc.notrequired
          * @param uri The repository uri
          */
         public void setUri(String uri) {
                 if (uri == null) {
-                        throw new BuildException("Can't set null URI attribute");
+                        throw new BuildException("Can't set null URI attribute.");
                 }
                 try {
                         new URIish(uri);
@@ -123,7 +127,7 @@ public abstract class AbstractGitTask extends Task implements GitTask {
         @Override
         public void setDirectory(File dir) {
                 if (dir == null) {
-                        throw new BuildException("Cannot set null directory attribute");
+                        throw new BuildException("Cannot set null directory attribute.");
                 }
                 this.directory = new File(dir.getAbsolutePath());
         }

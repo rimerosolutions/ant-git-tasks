@@ -27,9 +27,13 @@ import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
  * Clone a repository
- *
+ * 
+ * <pre>{@code 
+ *  <git:git localDirectory="${testLocalRepoClone}">
+ *    <git:clone uri="file://${testLocalRepo}/.git" directory="${testLocalRepoClone}"/>
+ *  </git:git>}</pre> 
+ * 
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-clone.html">Git documentation about clone</a></p>
- *
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/CloneCommand.html">JGit CloneCommand</a></p>
  *
  * @author Yves Zoundi
@@ -61,6 +65,7 @@ public class CloneTask extends AbstractGitTask {
         /**
          * Sets the branch to track
          *
+         * @antdoc.notrequired
          * @param branchToTrack The branch to track
          */
         public void setBranchToTrack(String branchToTrack) {
@@ -70,6 +75,7 @@ public class CloneTask extends AbstractGitTask {
         /**
          * Sets whether or not the repository is bare
          *
+         * @antdoc.notrequired
          * @param bare Whether or not the repository is bare (Default false)
          */
         public void setBare(boolean bare) {
@@ -79,6 +85,7 @@ public class CloneTask extends AbstractGitTask {
         /**
          * Sets whether or not sub-modules should be cloned
          *
+         * @antdoc.notrequired
          * @param cloneSubModules Whether or not to clone sub-modules (Default true)
          */
         public void setCloneSubModules(boolean cloneSubModules) {
@@ -86,7 +93,10 @@ public class CloneTask extends AbstractGitTask {
         }
 
         /**
-         *
+         * Whether or not to clone all branches
+         * 
+         * @antdoc.notrequired
+         * @param cloneAllBranches Default is true
          */
         public void setCloneAllBranches(boolean cloneAllBranches) {
                 this.cloneAllBranches = cloneAllBranches;
@@ -95,6 +105,7 @@ public class CloneTask extends AbstractGitTask {
         /**
          * Sets whether or not to checkout any branches
          *
+         * @antdoc.notrequired
          * @param noCheckout Whether or not to checkout any branch (Default false)
          */
         public void setNoCheckout(boolean noCheckout) {
@@ -130,7 +141,7 @@ public class CloneTask extends AbstractGitTask {
                         cloneCommand.call();
                 }
                 catch (Exception e) {
-                        throw new GitBuildException(String.format("Could not clone URL '%s'", getUri()), e);
+                        throw new GitBuildException(String.format("Could not clone URL '%s'.", getUri()), e);
                 }
         }
 

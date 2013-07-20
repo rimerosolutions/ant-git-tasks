@@ -16,14 +16,23 @@
 package com.rimerosolutions.ant.git.tasks;
 
 import org.apache.tools.ant.BuildException;
-import com.rimerosolutions.ant.git.GitUtils;
+import org.eclipse.jgit.api.errors.GitAPIException;
+
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
-import org.eclipse.jgit.api.errors.GitAPIException;
+import com.rimerosolutions.ant.git.GitUtils;
 
 /**
  * Delete tags
- *
+ * 
+ * <pre>
+ * {@code 
+ *  <git:git localDirectory="${testLocalRepo}">
+ *    <git:tagdelete tags="${dummy.tag.name}"/>
+ *  </git:git>
+ * }
+ * </pre> 
+ * 
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-tag.html">Git documentation about tag</a></p>
  *
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/DeleteTagCommand.html">JGit DeleteTagCommand</a></p>
@@ -46,7 +55,7 @@ public class TagDeleteTask extends AbstractGitRepoAwareTask {
          * @param tags Comma-separted list of tags to delete
          */
         public void setTags(String tags) {
-                if (GitUtils.nullOrEmptyString(tags)) {
+                if (GitUtils.isNullOrBlankString(tags)) {
                         throw new BuildException("Invalid tag names provided.");
                 }
                 

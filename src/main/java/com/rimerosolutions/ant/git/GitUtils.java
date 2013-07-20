@@ -43,7 +43,7 @@ public final class GitUtils {
          * @param s The string to check
          * @return whether or not a string is null or empty (as in blank)
          */
-        public static boolean nullOrEmptyString(String s) {
+        public static boolean isNullOrBlankString(String s) {
                 if (s == null) {
                         return true;
                 }

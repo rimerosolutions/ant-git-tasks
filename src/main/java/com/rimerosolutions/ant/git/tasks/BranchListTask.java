@@ -15,28 +15,27 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.taskdefs.Echo;
-import org.apache.tools.ant.util.FileUtils;
-
-import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.ListBranchCommand;
-
-import java.util.List;
-import java.util.Arrays;
 import java.util.ArrayList;
-import java.io.IOException;
+import java.util.List;
 
-import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
-import com.rimerosolutions.ant.git.GitUtils;
+import org.apache.tools.ant.BuildException;
+import org.eclipse.jgit.api.ListBranchCommand;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Ref;
+
 import com.rimerosolutions.ant.git.GitBuildException;
+import com.rimerosolutions.ant.git.GitUtils;
 
 /**
  * List branches
- *
+ * 
+ * <pre>{@code 
+ * <git:git localDirectory="${testLocalRepo}" verbose="true">
+ *    <git:branchlist outputfilename="${branchlist.file}"/>
+ * </git:git>
+ * }</pre>
+ * 
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-branch.html">Git branch documentation</a></p>
- *
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/ListBranchCommand.html">JGit ListBranchCommand</a></p>
  *
  * @author Yves Zoundi
@@ -54,10 +53,11 @@ public class BranchListTask extends TagListTask {
         /**
          * Sets the listing mode
          *
+         * @antdoc.notrequired
          * @param listMode - optional: corresponds to the -r/-a options; by default, only local branches will be listed
          */
         public void setListMode(String listMode) {
-                if (!GitUtils.nullOrEmptyString(listMode)) {
+                if (!GitUtils.isNullOrBlankString(listMode)) {
                         try {
                                 this.listMode = ListBranchCommand.ListMode.valueOf(listMode);
                         }
@@ -70,7 +70,7 @@ public class BranchListTask extends TagListTask {
                                         listModeValidValues.add(aListMode.name());
                                 }
 
-                                throw new BuildException(String.format("Valid listMode options are: %s", listModeValidValues.toString()));
+                                throw new BuildException(String.format("Valid listMode options are: %s.", listModeValidValues.toString()));
                         }
                 }
         }
@@ -81,7 +81,7 @@ public class BranchListTask extends TagListTask {
                         List<Ref> branchesRefList = git.branchList().setListMode(listMode).call();
                         processReferencesAndOutput(branchesRefList);
                 } catch (GitAPIException e) {
-                        throw new GitBuildException("Could not list branches", e);
+                        throw new GitBuildException("Could not list branches.", e);
                 }
         }
 

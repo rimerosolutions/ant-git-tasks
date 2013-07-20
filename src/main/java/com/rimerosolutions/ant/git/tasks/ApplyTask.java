@@ -15,25 +15,29 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
-import org.apache.tools.ant.BuildException;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import java.util.Collection;
-import org.eclipse.jgit.api.ApplyResult;
-import org.eclipse.jgit.api.errors.PatchFormatException;
-import org.eclipse.jgit.api.errors.PatchApplyException;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.FileInputStream;
+import java.util.Collection;
+
+import org.eclipse.jgit.api.ApplyResult;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.PatchApplyException;
+import org.eclipse.jgit.api.errors.PatchFormatException;
+
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
-import com.rimerosolutions.ant.git.GitUtils;
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
  * Apply a patch
- *
+ * 
+ * <pre>{@code 
+ * <git:git localDirectory="${testLocalRepo}" verbose="true">
+ *   <git:apply updatedCountProperty="updatedCountProperty" patchfile="${dummy.patch.file}"/>
+ * </git:git>}</pre>
+ * 
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-apply.html">Git documentation about apply</a></p>
- *
  * <p><a href="http://download.eclipse.org/jgit/docs/latet/apidocs/org/eclipse/jgit/api/ApplyCommand.html">JGit ApplyCommand</a></p>
  *
  * @author Yves Zoundi
@@ -52,6 +56,7 @@ public class ApplyTask extends AbstractGitRepoAwareTask {
         /**
          * Set the updated count property
          *
+         * @antdoc.notrequired
          * @param updatedCountProperty Sets the property holding the count of affected files
          */
         public void setUpdatedCountProperty(String updatedCountProperty) {

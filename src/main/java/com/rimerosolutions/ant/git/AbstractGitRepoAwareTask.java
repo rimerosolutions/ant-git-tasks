@@ -37,6 +37,7 @@ public abstract class AbstractGitRepoAwareTask extends AbstractGitTask {
         /**
          * Whether or not an exception should be thrown if the task fails.
          *
+         * @antdoc.notrequired
          * @param failOnError Build fails on error?
          */
         public void setFailOnError(boolean failOnError) {

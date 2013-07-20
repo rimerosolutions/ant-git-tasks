@@ -48,6 +48,7 @@ limitations under the License.
         <property name="test.data.dir" value="${target.dir}/testData"/>
         <property name="dist.dir" value="dist"/>
         <property name="apidocs.dir" value="${target.dir}/apidocs"/>
+        <property name="antdocs.dir" value="${target.dir}/antdocs"/>
         <property name="cobertura.data.filename" value="cobertura.ser"/>
         <property name="cobertura.data.file" value="${test.data.dir}/${cobertura.data.filename}"/>
         <property name="javadoc.overview.html" value="${resources.dir}/com/rimerosolutions/ant/git/overview.html"/>
@@ -281,6 +282,7 @@ limitations under the License.
                 <mkdir dir="${target.dir}"/>
                 <mkdir dir="${lib.dir}"/>
                 <mkdir dir="${apidocs.dir}"/>
+                <mkdir dir="${antdocs.dir}"/>
                 <mkdir dir="${classes.dir}"/>
                 <mkdir dir="${test.classes.dir}"/>
                 <mkdir dir="${test.data.dir}"/>
@@ -513,7 +515,7 @@ limitations under the License.
                          version="true"
                          use="true"
                          windowtitle="${product.description}">
-
+						<tag name="antdoc.notrequired" description="Non required attribute for the Ant task"/>
                         <classpath>
                                 <path refid="compile.classpath"/>
                         </classpath>
@@ -523,6 +525,25 @@ limitations under the License.
                         <link href="http://download.eclipse.org/jgit/docs/latest/apidocs/" />
                         <link href="http://javadoc.haefelinger.it/org.apache.ant/1.7.1/"/>
                 </javadoc>
+                
+                <path id="antdoc.classpath">
+                	<path refid="compile.classpath"/>
+                        <path location="${classes.dir}"/>
+                </path>
+                
+                <javadoc packagenames="**/*.*" sourcepath="${src.dir}" 
+                        destdir="${antdocs.dir}"
+                        doctitle="Ant Git Tasks documentation"
+                        header="Ant tasks usage. Use the git tasks container, GitTasks task."
+                        bottom="Copyright 2013, Rimero Solutions"
+                        doclet="com.rimerosolutions.ant.git.AntTaskDoclet"
+                        docletpathref="antdoc.classpath"
+                                         defaultexcludes="yes">  
+                                        <classpath>
+                                                <path refid="antdoc.classpath"/>
+                                        </classpath>
+                                </javadoc> 
+                
         </target>
 
         <target name="jar-sources" depends="compile" description="Generate sources jar">

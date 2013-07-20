@@ -15,29 +15,32 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
-import org.apache.tools.ant.BuildException;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
 import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.Resource;
 import org.apache.tools.ant.types.resources.FileResource;
 import org.apache.tools.ant.util.FileUtils;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.AddCommand;
-import java.util.Collection;
-import java.util.ArrayList;
-import java.util.Iterator;
-import org.apache.tools.ant.types.Resource;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.FileInputStream;
+import org.eclipse.jgit.api.errors.GitAPIException;
+
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
-import com.rimerosolutions.ant.git.GitUtils;
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
- * Delete branches
- *
+ * Add files
+ * 
+ * <pre>{@code 
+ *  <git:git localDirectory="${testLocalRepo}">
+ *    <git:add>
+ *      <fileset dir="${testLocalRepo}" includes="*.txt"/>
+      </git:add>
+ *  </git:git>}</pre>
+ *  
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-add.html">Git documentation about add</a></p>
- *
  * <p><a href="http://download.eclipse.org/jgit/docs/jgit-2.0.0.201206130900-r/apidocs/org/eclipse/jgit/api/AddCommand.html">JGit AddCommand</a></p>
  *
  * @author Yves Zoundi
@@ -50,7 +53,8 @@ public class AddTask extends AbstractGitRepoAwareTask {
 
         /**
          * If set to true, the command only matches filepattern against already tracked files in the index rather than the working tree.
-         *
+         * 
+         * @antdoc.notrequired
          * @param update Default is false;
          */
         public void setUpdate(boolean update) {
@@ -62,10 +66,16 @@ public class AddTask extends AbstractGitRepoAwareTask {
                 return TASK_NAME;
         }
 
+        /**
+         * Configure the fileset(s) of files to add to revision control
+         * 
+         * @param fileset The fileset to add
+         */
         public void addFileset(FileSet fileset) {
                 filesets.add(fileset);
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected void doExecute() {
 
@@ -88,10 +98,11 @@ public class AddTask extends AbstractGitRepoAwareTask {
                         throw new GitBuildException(e);
                 }
                 catch (Exception e) {
-                        throw new GitBuildException("Unexpected error", e);
+                        throw new GitBuildException("Unexpected error.", e);
                 }
         }
 
+        @SuppressWarnings("unchecked")
         protected void processResource(Resource resource, FilePatternCallback cb) throws Exception {
                 if (resource.isExists()) {
                         if (resource.isDirectory()) {

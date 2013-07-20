@@ -64,12 +64,12 @@ public class PullTask extends AbstractGitRepoAwareTask {
                                 MergeStatus mergeStatus = pullResult.getMergeResult().getMergeStatus();
 
                                 if (!mergeStatus.isSuccessful()) {
-                                        throw new BuildException(String.format("Merge failed - Status '%s'", mergeStatus.name()));
+                                        throw new BuildException(String.format("Merge failed - Status '%s'.", mergeStatus.name()));
                                 }
                         }
                 }
                 catch (Exception e) {
-                        throw new GitBuildException(String.format("Could not clone URL '%s'", getUri()), e);
+                        throw new GitBuildException(String.format("Could not clone URL '%s'.", getUri()), e);
                 }
         }
 

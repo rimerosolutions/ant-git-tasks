@@ -45,6 +45,7 @@ public class UpToDateTask extends AbstractGitRepoAwareTask {
         /**
          * Sets a given project property if the tree is modified
          *
+         * @antdoc.notrequired
          * @param p Property name to set
          */
         public void setModificationExistProperty(String p) {

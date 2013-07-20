@@ -18,8 +18,8 @@ package com.rimerosolutions.ant.git.tasks;
 import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.revwalk.RevCommit;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
@@ -27,9 +27,13 @@ import com.rimerosolutions.ant.git.GitUtils;
 
 /**
  * Commits all local changes
- *
+ * 
+ * <pre>{@code 
+ *  <git:git localDirectory="${testLocalRepo}">
+ *   <git:commit message="${dummy.commit.message}" revCommitIdProperty="testAdd.revcommit"/>
+ *  </git:git>}</pre> 
+ * 
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-commit.html">Git documentation about commit</a></p>
- *
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/CommitCommand.html">JGit CommitCommand</a></p>
  *
  * @author Yves Zoundi
@@ -52,6 +56,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
         /**
          * Assign the commit revision id to a property
          *
+         * @antdoc.notrequired
          * @param revCommitIdProperty The property to set the commit id value to
          */
         public void setRevCommitIdProperty(String revCommitIdProperty) {
@@ -91,6 +96,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
         /**
          * Whether or not to commit everything
          *
+         * @antdoc.notrequired
          * @param all Commit all files
          */
         public void setAll(boolean all) {
@@ -100,6 +106,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
         /**
          * Used to amend the tip of the current branch.
          *
+         * @antdoc.notrequired
          * @param amend Whether or not to amend the tip for the current branch
          */
         public void setAmend(boolean amend) {
@@ -109,6 +116,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
         /**
          * Override the default reflogComment
          *
+         * @antdoc.notrequired
          * @param reflogComment the reflogComment to set
          */
         public void setReflogComment(String reflogComment) {
@@ -118,6 +126,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
         /**
          * Sets the commit message
          *
+         * @antdoc.notrequired
          * @param message The commit message
          */
         public void setMessage(String message) {

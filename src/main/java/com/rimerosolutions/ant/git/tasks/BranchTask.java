@@ -26,7 +26,6 @@ import com.rimerosolutions.ant.git.GitBuildException;
  * Create a branch
  *
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-branch.html">Git documentation about branch</a></p>
- *
  * <p>See <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/index.html?org/eclipse/jgit/api/CreateBranchCommand.html">JGit CreateBranchCommand</a></p>
  *
  * @author Yves Zoundi
@@ -36,7 +35,7 @@ public class BranchTask extends AbstractGitRepoAwareTask {
         private static final String TASK_NAME = "git-branch-add";
         private String branchName;
         private boolean force = true;
-        private String upstreamMode = CreateBranchCommand.SetupUpstreamMode.TRACK.name();        
+        private CreateBranchCommand.SetupUpstreamMode upstreamMode = CreateBranchCommand.SetupUpstreamMode.TRACK;        
         
         @Override
         public String getName() {
@@ -56,6 +55,7 @@ public class BranchTask extends AbstractGitRepoAwareTask {
          *  if true and the branch with the given name already exists, the start-point of an existing branch will be set to a new start-point; 
          *  if false, the existing branch will not be changed
          *  
+         * @antdoc.notrequired
          * @param force Whether or not to force branch creation (Default false)
          */
         public void setForce(boolean force) {
@@ -67,10 +67,11 @@ public class BranchTask extends AbstractGitRepoAwareTask {
          * 
          * @see <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/CreateBranchCommand.SetupUpstreamMode.html">CreateBranchCommand.SetupUpstreamMode string values</a>
          * 
+         * @antdoc.notrequired
          * @param upstreamMode the upstreamMode to set (Default is --track).
          */
         public void setUpstreamMode(String upstreamMode) {
-                this.upstreamMode = upstreamMode;
+                this.upstreamMode = CreateBranchCommand.SetupUpstreamMode.valueOf(upstreamMode);
         }
 
         @Override
@@ -78,11 +79,11 @@ public class BranchTask extends AbstractGitRepoAwareTask {
                 try {
                         git.branchCreate().
                         setForce(force).
-                        setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.valueOf(upstreamMode)).
+                        setUpstreamMode(upstreamMode).
                         setName(branchName).
                         call();
                 } catch (GitAPIException e) {
-                        throw new GitBuildException(String.format("Could not create branch '%s'", branchName), e);
+                        throw new GitBuildException(String.format("Could not create branch '%s'.", branchName), e);
                 }
         }
 

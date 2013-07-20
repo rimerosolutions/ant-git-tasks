@@ -30,19 +30,19 @@ import com.rimerosolutions.ant.git.tasks.InitTask;
 public class GitUtilsTest {
 
         @Test
-        public void testNullOrEmptyString() {
+        public void testIsNullOrBlankString() {
                 String s = null;
 
-                assertTrue(GitUtils.nullOrEmptyString(s));
+                assertTrue(GitUtils.isNullOrBlankString(s));
 
                 s = "";
-                assertTrue(GitUtils.nullOrEmptyString(s));
+                assertTrue(GitUtils.isNullOrBlankString(s));
 
                 s = " ";
-                assertTrue(GitUtils.nullOrEmptyString(s));
+                assertTrue(GitUtils.isNullOrBlankString(s));
 
                 s = "abc";
-                assertFalse(GitUtils.nullOrEmptyString(s));
+                assertFalse(GitUtils.isNullOrBlankString(s));
         }
 
         @Test
