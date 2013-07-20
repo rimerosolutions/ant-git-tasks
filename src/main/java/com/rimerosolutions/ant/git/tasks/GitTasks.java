@@ -172,6 +172,13 @@ public class GitTasks extends Task {
                 return c;
         }
 
+        public TagListTask createTagList() {
+                TagListTask c = new TagListTask();
+                tasks.add(c);
+
+                return c;
+        }
+
         public TagDeleteTask createTagDelete() {
                 TagDeleteTask c = new TagDeleteTask();
                 tasks.add(c);

@@ -41,29 +41,14 @@ import com.rimerosolutions.ant.git.GitBuildException;
  *
  * @author Yves Zoundi
  */
-public class BranchListTask extends AbstractGitRepoAwareTask {
+public class BranchListTask extends TagListTask {
 
         private static final String TASK_NAME = "git-branch-list";
-        private List<String> branchesToCheck = new ArrayList<String>();
         private ListBranchCommand.ListMode listMode = ListBranchCommand.ListMode.ALL;
-        private String outputFilename;
 
         @Override
         public String getName() {
                 return TASK_NAME;
-        }
-
-        /**
-         * Sets the output file that will contain the list of branches
-         *
-         * @param outputFilename The output file name to use
-         */
-        public void setOutputFilename(String outputFilename) {
-                if (GitUtils.nullOrEmptyString(outputFilename)) {
-                        throw new BuildException("Invalid output file name");
-                }
-                
-                this.outputFilename = outputFilename;
         }
 
         /**
@@ -80,57 +65,21 @@ public class BranchListTask extends AbstractGitRepoAwareTask {
                                 ListBranchCommand.ListMode[] listModes = ListBranchCommand.ListMode.values();
 
                                 List<String> listModeValidValues = new ArrayList<String>(listModes.length);
-                                
+
                                 for (ListBranchCommand.ListMode aListMode : listModes) {
                                         listModeValidValues.add(aListMode.name());
                                 }
-                                
+
                                 throw new BuildException(String.format("Valid listMode options are: %s", listModeValidValues.toString()));
                         }
                 }
         }
 
-        public void setVerifyContainBranches(String branchNames) {
-                if (!GitUtils.nullOrEmptyString(branchNames)) {
-                        branchesToCheck.addAll(Arrays.asList(branchNames.split(",")));   
-                }
-        }
-        
         @Override
         protected void doExecute() {
                 try {
                         List<Ref> branchesRefList = git.branchList().setListMode(listMode).call();
-                        List<String> branchNames = new ArrayList<String>(branchesRefList.size());
-
-                        for (Ref branchRef : branchesRefList) {
-                                branchNames.add(GitUtils.sanitizeBranchName(branchRef.getName()));
-                        }
-
-                        if (!branchesToCheck.isEmpty()) {
-                                if (!branchNames.containsAll(branchesToCheck)) {
-                                        List<String> branchesCopy = new ArrayList<String>(branchesToCheck);
-                                        branchesCopy.removeAll(branchNames);
-                                        
-                                        throw new GitBuildException(String.format("Some branches could not be found '%s'", branchesCopy.toString()));
-                                }
-                        }
-
-                        if (!GitUtils.nullOrEmptyString(outputFilename)) {
-                                FileUtils fileUtils = FileUtils.newFileUtils();
-                                
-                                Echo echo = new Echo();
-                                echo.setProject(getProject());
-                                echo.setFile(fileUtils.resolveFile(getProject().getBaseDir(), outputFilename));
-
-                                for (int i = 0; i < branchNames.size(); i++) {
-                                        String branchName = branchNames.get(i);
-                                        
-                                        echo.addText("* " + branchName + System.getProperty("line.separator"));
-                                }
-
-                                echo.perform();
-                        }
-                        
+                        processReferencesAndOutput(branchesRefList);
                 } catch (GitAPIException e) {
                         throw new GitBuildException("Could not list branches", e);
                 }

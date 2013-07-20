@@ -31,22 +31,28 @@ limitations under the License.
         <property name="dummy.patch.file" value="${testData.folder}/data-patch.txt"/>
         <property name="branchlist.file" value="${testData.folder}/branch-list.txt"/>
         <property name="branchlist.file.baseline" value="${testData.folder}/branch-list-baseline.txt"/>
+        <property name="taglist.file" value="${testData.folder}/tag-list.txt"/>
+        <property name="taglist.file.baseline" value="${testData.folder}/tag-list-baseline.txt"/>
         <property name="testLocalRepo" value="${testData.folder}/testLocalRepo"/>
         <property name="testLocalRepoClone" value="${testData.folder}/testLocalRepoClone"/>
         <property name="dummy.commit.message" value="Initial commit"/>
         <property name="dummy.checkout.branch" value="feature/checkout"/>
+        <property name="dummy.tag.name" value="dummytag"/>
+        <property name="master.branch.name" value="master"/>
 
-        <!-- is called prior to the test -->
+        <!-- ================================ -->
+        <!-- Test lifecycle -->
+        <!-- ================================ -->
         <target name="setUp">
                 <mkdir dir="${testLocalRepo}"/>
                 <mkdir dir="${testLocalRepoClone}"/>
         </target>
 
-        <!-- is called after the test, even if that caused an error -->
         <target name="tearDown">
                 <delete dir="${testLocalRepo}" quiet="true"/>
                 <delete dir="${testLocalRepoClone}" quiet="true"/>
                 <delete file="${branchlist.file}" quiet="true"/>
+                <delete file="${taglist.file}" quiet="true"/>
         </target>
 
         <macrodef name="initLocalRepo" description="Macro to ensure good setUp-tearDown behavior">
@@ -64,14 +70,78 @@ limitations under the License.
                 </sequential>
         </macrodef>
 
-        <target name="testCheckout" description="Test git-checkout">
+        <!-- ================================ -->
+        <!-- Tags -->
+        <!-- ================================ -->
+        <target name="testTagDelete" description="Test git-tag-delete">
+                <initLocalRepo/>
+                <git:git localDirectory="${testLocalRepo}" verbose="true">
+                        <git:tag name="${dummy.tag.name}"/>
+                        <git:tagdelete tags="${dummy.tag.name}"/>
+                </git:git>
+
+                <au:expectfailure>
+                        <git:git localDirectory="${testLocalRepo}" verbose="true">
+                                <git:taglist verifycontainnames="${dummy.tag.name}" failonerror="true"/>
+                        </git:git>
+                </au:expectfailure>
+        </target>
+
+        <target name="testTagAdd" description="Test git-tag-add">
+                <git:git localDirectory="${testLocalRepo}" verbose="true">
+                        <git:tag name="${dummy.tag.name}"/>
+                        <git:taglist outputfilename="${taglist.file}" verifycontainnames="${dummy.tag.name}" failonerror="true"/>
+                </git:git>
+        </target>
+
+        <target name="testTagList" description="Test git-tag-list">
+                <initLocalRepo/>
+
+                <git:git localDirectory="${testLocalRepo}" verbose="true">
+                        <git:tag name="${dummy.tag.name}"/>
+                        <git:taglist outputfilename="${taglist.file}" failonerror="true"/>
+                </git:git>
+
+                <au:assertFileExists file="${taglist.file}"/>
+
+                <au:assertResourceContains resource="${taglist.file.baseline}"
+                                           value="${dummy.tag.name}"
+                                           message="Cannot find tag ${dummy.tag.name} in tag list baseline"/>
+
+                <au:assertResourceContains resource="${taglist.file}"
+                                           value="${dummy.tag.name}"
+                                           message="Cannot find tag ${dummy.tag.name} in tag list dump"/>
+
+                <au:assertFilesMatch expected="${taglist.file.baseline}"
+                                     actual="${taglist.file}"
+                                     message="Tags list don't match baseline"/>
+        </target>
+
+        <!-- ================================ -->
+        <!-- Branches -->
+        <!-- ================================ -->
+        <target name="testBranchDelete" description="Test git-branch-delete">
+                <initLocalRepo/>
+
+                <au:expectfailure>
+                        <git:git localDirectory="${testLocalRepo}" verbose="true">
+                                <git:checkout branchName="${dummy.checkout.branch}" createBranch="true"/>
+                                <git:branchDelete failonerror="true" branches="${dummy.checkout.branch}"/>
+                        </git:git>
+                </au:expectfailure>
+
+                <git:git localDirectory="${testLocalRepo}" verbose="true">
+                        <git:checkout branchName="${master.branch.name}"/>
+                        <git:branchDelete failonerror="true" branches="${dummy.checkout.branch}"/>
+                </git:git>
+        </target>
+
+        <target name="testBranchList" description="Test git-branch-list">
                 <initLocalRepo/>
 
                 <git:git localDirectory="${testLocalRepo}" verbose="true">
                         <git:checkout branchName="${dummy.checkout.branch}" createBranch="true"/>
-                        <git:branchlist  verifycontainbranches="${dummy.checkout.branch}"
-                                         outputfilename="${branchlist.file}"
-                                         failonerror="true"/>
+                        <git:branchlist outputfilename="${branchlist.file}"/>
                 </git:git>
 
                 <au:assertFileExists file="${branchlist.file}"/>
@@ -89,6 +159,20 @@ limitations under the License.
                                      message="Branches list don't match baseline"/>
         </target>
 
+        <target name="testCheckout" description="Test git-checkout">
+                <initLocalRepo/>
+
+                <git:git localDirectory="${testLocalRepo}" verbose="true">
+                        <git:checkout branchName="${dummy.checkout.branch}" createBranch="true"/>
+                        <git:branchlist  verifycontainnames="${dummy.checkout.branch}"
+                                         outputfilename="${branchlist.file}"
+                                         failonerror="true"/>
+                </git:git>
+        </target>
+
+        <!-- ================================ -->
+        <!-- Others -->
+        <!-- ================================ -->
         <target name="testClone" description="Test git-clone">
                 <initLocalRepo/>
 

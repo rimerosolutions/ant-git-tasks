@@ -24,23 +24,23 @@ import com.rimerosolutions.ant.git.tasks.InitTask;
 
 /**
  * Unit test for some utility classes
- * 
+ *
  * @author Yves Zoundi
  */
 public class GitUtilsTest {
- 
+
         @Test
         public void testNullOrEmptyString() {
                 String s = null;
-                
+
                 assertTrue(GitUtils.nullOrEmptyString(s));
-                
+
                 s = "";
                 assertTrue(GitUtils.nullOrEmptyString(s));
-                
+
                 s = " ";
                 assertTrue(GitUtils.nullOrEmptyString(s));
-                
+
                 s = "abc";
                 assertFalse(GitUtils.nullOrEmptyString(s));
         }
@@ -48,20 +48,23 @@ public class GitUtilsTest {
         @Test
         public void  testSanitizeBranchName() {
                 String branchName = "refs/heads/mybranch";
-                assertEquals("mybranch", GitUtils.sanitizeBranchName(branchName));
+                assertEquals("mybranch", GitUtils.sanitizeRefName(branchName));
+
+                branchName = "refs/tags/mybranch";
+                assertEquals("mybranch", GitUtils.sanitizeRefName(branchName));
         }
-        
+
         @Test
         public void testValidateDefinitionSingleCondition() {
                 InitTask t = new InitTask();
                 t.setIf("Hello");
-                GitUtils.validateTaskConditions(t); 
-                
+                GitUtils.validateTaskConditions(t);
+
                 t = new InitTask();
                 t.setUnless("Hello");
                 GitUtils.validateTaskConditions(t);
-        }        
-        
+        }
+
         @Test(expected=BuildException.class)
         public void testValidateDefinitionBothConditions() {
                 InitTask t = new InitTask();

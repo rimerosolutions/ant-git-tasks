@@ -34,6 +34,9 @@ public final class GitUtils {
         /** Branches name prefix */
         public static final String REF_HEAD_PREFIX = "refs/heads/";
 
+        /** Tags name prefix */
+        public static final String REF_TAG_PREFIX = "refs/tags/";
+
         /**
          * Checks whether or not a string is null or empty (as in blank)
          *
@@ -49,19 +52,23 @@ public final class GitUtils {
         }
 
         /**
-         * Strips the 'ref/heads/' prefix from a branch name if needed
+         * Strips the 'ref/someprefix/' prefix from a reference name if needed
          *
-         * @param branchName The branch name to sanitize
+         * @param branchName The reference name to sanitize
          * @return The natural branch name without prefix
          */
-        public static String sanitizeBranchName(String branchName) {
-                if (branchName.startsWith(REF_HEAD_PREFIX)) {
-                        branchName = branchName.substring(REF_HEAD_PREFIX.length());
+        public static String sanitizeRefName(String refName) {
+                if (refName.startsWith(REF_HEAD_PREFIX)) {
+                        refName = refName.substring(REF_HEAD_PREFIX.length());
                 }
 
-                return branchName;
+                if (refName.startsWith(REF_TAG_PREFIX)) {
+                        refName = refName.substring(REF_TAG_PREFIX.length());
+                }
+
+                return refName;
         }
-        
+
         /**
          * Validate <code>if</code> and <code>else</code> conditions on a Git task
          *

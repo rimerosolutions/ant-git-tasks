@@ -19,7 +19,6 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.resources.FileResource;
 import org.apache.tools.ant.util.FileUtils;
-import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.AddCommand;
 import java.util.Collection;
@@ -83,9 +82,7 @@ public class AddTask extends AbstractGitRepoAwareTask {
                                 processResourceIterator(fileset.iterator(), cb);
                         }
 
-                        DirCache dirCache = addCommand.call();
-                        
-                        log(String.format("The cache contains %d entries", dirCache.getEntryCount()));
+                        addCommand.call();                        
                 }
                 catch (GitAPIException e) {
                         throw new GitBuildException(e);
