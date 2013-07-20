@@ -34,6 +34,7 @@ limitations under the License.
         <property name="testLocalRepo" value="${testData.folder}/testLocalRepo"/>
         <property name="testLocalRepoClone" value="${testData.folder}/testLocalRepoClone"/>
         <property name="dummy.commit.message" value="Initial commit"/>
+        <property name="dummy.checkout.branch" value="feature/checkout"/>
 
         <!-- is called prior to the test -->
         <target name="setUp">
@@ -67,14 +68,22 @@ limitations under the License.
                 <initLocalRepo/>
 
                 <git:git localDirectory="${testLocalRepo}" verbose="true">
-                        <git:checkout branchName="feature/checkout" createBranch="true"/>
-                        <git:branchlist  verifycontainbranches="refs/heads/feature/checkout"
+                        <git:checkout branchName="${dummy.checkout.branch}" createBranch="true"/>
+                        <git:branchlist  verifycontainbranches="${dummy.checkout.branch}"
                                          outputfilename="${branchlist.file}"
                                          failonerror="true"/>
                 </git:git>
 
                 <au:assertFileExists file="${branchlist.file}"/>
-                
+
+                <au:assertResourceContains resource="${branchlist.file.baseline}"
+                                           value="${dummy.checkout.branch}"
+                                           message="Cannot find branch ${dummy.checkout.branch} in branch list baseline"/>
+
+                <au:assertResourceContains resource="${branchlist.file}"
+                                           value="${dummy.checkout.branch}"
+                                           message="Cannot find branch ${dummy.checkout.branch} in branch list dump"/>
+
                 <au:assertFilesMatch expected="${branchlist.file.baseline}"
                                      actual="${branchlist.file}"
                                      message="Branches list don't match baseline"/>

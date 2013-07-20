@@ -31,6 +31,9 @@ public final class GitUtils {
         /** Branding prefix to pre-prend to commit messages */
         public static final String BRANDING_MESSAGE = "[ant-git-tasks]";
 
+        /** Branches name prefix */
+        public static final String REF_HEAD_PREFIX = "refs/heads/";
+
         /**
          * Checks whether or not a string is null or empty (as in blank)
          *
@@ -45,6 +48,20 @@ public final class GitUtils {
                 return s.trim().length() == 0;
         }
 
+        /**
+         * Strips the 'ref/heads/' prefix from a branch name if needed
+         *
+         * @param branchName The branch name to sanitize
+         * @return The natural branch name without prefix
+         */
+        public static String sanitizeBranchName(String branchName) {
+                if (branchName.startsWith(REF_HEAD_PREFIX)) {
+                        branchName = branchName.substring(REF_HEAD_PREFIX.length());
+                }
+
+                return branchName;
+        }
+        
         /**
          * Validate <code>if</code> and <code>else</code> conditions on a Git task
          *

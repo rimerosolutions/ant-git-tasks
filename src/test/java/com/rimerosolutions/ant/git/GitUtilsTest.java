@@ -17,6 +17,7 @@ package com.rimerosolutions.ant.git;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.apache.tools.ant.BuildException;
 import com.rimerosolutions.ant.git.tasks.InitTask;
@@ -42,6 +43,12 @@ public class GitUtilsTest {
                 
                 s = "abc";
                 assertFalse(GitUtils.nullOrEmptyString(s));
+        }
+
+        @Test
+        public void  testSanitizeBranchName() {
+                String branchName = "refs/heads/mybranch";
+                assertEquals("mybranch", GitUtils.sanitizeBranchName(branchName));
         }
         
         @Test

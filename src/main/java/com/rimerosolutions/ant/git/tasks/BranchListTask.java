@@ -103,7 +103,7 @@ public class BranchListTask extends AbstractGitRepoAwareTask {
                         List<String> branchNames = new ArrayList<String>(branchesRefList.size());
 
                         for (Ref branchRef : branchesRefList) {
-                                branchNames.add(branchRef.getName());
+                                branchNames.add(GitUtils.sanitizeBranchName(branchRef.getName()));
                         }
 
                         if (!branchesToCheck.isEmpty()) {
@@ -124,11 +124,8 @@ public class BranchListTask extends AbstractGitRepoAwareTask {
 
                                 for (int i = 0; i < branchNames.size(); i++) {
                                         String branchName = branchNames.get(i);
-                                        echo.addText(branchName);
                                         
-                                        if (i != branchNames.size() - 1) {
-                                                echo.addText(System.getProperty("line.separator"));
-                                        }
+                                        echo.addText("* " + branchName + System.getProperty("line.separator"));
                                 }
 
                                 echo.perform();
