@@ -54,7 +54,7 @@ public final class GitUtils {
         /**
          * Strips the 'ref/someprefix/' prefix from a reference name if needed
          *
-         * @param branchName The reference name to sanitize
+         * @param refName The reference name to sanitize
          * @return The natural branch name without prefix
          */
         public static String sanitizeRefName(String refName) {

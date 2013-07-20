@@ -18,6 +18,8 @@ limitations under the License.
          xmlns:git="antlib:com.rimerosolutions.ant.git"
          xmlns:wrapper="antlib:com.rimerosolutions.ant.wrapper.tasks"
          xmlns:au="antlib:org.apache.ant.antunit"
+         xmlns:findbugs="antlib:edu.umd.cs.findbugs"
+         xmlns:cobertura="antlib:net.sourceforge.cobertura.ant"
          name="ant-git-tasks"
          default="jar">
 
@@ -346,16 +348,18 @@ limitations under the License.
                          classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
                          classpathref="test.classpath"/>
 
-                <taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
+                <taskdef uri="antlib:net.sourceforge.cobertura.ant"
+                         classpathref="cobertura.classpath"
+                         resource="net/sourceforge/cobertura/ant/antlib.xml"/>
 
-                <cobertura-instrument todir="${instrumentation.dir}" datafile="${cobertura.data.file}">
+                <cobertura:instrument todir="${instrumentation.dir}" datafile="${cobertura.data.file}">
                         <includeClasses regex=".*" />
                         <excludeClasses regex=".*\.Test.*"/>
                         <instrumentationClasspath>
                                 <path refid="test.classpath" />
                                 <pathelement location="${test.classes.dir}" />
                         </instrumentationClasspath>
-                </cobertura-instrument>
+                </cobertura:instrument>
         </target>
 
         <target name="-junit-tests" depends="-instrument-tests" >
@@ -409,7 +413,7 @@ limitations under the License.
                 <copy todir="${test.data.dir}" overwrite="true">
                         <fileset dir="${test.resources.dir}" includes="*.txt"/>
                 </copy>
-                
+
                 <au:antunit failonerror="false" errorproperty="antunit.failed">
                         <referenceset>
                                 <reference refid="compile.classpath"/>
@@ -418,7 +422,7 @@ limitations under the License.
                         </referenceset>
 
                         <fileset dir="${test.resources.dir}" includes="*.xml"/>
-                        
+
                         <au:plainlistener/>
                         <au:xmllistener todir="${reports.junit.xml.dir}"/>
                 </au:antunit>
@@ -437,27 +441,30 @@ limitations under the License.
         <!-- code quality -->
         <!-- ****************************************** -->
         <target name="report-findbugs" depends="compile" description="Generate FindBugs report">
+                <echo>Generating FindBugs report.</echo>
                 <taskdef name="findbugs"
                          classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
+                         uri="antlib:edu.umd.cs.findbugs"
                          classpathref="findbugs.classpath"/>
 
-                <findbugs classpath="findbugs.classpath"
-                          classpathref="findbugs.classpath"
-                          workHard="true"
-                          jvmargs="-Xmx512m -Xms512m"
-                          output="html"
-                          outputFile="${reports.findbugs.dir}/index.html"
-                          stylesheet="default.xsl">
+                <findbugs:findbugs classpath="findbugs.classpath"
+                                   classpathref="findbugs.classpath"
+                                   workHard="true"
+                                   jvmargs="-Xmx512m -Xms512m"
+                                   output="html"
+                                   outputFile="${reports.findbugs.dir}/index.html"
+                                   stylesheet="default.xsl">
                         <auxAnalyzePath>
                                 <fileset dir="${lib.dir}" includes="**/*annotation*.jar"/>
                         </auxAnalyzePath>
                         <auxClasspath refid="compile.classpath"/>
                         <sourcePath path="${src.dir}" />
                         <class location="${classes.dir}" />
-                </findbugs>
+                </findbugs:findbugs>
         </target>
 
         <target name="report-junit" depends="tests" description="Generate JUnit report">
+                <echo>Generating JUnit report.</echo>
                 <junitreport todir="${reports.junit.dir}">
                         <fileset dir="${reports.junit.xml.dir}">
                                 <include name="TEST-*.xml"/>
@@ -467,7 +474,8 @@ limitations under the License.
         </target>
 
         <target name="report-cobertura" depends="tests" description="Generate Cobertura report">
-                <cobertura-report format="html"
+                <echo>Generating Cobertura report.</echo>
+                <cobertura:report format="html"
                                   destdir="${reports.cobertura.dir}"
                                   srcdir="${src.dir}"
                                   datafile="${cobertura.data.file}"/>
