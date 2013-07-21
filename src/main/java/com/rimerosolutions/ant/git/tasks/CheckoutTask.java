@@ -102,10 +102,14 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
                         CheckoutResult checkoutResult = checkoutCommand.getResult();
 
                         if (checkoutResult.getStatus().equals(CheckoutResult.Status.CONFLICTS)) {
-                                throw new GitBuildException(String.format("Conflicts were found:%s.", checkoutResult.getConflictList().toString()));
+                                String conflicts = checkoutResult.getConflictList().toString();
+                                
+                                throw new GitBuildException(String.format("Conflicts were found:%s.", conflicts));
                         }
                         else if (checkoutResult.getStatus().equals(CheckoutResult.Status.NONDELETED)) {
-                                throw new GitBuildException(String.format("Some files could not be deleted:%s.", checkoutResult.getUndeletedList().toString()));
+                                String undeleted = checkoutResult.getUndeletedList().toString();
+                                
+                                throw new GitBuildException(String.format("Some files could not be deleted:%s.", undeleted));
                         }
                 } catch (RefAlreadyExistsException e) {
                         throw new GitBuildException(String.format("Cannot create branch '%s', as it already exists!", branchName), e);
@@ -118,7 +122,6 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
                 } catch (GitAPIException e) {
                         throw new GitBuildException(String.format("Could not checkout branch '%s'.", branchName), e);
                 }
-
         }
 
 }

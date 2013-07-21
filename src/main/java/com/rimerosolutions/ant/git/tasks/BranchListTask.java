@@ -27,7 +27,7 @@ import com.rimerosolutions.ant.git.GitBuildException;
 import com.rimerosolutions.ant.git.GitUtils;
 
 /**
- * List branches
+ * List branches.
  * 
  * <pre>{@code 
  * <git:git localDirectory="${testLocalRepo}" verbose="true">
@@ -70,7 +70,9 @@ public class BranchListTask extends TagListTask {
                                         listModeValidValues.add(aListMode.name());
                                 }
 
-                                throw new BuildException(String.format("Valid listMode options are: %s.", listModeValidValues.toString()));
+                                String validModes = listModeValidValues.toString();
+                                
+                                throw new BuildException(String.format("Valid listMode options are: %s.", validModes));
                         }
                 }
         }

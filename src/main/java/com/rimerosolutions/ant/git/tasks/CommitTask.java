@@ -84,7 +84,8 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                         RevCommit revCommit = cmd.call();
 
                         if (revCommitIdProperty != null) {
-                                getProject().setProperty(revCommitIdProperty, ObjectId.toString(revCommit.getId()));
+                                String revisionId = ObjectId.toString(revCommit.getId());
+                                getProject().setProperty(revCommitIdProperty, revisionId);
                         }
 
                         log(revCommit.getFullMessage());

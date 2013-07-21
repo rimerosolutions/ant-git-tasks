@@ -28,19 +28,19 @@ import com.rimerosolutions.ant.git.GitUtils;
 
 /**
  * Git tasks container
- * 
+ *
  * <pre>{@code
  * <git:settings refId="git.testing"
  *               username="xxxtesting"
  *               password="xxxtesting"
  *               name="xxxtesting"
  *               email="xxxtesting@gmail.com"/>
- * 
+ *
  *  <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
  *     <git:init directory="${testLocalRepo}" bare="false" />
  *     <git:commit message="${dummy.commit.message}" revCommitIdProperty="revcommit"/>
  *  </git:git>}</pre>
- *                       
+ *
  * @author Yves Zoundi
  */
 public class GitTasks extends Task {
@@ -79,7 +79,11 @@ public class GitTasks extends Task {
                 this.localDirectory = dir;
         }
 
-        
+        /**
+         * Creates a new nested <code>branchlist</code> task
+         *
+         * @return A new task to list branches
+         */
         public BranchListTask createBranchList() {
                 BranchListTask c = new BranchListTask();
                 tasks.add(c);
@@ -87,6 +91,11 @@ public class GitTasks extends Task {
                 return c;
         }
 
+        /**
+         * Creates a nested <code>apply</code> task.
+         *
+         * @return A new task to apply patches.
+         */
         public ApplyTask createApply() {
                 ApplyTask c = new ApplyTask();
                 tasks.add(c);
@@ -94,6 +103,11 @@ public class GitTasks extends Task {
                 return c;
         }
 
+        /**
+         * Creates a nested <code>add</code> task.
+         *
+         * @return A new task to add files or directories.
+         */
         public AddTask createAdd() {
                 AddTask c = new AddTask();
                 tasks.add(c);
@@ -101,6 +115,11 @@ public class GitTasks extends Task {
                 return c;
         }
 
+        /**
+         * Creates a nested <code>branch</code> task.
+         *
+         * @return a new branch task.
+         */
         public BranchTask createBranch() {
                 BranchTask c = new BranchTask();
                 tasks.add(c);
@@ -108,6 +127,11 @@ public class GitTasks extends Task {
                 return c;
         }
 
+        /**
+         * Creates a nested <code>branchdelete</code> task.
+         *
+         * @return a task to delete branches.
+         */
         public BranchDeleteTask createBranchDelete() {
                 BranchDeleteTask c = new BranchDeleteTask();
                 tasks.add(c);
@@ -115,6 +139,11 @@ public class GitTasks extends Task {
                 return c;
         }
 
+        /**
+         * Creates a nested checkout task.
+         *
+         * @return A task to checkout code.
+         */
         public CheckoutTask createCheckout() {
                 CheckoutTask c = new CheckoutTask();
                 tasks.add(c);
@@ -122,6 +151,11 @@ public class GitTasks extends Task {
                 return c;
         }
 
+        /**
+         * Creates a nested <code>clean</code> task.
+         *
+         * @return A task to clean a repository.
+         */
         public CleanTask createClean() {
                 CleanTask c = new CleanTask();
                 tasks.add(c);
@@ -129,6 +163,11 @@ public class GitTasks extends Task {
                 return c;
         }
 
+        /**
+         * Creates a nested <code>clone</code> task.
+         *
+         * @return A task to clone repositories.
+         */
         public CloneTask createClone() {
                 CloneTask c = new CloneTask();
                 tasks.add(c);
@@ -136,6 +175,11 @@ public class GitTasks extends Task {
                 return c;
         }
 
+        /**
+         * Creates a nested <code>commit</code> task
+         *
+         * @return a new task to commit changes
+         */
         public CommitTask createCommit() {
                 CommitTask c = new CommitTask();
                 tasks.add(c);
@@ -143,6 +187,11 @@ public class GitTasks extends Task {
                 return c;
         }
 
+        /**
+         * Creates a nested <code>fetch</code> task
+         *
+         * @return a new task to fetch changes
+         */
         public FetchTask createFetch() {
                 FetchTask c = new FetchTask();
                 tasks.add(c);
@@ -150,6 +199,11 @@ public class GitTasks extends Task {
                 return c;
         }
 
+        /**
+         * Creates a nested <code>init</code> task
+         *
+         * @return a new task to initialize a repository
+         */
         public InitTask createInit() {
                 InitTask c = new InitTask();
                 tasks.add(c);
@@ -157,6 +211,11 @@ public class GitTasks extends Task {
                 return c;
         }
 
+        /**
+         * Creates a nested <code>pull</code> task.
+         *
+         * @return a new task to pull changes.
+         */
         public PullTask createPull() {
                 PullTask p = new PullTask();
                 tasks.add(p);
@@ -164,6 +223,11 @@ public class GitTasks extends Task {
                 return p;
         }
 
+        /**
+         * Creates a nested <code>tag</code> task.
+         *
+         * @return a new task to create tags.
+         */
         public PushTask createPush() {
                 PushTask c = new PushTask();
                 tasks.add(c);
@@ -171,6 +235,11 @@ public class GitTasks extends Task {
                 return c;
         }
 
+        /**
+         * Creates a nested <code>tag</code> task
+         *
+         * @return a new task to create tags
+         */
         public UpToDateTask createUpToDate() {
                 UpToDateTask c = new UpToDateTask();
                 tasks.add(c);
@@ -178,6 +247,11 @@ public class GitTasks extends Task {
                 return c;
         }
 
+        /**
+         * Creates a nested <code>tag</code> task.
+         *
+         * @return a new task to create tags.
+         */
         public TagTask createTag() {
                 TagTask c = new TagTask();
                 tasks.add(c);
@@ -185,6 +259,11 @@ public class GitTasks extends Task {
                 return c;
         }
 
+        /**
+         * Creates a nested <code>taglist</code> task
+         *
+         * @return a new task to list tags
+         */
         public TagListTask createTagList() {
                 TagListTask c = new TagListTask();
                 tasks.add(c);
@@ -192,6 +271,11 @@ public class GitTasks extends Task {
                 return c;
         }
 
+        /**
+         * Creats a nested <code>tagdelete</code> task.
+         *
+         * @return a new task to delete tags.
+         */
         public TagDeleteTask createTagDelete() {
                 TagDeleteTask c = new TagDeleteTask();
                 tasks.add(c);
