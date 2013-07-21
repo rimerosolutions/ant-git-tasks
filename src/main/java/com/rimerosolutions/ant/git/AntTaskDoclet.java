@@ -16,10 +16,12 @@
 package com.rimerosolutions.ant.git;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,9 +38,9 @@ import com.sun.tools.doclets.standard.Standard;
 /**
  * Quick and very dirty doclet for Ant tasks documentation. Self-Contained for
  * now, no template engine or external dependencies.
- * 
+ *
  * @author Yves Zoundi
- * 
+ *
  */
 public class AntTaskDoclet extends Standard {
         private static final String ANT_TASK_CLASS_NAME = "org.apache.tools.ant.Task";
@@ -47,6 +49,30 @@ public class AntTaskDoclet extends Standard {
         private static String header = "Ant tasks documentation";
         private static String windowtitle = "Ant tasks documentation";
         private static String bottom;
+        private static String overview;
+
+        public static void copyFile(File sourceFile, File destFile) throws IOException {
+                if(!destFile.exists()) {
+                        destFile.createNewFile();
+                }
+
+                FileChannel source = null;
+                FileChannel destination = null;
+
+                try {
+                        source = new FileInputStream(sourceFile).getChannel();
+                        destination = new FileOutputStream(destFile).getChannel();
+                        destination.transferFrom(source, 0, source.size());
+                }
+                finally {
+                        if(source != null) {
+                                source.close();
+                        }
+                        if(destination != null) {
+                                destination.close();
+                        }
+                }
+        }
 
         public static final boolean start(RootDoc root) {
                 readDestDirOption(root.options());
@@ -65,6 +91,8 @@ public class AntTaskDoclet extends Standard {
                                 doctitle = opt[1];
                         } else if (opt[0].equals("-windowtitle")) {
                                 windowtitle = opt[1];
+                        } else if (opt[0].equals("-overview")) {
+                                overview = opt[1];
                         } else if (opt[0].equals("-bottom")) {
                                 bottom = opt[1];
                         }
@@ -180,23 +208,23 @@ public class AntTaskDoclet extends Standard {
                 try {
                         withWriter(new File(new File(destDir), "index.html"), new WriterCallback() {
 
-                                @Override
-                                public void doWithWriter(Writer w) throws IOException {
-                                        StringBuilder sb = new StringBuilder();
+                                        @Override
+                                        public void doWithWriter(Writer w) throws IOException {
+                                                StringBuilder sb = new StringBuilder();
 
-                                        sb.append("<html>");
-                                        sb.append("<head><title>").append(windowtitle).append("</head></title>");
-                                        sb.append("<frameset rows=\"15%,*\">");
-                                        sb.append(" <frame src=\"header.html\">");
-                                        sb.append(" <frameset cols=\"25%,75%\">");
-                                        sb.append("<frame src=\"nav.html\">");
-                                        sb.append("<frame name=\"bodycontents\" src=\"body.html\">");
-                                        sb.append("</frameset></frameset></html>");
-                                        sb.append("</html>");
+                                                sb.append("<html>");
+                                                sb.append("<head><title>").append(windowtitle).append("</head></title>");
+                                                sb.append("<frameset rows=\"15%,*\">");
+                                                sb.append(" <frame src=\"header.html\">");
+                                                sb.append(" <frameset cols=\"25%,75%\">");
+                                                sb.append("<frame src=\"nav.html\">");
+                                                sb.append("<frame name=\"bodycontents\" src=\"body.html\">");
+                                                sb.append("</frameset></frameset></html>");
+                                                sb.append("</html>");
 
-                                        w.write(sb.toString());
-                                }
-                        });
+                                                w.write(sb.toString());
+                                        }
+                                });
                 } catch (Exception e) {
                         System.exit(1);
                 }
@@ -205,18 +233,18 @@ public class AntTaskDoclet extends Standard {
         private static void writeHeaderPage() {
                 try {
                         withWriter(new File(new File(destDir), "header.html"), new WriterCallback() {
-                                @Override
-                                public void doWithWriter(Writer w) throws IOException {
-                                        StringBuilder sb = new StringBuilder();
+                                        @Override
+                                        public void doWithWriter(Writer w) throws IOException {
+                                                StringBuilder sb = new StringBuilder();
 
-                                        sb.append("<html><head><title>");
-                                        sb.append(windowtitle).append("</title></head><body><h1>");
-                                        sb.append(windowtitle);
-                                        sb.append("</h1></body></html>");
+                                                sb.append("<html><head><title>");
+                                                sb.append(windowtitle).append("</title></head><body><h1>");
+                                                sb.append(windowtitle);
+                                                sb.append("</h1></body></html>");
 
-                                        w.write(sb.toString());
-                                }
-                        });
+                                                w.write(sb.toString());
+                                        }
+                                });
                 } catch (Exception e) {
                         System.exit(1);
                 }
@@ -224,20 +252,25 @@ public class AntTaskDoclet extends Standard {
 
         private static void writeBodyPage() {
                 try {
-                        withWriter(new File(new File(destDir), "body.html"), new WriterCallback() {
-                                @Override
-                                public void doWithWriter(Writer w) throws IOException {
-                                        StringBuilder sb = new StringBuilder();
+                        if (overview == null) {
+                                withWriter(new File(new File(destDir), "body.html"), new WriterCallback() {
+                                                @Override
+                                                public void doWithWriter(Writer w) throws IOException {
+                                                        StringBuilder sb = new StringBuilder();
 
-                                        sb.append("<html><head><title>");
-                                        sb.append(windowtitle);
-                                        sb.append("</title></head><body><div>");
-                                        sb.append(doctitle);
-                                        sb.append("</div></body></html>");
+                                                        sb.append("<html><head><title>");
+                                                        sb.append(windowtitle);
+                                                        sb.append("</title></head><body><div>");
+                                                        sb.append(doctitle);
+                                                        sb.append("</div></body></html>");
 
-                                        w.write(sb.toString());
-                                }
-                        });
+                                                        w.write(sb.toString());
+                                                }
+                                        });
+                        }
+                        else {
+                                copyFile(new File(overview), new File(new File(destDir), "body.html"));
+                        }
                 } catch (Exception e) {
                         System.exit(1);
                 }
@@ -315,13 +348,13 @@ public class AntTaskDoclet extends Standard {
 
                                 if (!attributesCopy.isEmpty()) {
                                         StringBuilder sb = new StringBuilder();
-                                        
+
                                         sb.append("<h2>Attributes</h2>");
                                         sb.append("<table border='1'>");
                                         sb.append("<tr>");
                                         sb.append("<th>Name</th>").append("<th>Description</th>").append("<th>Required</th>");
                                         sb.append("</tr>");
-                                        
+
                                         for (AttributeData attr : attributesCopy) {
                                                 sb.append("<tr>");
                                                 sb.append("<td>").append(attr.name).append("</td>");
@@ -329,7 +362,7 @@ public class AntTaskDoclet extends Standard {
                                                 sb.append("<td>").append(attr.required).append("</td>");
                                                 sb.append("</tr>");
                                         }
-                                        
+
                                         sb.append("</table>");
 
                                         w.write(sb.toString());
@@ -337,20 +370,20 @@ public class AntTaskDoclet extends Standard {
 
                                 if (!elementsCopy.isEmpty()) {
                                         StringBuilder sb = new StringBuilder();
-                                        
+
                                         sb.append("<h2>Nested elements</h2>");
                                         sb.append("<table border='1'>");
                                         sb.append("<tr>");
                                         sb.append("<th>Name</th>").append("<th>Description</th>");
                                         sb.append("</tr>");
-                                        
+
                                         for (ElementData attr : elementsCopy) {
                                                 sb.append("<tr>");
                                                 sb.append("<td>").append(attr.name).append("</td>");
                                                 sb.append("<td>").append(attr.description).append("</td>");
                                                 sb.append("</tr>");
                                         }
-                                        
+
                                         sb.append("</table>");
 
                                         w.write(sb.toString());

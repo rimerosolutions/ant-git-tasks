@@ -21,25 +21,26 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.types.Resource;
-import org.apache.tools.ant.types.resources.FileResource;
-import org.apache.tools.ant.util.FileUtils;
+
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
+import com.rimerosolutions.ant.git.FilePatternCallback;
+import com.rimerosolutions.ant.git.GitUtils;
 import com.rimerosolutions.ant.git.GitBuildException;
+
 
 /**
  * Add files
- * 
- * <pre>{@code 
+ *
+ * <pre>{@code
  *  <git:git localDirectory="${testLocalRepo}">
  *    <git:add>
  *      <fileset dir="${testLocalRepo}" includes="*.txt"/>
-      </git:add>
+ </git:add>
  *  </git:git>}</pre>
- *  
+ *
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-add.html">Git documentation about add</a></p>
  * <p><a href="http://download.eclipse.org/jgit/docs/jgit-2.0.0.201206130900-r/apidocs/org/eclipse/jgit/api/AddCommand.html">JGit AddCommand</a></p>
  *
@@ -53,7 +54,7 @@ public class AddTask extends AbstractGitRepoAwareTask {
 
         /**
          * If set to true, the command only matches filepattern against already tracked files in the index rather than the working tree.
-         * 
+         *
          * @antdoc.notrequired
          * @param update Default is false;
          */
@@ -68,7 +69,7 @@ public class AddTask extends AbstractGitRepoAwareTask {
 
         /**
          * Configure the fileset(s) of files to add to revision control
-         * 
+         *
          * @param fileset The fileset to add
          */
         public void addFileset(FileSet fileset) {
@@ -78,21 +79,17 @@ public class AddTask extends AbstractGitRepoAwareTask {
         @SuppressWarnings("unchecked")
         @Override
         protected void doExecute() {
-
                 try {
                         final AddCommand addCommand = git.add().setUpdate(update);
-
                         final FilePatternCallback cb = new FilePatternCallback() {
                                         public void onFilePattern(String pattern) {
                                                 addCommand.addFilepattern(pattern);
                                         }
                                 };
+                        
+                        GitUtils.processFilePatternsFromDirWithFileSets(getDirectory(), filesets, cb);
 
-                        for (FileSet fileset : filesets) {
-                                processResourceIterator(fileset.iterator(), cb);
-                        }
-
-                        addCommand.call();                        
+                        addCommand.call();
                 }
                 catch (GitAPIException e) {
                         throw new GitBuildException(e);
@@ -102,32 +99,4 @@ public class AddTask extends AbstractGitRepoAwareTask {
                 }
         }
 
-        @SuppressWarnings("unchecked")
-        protected void processResource(Resource resource, FilePatternCallback cb) throws Exception {
-                if (resource.isExists()) {
-                        if (resource.isDirectory()) {
-                                processResourceIterator(resource.iterator(), cb);
-                        }
-                        else {
-                                FileResource fileResource = (FileResource) resource;
-                                processFile(fileResource.getFile(), cb);
-                        }
-                }
-        }
-
-        protected void processFile(File file, FilePatternCallback cb) throws Exception {
-                String relativePath = FileUtils.getRelativePath(getDirectory(), file);
-                cb.onFilePattern(relativePath);
-        }
-
-        protected void processResourceIterator(Iterator<Resource> resourceIterator, FilePatternCallback cb) throws Exception {
-                while(resourceIterator.hasNext()) {
-                        Resource resource = resourceIterator.next();
-                        processResource(resource, cb);
-                }
-        }
-
-        private static interface FilePatternCallback {
-                void onFilePattern(String pattern);
-        }
 }

@@ -76,6 +76,8 @@ public class UpToDateTask extends AbstractGitRepoAwareTask {
                                         msg.append("\n").append("Added:").append(status.getAdded());
                                         msg.append("\n").append("Modified:").append(status.getModified());
                                         msg.append("\n").append("Missing:").append(status.getMissing());
+                                        msg.append("\n").append("Removed:").append(status.getRemoved());
+                                        msg.append("\n").append("Untracked:").append(status.getUntracked());
 
                                         throw new GitBuildException("Status is not clean:" + msg.toString());
                                 }

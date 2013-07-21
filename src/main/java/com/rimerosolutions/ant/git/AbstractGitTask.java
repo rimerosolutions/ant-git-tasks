@@ -139,7 +139,7 @@ public abstract class AbstractGitTask extends Task implements GitTask {
          * @param pm The progress monitor
          */
         @Override
-        public void setProgressMonitor(ProgressMonitor pm) {
+        public void useProgressMonitor(ProgressMonitor pm) {
                 this.progressMonitor = pm;
         }
 

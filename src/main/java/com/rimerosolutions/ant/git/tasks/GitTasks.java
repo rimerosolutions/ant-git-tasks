@@ -310,7 +310,7 @@ public class GitTasks extends Task {
                         }
 
                         if (verbose) {
-                                t.setProgressMonitor(new GitTaskMonitor(t));
+                                t.useProgressMonitor(new GitTaskMonitor(t));
                         }
 
                         t.setDirectory(localDirectory);

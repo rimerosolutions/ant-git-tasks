@@ -1,0 +1,27 @@
+<html>
+        <head>
+                <title>Overview</title>
+        </head>
+        <body>
+                <p>The <em>ant-git-tasks</em> custom tasks provide wrappers around the Eclipse <a href="http://www.eclipse.org/jgit/documentation/">JGit API</a>.</p>
+                <p>Only a small subset of the Git commands are implemented.</p>
+
+                <p>The expectation is that you use the git task container and that you nest commands as needed.</p>
+
+     <code>
+<pre>
+&lt;git:settings refId="git.testing"
+              username="xxxtesting"
+              password="xxxtesting"
+              name="xxxtesting"
+              email="xxxtesting@gmail.com"/&gt;
+&lt;git:git localDirectory="${testLocalRepo}" settingsRef="git.testing"&gt;
+  &lt;git:init directory="${testLocalRepo}" bare="false" /&gt;
+  &lt;git:commit message="${dummy.commit.message}" revCommitIdProperty="revcommit"/&gt;
+&lt;/git:git&gt;
+                </pre>             </code>
+
+           
+        </body>
+
+</html>

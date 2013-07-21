@@ -75,7 +75,7 @@ limitations under the License.
         <!-- ================================ -->
         <target name="testTagDelete" description="Test git-tag-delete">
                 <initLocalRepo/>
-                
+
                 <git:git localDirectory="${testLocalRepo}" verbose="true">
                         <git:tag name="${dummy.tag.name}"/>
                         <git:tagdelete tags="${dummy.tag.name}"/>
@@ -90,7 +90,7 @@ limitations under the License.
 
         <target name="testTagAdd" description="Test git-tag-add">
                 <initLocalRepo/>
-                
+
                 <git:git localDirectory="${testLocalRepo}" verbose="true">
                         <git:tag name="${dummy.tag.name}"/>
                         <git:taglist outputfilename="${taglist.file}" verifycontainnames="${dummy.tag.name}" failonerror="true"/>
@@ -195,6 +195,23 @@ limitations under the License.
                                 <fileset dir="${testLocalRepo}" includes="*.txt"/>
                         </git:add>
                         <git:commit message="${dummy.commit.message}" revCommitIdProperty="testAdd.revcommit"/>
+                        <git:uptodate failOnError="true"/>
+                </git:git>
+        </target>
+
+        <target name="testClean" description="Test git-clean">
+                <initLocalRepo/>
+                <echo file="${testLocalRepo}/test.txt" message="test"/>
+
+                <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+                        <git:clean/>
+                        <git:uptodate failOnError="true"/>
+                </git:git>
+
+                <echo file="${testLocalRepo}/test.txt" message="test"/>
+
+                <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+                        <git:clean paths="test.txt"/>
                         <git:uptodate failOnError="true"/>
                 </git:git>
         </target>

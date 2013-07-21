@@ -32,7 +32,7 @@ public interface GitTask {
          * @param pm The progress monitor
          * See {@link org.eclipse.jgit.lib.ProgressMonitor}
          */
-        void setProgressMonitor(ProgressMonitor pm);
+        void useProgressMonitor(ProgressMonitor pm);
 
         /**
          * Sets a reference to Git settings

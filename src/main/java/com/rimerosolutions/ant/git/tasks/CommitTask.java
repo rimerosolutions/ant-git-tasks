@@ -27,12 +27,12 @@ import com.rimerosolutions.ant.git.GitUtils;
 
 /**
  * Commits all local changes
- * 
- * <pre>{@code 
+ *
+ * <pre>{@code
  *  <git:git localDirectory="${testLocalRepo}">
  *   <git:commit message="${dummy.commit.message}" revCommitIdProperty="testAdd.revcommit"/>
- *  </git:git>}</pre> 
- * 
+ *  </git:git>}</pre>
+ *
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-commit.html">Git documentation about commit</a></p>
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/CommitCommand.html">JGit CommitCommand</a></p>
  *
@@ -47,10 +47,21 @@ public class CommitTask extends AbstractGitRepoAwareTask {
         private boolean amend = false;
         private String reflogComment;
         private String revCommitIdProperty;
+        private String only;
 
         @Override
         public String getName() {
                 return TASK_NAME;
+        }
+
+        /**
+         * Commit dedicated path only This method can be called several times to add multiple paths.
+         *
+         * @antdoc.notrequired
+         * @param only A dedicated path to commit
+         */
+        public void setOnly(String only) {
+                this.only = only;
         }
 
         /**
@@ -73,9 +84,14 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                                 cmd.setMessage(GitUtils.BRANDING_MESSAGE + " " + message);
                         }
 
-                        cmd.setAll(all).setAmend(amend);
+                        if (!GitUtils.isNullOrBlankString(only)) {
+                                cmd.setOnly(only);
+                        }
+                        else {
+                                cmd.setAll(all);
+                        }
 
-                        cmd.setAuthor(lookupSettings().getIdentity());
+                        cmd.setAmend(amend).setAuthor(lookupSettings().getIdentity());
 
                         if (reflogComment != null) {
                                 cmd.setReflogComment(reflogComment);

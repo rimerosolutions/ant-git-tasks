@@ -15,36 +15,50 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
+import java.util.HashSet;;
+
+import org.eclipse.jgit.api.CleanCommand;
+
+import org.apache.tools.ant.types.FileSet;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
 
+
 /**
  * Git clean Ant task
  *
- * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-clean.html">Git documentation about clean</a></p>
+ * <pre>{@code
+ * <echo file="${testLocalRepo}/test.txt" message="test"/>
+ * <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+ *   <git:clean/>
+ *   <git:uptodate failOnError="true"/>
+ * </git:git>
+ * }</pre>
  *
+ * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-clean.html">Git documentation about clean</a></p>
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/CleanCommand.html">JGit CleanCommand</a></p>
  *
  * @author Yves Zoundi
  */
 public class CleanTask extends AbstractGitRepoAwareTask {
-        private boolean dryRun = true;
+        private boolean dryRun = false;
         private boolean cleanDirectories = true;
         private boolean ignore = true;
-        private List<String> pathList = new ArrayList<String>();
+        private Set<String> pathList = new HashSet<String>();
         private static final String TASK_NAME = "git-clean";
-
+        
         @Override
         public String getName() {
                 return TASK_NAME;
         }
+
         /**
          * If paths are set, only these paths are affected by the cleaning.
          *
+         * @antdoc.notrequired
          * @param paths the paths to set
          */
         public void setPaths(String paths) {
@@ -57,7 +71,8 @@ public class CleanTask extends AbstractGitRepoAwareTask {
         /**
          * If dirs is set, in addition to files, also clean directories.
          *
-         * @param cleanDirectories whether to clean directories too, or only files.
+         * @antdoc.notrequired
+         * @param cleanDirectories whether to clean directories too, or only files. (Default is true)
          */
         public void setCleanDirectories(boolean cleanDirectories) {
                 this.cleanDirectories = cleanDirectories;
@@ -66,6 +81,7 @@ public class CleanTask extends AbstractGitRepoAwareTask {
         /**
          * If ignore is set, don't report/clean files/directories that are ignored by a .gitignore. otherwise do handle them.
          *
+         * @antdoc.notrequired
          * @param ignore whether to respect .gitignore or not. (Default value is true)
          */
         public void setIgnore(boolean ignore) {
@@ -73,9 +89,10 @@ public class CleanTask extends AbstractGitRepoAwareTask {
         }
 
         /**
-         * Sets whether the fetch operation should be a dry run
+         * If dryRun is set, the paths in question will not actually be deleted.
          *
-         * @param dryRun (Default value is true)
+         * @antdoc.notrequired
+         * @param dryRun (Default value is false)
          */
         public void setDryRun(boolean dryRun) {
                 this.dryRun = dryRun;
@@ -84,8 +101,13 @@ public class CleanTask extends AbstractGitRepoAwareTask {
         @Override
         public void doExecute() {
                 try {
-                        git.clean().
-                                setDryRun(dryRun).
+                        CleanCommand cleanCommand = git.clean();
+
+                        if (!pathList.isEmpty()) {
+                                cleanCommand.setPaths(pathList);
+                        }
+
+                        cleanCommand.setDryRun(dryRun).
                                 setIgnore(ignore).
                                 setCleanDirectories(cleanDirectories).
                                 call();
