@@ -15,16 +15,9 @@
  */
 package com.rimerosolutions.ant.git;
 
-import java.io.File;
 import java.util.Collection;
-import java.util.Iterator;
 
-import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.types.Resource;
-import org.apache.tools.ant.types.resources.FileResource;
-import org.apache.tools.ant.util.FileUtils;
 import org.apache.tools.ant.BuildException;
-
 import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.transport.TrackingRefUpdate;
 
@@ -33,7 +26,7 @@ import org.eclipse.jgit.transport.TrackingRefUpdate;
  *
  * @author Yves Zoundi
  */
-public final class GitUtils {
+public final class GitTaskUtils {
 
         /** Branding prefix to pre-prend to commit messages */
         public static final String BRANDING_MESSAGE = "[ant-git-tasks]";
@@ -108,59 +101,7 @@ public final class GitUtils {
                 }
         }
 
-        /**
-         * Process some filesets with a file pattern callback to handle paths relative to a given root folder.
-         *
-         * @param rootDir The base directory
-         * @param filesets A collection of filesets inside the base directory to iterate on
-         * @param cb  A file pattern callback
-         *
-         * @throws Exception Either an IOException or an exception thrown from Ant FileUtils class
-         */
-        public static void processFilePatternsFromDirWithFileSets(File rootDir, Collection<FileSet> filesets, FilePatternCallback cb)
-                throws Exception {
-                
-                FileSetsWalker fileSetsWalker = new FileSetsWalker(rootDir);
-
-                for (FileSet fileset : filesets) {
-                        fileSetsWalker.processResourceIterator(fileset.iterator(), cb);
-                }
-        }
-
-        private static class FileSetsWalker {
-                File rootDir;
-
-                FileSetsWalker(File rootDir) {
-                        this.rootDir = rootDir;
-                }
-
-                @SuppressWarnings("unchecked")
-                void processResource(Resource resource, FilePatternCallback cb) throws Exception {
-                        if (resource.isExists()) {
-                                if (resource.isDirectory()) {
-                                        processResourceIterator(resource.iterator(), cb);
-                                }
-                                else {
-                                        FileResource fileResource = (FileResource) resource;
-                                        processFile(fileResource.getFile(), cb);
-                                }
-                        }
-                }
-
-                void processFile(File file, FilePatternCallback cb) throws Exception {
-                        String relativePath = FileUtils.getRelativePath(rootDir, file);
-                        cb.onFilePattern(relativePath);
-                }
-
-                void processResourceIterator(Iterator<Resource> resourceIterator, FilePatternCallback cb) throws Exception {
-                        while (resourceIterator.hasNext()) {
-                                Resource resource = resourceIterator.next();
-                                processResource(resource, cb);
-                        }
-                }
-        }
-
-        private GitUtils() {
+        private GitTaskUtils() {
                 throw new AssertionError();
         }
 }

@@ -27,7 +27,7 @@ import org.eclipse.jgit.lib.Ref;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
-import com.rimerosolutions.ant.git.GitUtils;
+import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
  * List tags
@@ -58,7 +58,7 @@ public class TagListTask extends AbstractGitRepoAwareTask {
          * @param outputFilename The output file name to use
          */
         public void setOutputFilename(String outputFilename) {
-                if (GitUtils.isNullOrBlankString(outputFilename)) {
+                if (GitTaskUtils.isNullOrBlankString(outputFilename)) {
                         throw new BuildException("Invalid output file name.");
                 }
 
@@ -72,7 +72,7 @@ public class TagListTask extends AbstractGitRepoAwareTask {
          * @param names The command separated list of references names
          */
         public void setVerifyContainNames(String names) {
-                if (!GitUtils.isNullOrBlankString(names)) {
+                if (!GitTaskUtils.isNullOrBlankString(names)) {
                         namesToCheck.addAll(Arrays.asList(names.split(",")));
                 }
                 else {
@@ -99,7 +99,7 @@ public class TagListTask extends AbstractGitRepoAwareTask {
                 List<String> refNames = new ArrayList<String>(refList.size());
 
                 for (Ref ref : refList) {
-                        refNames.add(GitUtils.sanitizeRefName(ref.getName()));
+                        refNames.add(GitTaskUtils.sanitizeRefName(ref.getName()));
                 }
 
                 if (!namesToCheck.isEmpty()) {
@@ -111,7 +111,7 @@ public class TagListTask extends AbstractGitRepoAwareTask {
                         }
                 }
 
-                if (!GitUtils.isNullOrBlankString(outputFilename)) {
+                if (!GitTaskUtils.isNullOrBlankString(outputFilename)) {
                         FileUtils fileUtils = FileUtils.getFileUtils();
 
                         Echo echo = new Echo();

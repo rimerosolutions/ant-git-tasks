@@ -23,7 +23,7 @@ import org.eclipse.jgit.transport.FetchResult;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
-import com.rimerosolutions.ant.git.GitUtils;
+import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
  * Pull changes from a repository.
@@ -59,7 +59,7 @@ public class PullTask extends AbstractGitRepoAwareTask {
                         if (!pullResult.isSuccessful()) {
                                 FetchResult fetchResult = pullResult.getFetchResult();
 
-                                GitUtils.validateTrackingRefUpdates("Merge failed", fetchResult.getTrackingRefUpdates());
+                                GitTaskUtils.validateTrackingRefUpdates("Merge failed", fetchResult.getTrackingRefUpdates());
 
                                 MergeStatus mergeStatus = pullResult.getMergeResult().getMergeStatus();
 

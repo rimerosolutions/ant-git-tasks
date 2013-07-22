@@ -19,7 +19,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
-import com.rimerosolutions.ant.git.GitUtils;
+import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
  * Create a git tag and commit unless conditions are not met.
@@ -66,7 +66,7 @@ public class TagTask extends AbstractGitRepoAwareTask {
                         message = String.format("Creating tag '%s'", name);
                 }
 
-                message = GitUtils.BRANDING_MESSAGE + " " + message;
+                message = GitTaskUtils.BRANDING_MESSAGE + " " + message;
 
                 try {
                         git.tag().setName(name).setMessage(message).call();

@@ -23,7 +23,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
-import com.rimerosolutions.ant.git.GitUtils;
+import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
  * Commits all local changes
@@ -81,10 +81,10 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                         CommitCommand cmd = git.commit();
 
                         if (message != null) {
-                                cmd.setMessage(GitUtils.BRANDING_MESSAGE + " " + message);
+                                cmd.setMessage(GitTaskUtils.BRANDING_MESSAGE + " " + message);
                         }
 
-                        if (!GitUtils.isNullOrBlankString(only)) {
+                        if (!GitTaskUtils.isNullOrBlankString(only)) {
                                 cmd.setOnly(only);
                         }
                         else {

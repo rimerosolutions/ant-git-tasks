@@ -16,20 +16,15 @@
 package com.rimerosolutions.ant.git.tasks;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.io.IOException;
 
 import org.apache.tools.ant.types.FileSet;
-
+import org.apache.tools.ant.types.resources.Union;
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
-import com.rimerosolutions.ant.git.FilePatternCallback;
-import com.rimerosolutions.ant.git.GitUtils;
 import com.rimerosolutions.ant.git.GitBuildException;
-
 
 /**
  * Add files
@@ -50,7 +45,7 @@ public class AddTask extends AbstractGitRepoAwareTask {
 
         private static final String TASK_NAME = "git-patch";
         private boolean update;
-        private Collection<FileSet> filesets = new ArrayList<FileSet>();
+        private Union path;
 
         /**
          * If set to true, the command only matches filepattern against already tracked files in the index rather than the working tree.
@@ -73,22 +68,37 @@ public class AddTask extends AbstractGitRepoAwareTask {
          * @param fileset The fileset to add
          */
         public void addFileset(FileSet fileset) {
-                filesets.add(fileset);
+                getPath().add(fileset);
         }
 
-        @SuppressWarnings("unchecked")
+        private synchronized Union getPath() {
+		if (path == null) {
+			path = new Union();
+			path.setProject(getProject());
+		}
+		return path;
+	}
+        
+        private String translateFilePathUsingPrefix(String file, String prefix) throws IOException {
+                if (file.equals(prefix)) {
+                        return ".";
+                }
+                
+                return new File(file).getCanonicalPath().substring(prefix.length() + 1);
+        }
+
         @Override
         protected void doExecute() {
                 try {
-                        final AddCommand addCommand = git.add().setUpdate(update);
-                        final FilePatternCallback cb = new FilePatternCallback() {
-                                        public void onFilePattern(String pattern) {
-                                                addCommand.addFilepattern(pattern);
-                                        }
-                                };
-                        
-                        GitUtils.processFilePatternsFromDirWithFileSets(getDirectory(), filesets, cb);
+                        AddCommand addCommand = git.add().setUpdate(update);
+                        String prefix = getDirectory().getCanonicalPath();
+			String[] allFiles = getPath().list();
 
+                        for (String file : allFiles) {
+				String addedFile = translateFilePathUsingPrefix(file, prefix);
+                                addCommand.addFilepattern(addedFile);
+                        }
+                        
                         addCommand.call();
                 }
                 catch (GitAPIException e) {

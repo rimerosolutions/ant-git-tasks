@@ -21,7 +21,7 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.Reference;
 
 import com.rimerosolutions.ant.git.GitSettings;
-import com.rimerosolutions.ant.git.GitUtils;
+import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
  * Sets reusable Git settings (credentials and identity)
@@ -93,11 +93,11 @@ public class GitSettingsTask extends Task {
         public void execute() throws BuildException {
                 final GitSettings settings = new GitSettings();
 
-                if (!GitUtils.isNullOrBlankString(username) && !GitUtils.isNullOrBlankString(password)) {
+                if (!GitTaskUtils.isNullOrBlankString(username) && !GitTaskUtils.isNullOrBlankString(password)) {
                         settings.setCredentials(username, password);
                 }
 
-                if (!GitUtils.isNullOrBlankString(name) && !GitUtils.isNullOrBlankString(email)) {
+                if (!GitTaskUtils.isNullOrBlankString(name) && !GitTaskUtils.isNullOrBlankString(email)) {
                         settings.setIdentity(name, email);
                 }
 

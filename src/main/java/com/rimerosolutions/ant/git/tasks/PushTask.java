@@ -23,7 +23,7 @@ import org.eclipse.jgit.transport.RemoteConfig;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
-import com.rimerosolutions.ant.git.GitUtils;
+import com.rimerosolutions.ant.git.GitTaskUtils;
 
 
 /**
@@ -49,7 +49,7 @@ public class PushTask extends AbstractGitRepoAwareTask {
 
         /**
          * Whether or not to include all tags while pushing
-         * 
+         *
          * @antdoc.notrequired
          * @param includeTags Default is true
          */
@@ -59,7 +59,7 @@ public class PushTask extends AbstractGitRepoAwareTask {
 
         /**
          * Sets a boolean property if the git push fails
-         * 
+         *
          * @antdoc.notrequired
          * @param pushFailedProperty Property to set
          */
@@ -74,8 +74,7 @@ public class PushTask extends AbstractGitRepoAwareTask {
 
                         if (remoteConfigs != null && !remoteConfigs.isEmpty()) {
                                 log("Pushing tags.");
-
-                                PushCommand pushCommand = git.push();
+                                PushCommand pushCommand = git.push().setPushAll();
 
                                 setupCredentials(pushCommand);
 
@@ -83,13 +82,14 @@ public class PushTask extends AbstractGitRepoAwareTask {
                                         pushCommand.setPushTags();
                                 }
 
-                                Iterable<PushResult> pushResults = pushCommand.setForce(true).call();
+                                Iterable<PushResult> pushResults = pushCommand.setForce(true).setRemote("master").call();
+
 
                                 for (PushResult pushResult : pushResults) {
-                                        GitUtils.validateTrackingRefUpdates("Push failed",  pushResult.getTrackingRefUpdates());
+                                        GitTaskUtils.validateTrackingRefUpdates("Push failed",  pushResult.getTrackingRefUpdates());
                                 }
-                        }
 
+                        }
                 } catch (Exception e) {
                         if (pushFailedProperty != null) {
                                 getProject().setProperty(pushFailedProperty, e.getMessage());

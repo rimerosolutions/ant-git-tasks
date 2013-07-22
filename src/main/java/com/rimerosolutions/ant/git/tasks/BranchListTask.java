@@ -24,7 +24,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 
 import com.rimerosolutions.ant.git.GitBuildException;
-import com.rimerosolutions.ant.git.GitUtils;
+import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
  * List branches.
@@ -57,7 +57,7 @@ public class BranchListTask extends TagListTask {
          * @param listMode - optional: corresponds to the -r/-a options; by default, only local branches will be listed
          */
         public void setListMode(String listMode) {
-                if (!GitUtils.isNullOrBlankString(listMode)) {
+                if (!GitTaskUtils.isNullOrBlankString(listMode)) {
                         try {
                                 this.listMode = ListBranchCommand.ListMode.valueOf(listMode);
                         }

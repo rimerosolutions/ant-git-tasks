@@ -19,7 +19,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
-import com.rimerosolutions.ant.git.GitUtils;
+import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
  * Delete branches
@@ -51,7 +51,7 @@ public class BranchDeleteTask extends AbstractGitRepoAwareTask {
          * @param branches comma-separated list of branches to delete
          */
         public void setBranches(String branches) {
-                if (!GitUtils.isNullOrBlankString(branches)) {
+                if (!GitTaskUtils.isNullOrBlankString(branches)) {
                         this.branchNames = branches.split(",");
                 }
                 else {

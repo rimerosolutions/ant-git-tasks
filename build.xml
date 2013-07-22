@@ -334,6 +334,8 @@ limitations under the License.
                        encoding="${javac.encoding}"
                        destdir="${test.classes.dir}"
                        includeantruntime="false">
+                        <compilerarg value="-Xlint:unchecked" />
+                        <compilerarg value="-Xlint:deprecation" />
                         <src path="${test.src.dir}"/>
                         <classpath>
                                 <path refid="test.classpath"/>
@@ -483,7 +485,8 @@ limitations under the License.
                                   datafile="${cobertura.data.file}"/>
         </target>
 
-        <target name="reports" depends="report-findbugs,report-junit,report-cobertura" description="Generate reports(JUnit, FindBugs, Cobertura)">
+        <target name="reports" depends="report-findbugs,report-junit,report-cobertura"
+                description="Generate reports(JUnit, FindBugs, Cobertura)">
                 <fail unless="test.passed">Some tests failed, please take a look at the reports.</fail>
         </target>
 
@@ -515,7 +518,7 @@ limitations under the License.
                          version="true"
                          use="true"
                          windowtitle="${product.description}">
-						<tag name="antdoc.notrequired" description="Non required attribute for the Ant task"/>
+                        <tag name="antdoc.notrequired" description="Non required attribute for the Ant task"/>
                         <classpath>
                                 <path refid="compile.classpath"/>
                         </classpath>
@@ -525,26 +528,26 @@ limitations under the License.
                         <link href="http://download.eclipse.org/jgit/docs/latest/apidocs/" />
                         <link href="http://javadoc.haefelinger.it/org.apache.ant/1.7.1/"/>
                 </javadoc>
-                
+
                 <path id="antdoc.classpath">
-                	<path refid="compile.classpath"/>
+                        <path refid="compile.classpath"/>
                         <path location="${classes.dir}"/>
                 </path>
-                
-                <javadoc packagenames="**/*.*" sourcepath="${src.dir}" 
-                        destdir="${antdocs.dir}"
-                        overview="${antdoc.overview.html}"
-                        doctitle="Ant Git Tasks documentation"
-                        header="Ant tasks usage. Use the git tasks container, GitTasks task."
-                        bottom="Copyright 2013, Rimero Solutions"
-                        doclet="com.rimerosolutions.ant.git.AntTaskDoclet"
-                        docletpathref="antdoc.classpath"
-                                         defaultexcludes="yes">  
-                                        <classpath>
-                                                <path refid="antdoc.classpath"/>
-                                        </classpath>
-                                </javadoc> 
-                
+
+                <javadoc packagenames="**/*.*" sourcepath="${src.dir}"
+                         destdir="${antdocs.dir}"
+                         overview="${antdoc.overview.html}"
+                         doctitle="Ant Git Tasks documentation"
+                         header="Ant tasks usage. Use the git tasks container, GitTasks task."
+                         bottom="Copyright 2013, Rimero Solutions"
+                         doclet="com.rimerosolutions.ant.git.AntTaskDoclet"
+                         docletpathref="antdoc.classpath"
+                         defaultexcludes="yes">
+                        <classpath>
+                                <path refid="antdoc.classpath"/>
+                        </classpath>
+                </javadoc>
+
         </target>
 
         <target name="jar-sources" depends="compile" description="Generate sources jar">

@@ -24,7 +24,7 @@ import org.apache.tools.ant.Task;
 
 import com.rimerosolutions.ant.git.GitTask;
 import com.rimerosolutions.ant.git.GitTaskMonitor;
-import com.rimerosolutions.ant.git.GitUtils;
+import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
  * Git tasks container
@@ -291,21 +291,21 @@ public class GitTasks extends Task {
 
                 for (Task task : tasks) {
                         GitTask t = (GitTask) task;
-                        GitUtils.validateTaskConditions(t);
+                        GitTaskUtils.validateTaskConditions(t);
 
-                        if (!GitUtils.isNullOrBlankString(t.getIf())) {
+                        if (!GitTaskUtils.isNullOrBlankString(t.getIf())) {
                                 if (getProject().getProperty(t.getIf()) == null) {
                                         continue;
                                 }
                         }
 
-                        if (!GitUtils.isNullOrBlankString(t.getUnless())) {
+                        if (!GitTaskUtils.isNullOrBlankString(t.getUnless())) {
                                 if (getProject().getProperty(t.getUnless()) != null) {
                                         continue;
                                 }
                         }
 
-                        if (!GitUtils.isNullOrBlankString(settingsRef)) {
+                        if (!GitTaskUtils.isNullOrBlankString(settingsRef)) {
                                 t.setSettingsRef(settingsRef);
                         }
 

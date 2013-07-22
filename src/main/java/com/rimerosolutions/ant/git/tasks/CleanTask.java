@@ -16,12 +16,10 @@
 package com.rimerosolutions.ant.git.tasks;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.HashSet;;
 
 import org.eclipse.jgit.api.CleanCommand;
-
-import org.apache.tools.ant.types.FileSet;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;

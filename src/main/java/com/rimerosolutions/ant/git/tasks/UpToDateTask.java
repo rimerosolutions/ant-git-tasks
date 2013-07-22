@@ -30,6 +30,14 @@ import com.rimerosolutions.ant.git.GitBuildException;
 /**
  * Checks whether or not the Git Tree is up to date.
  *
+ * <pre>{@code
+ * <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+ *  <git:uptodate failOnError="true"/>
+ * </git:git>}</pre>
+ *
+ * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-status.html">Git documentation about status</a></p>
+ * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/StatusCommand.html">JGit StatusCommand</a></p>
+ *
  * @author Yves Zoundi
  */
 public class UpToDateTask extends AbstractGitRepoAwareTask {

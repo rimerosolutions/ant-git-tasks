@@ -19,15 +19,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.LanguageVersion;
@@ -36,13 +39,13 @@ import com.sun.javadoc.RootDoc;
 import com.sun.tools.doclets.standard.Standard;
 
 /**
- * Quick and very dirty doclet for Ant tasks documentation. Self-Contained for
- * now, no template engine or external dependencies.
- *
+ * Quick and very dirty doclet for Ant tasks documentation. 
+ * Self-Contained for now, no template engine or external dependencies.
+ * 
  * @author Yves Zoundi
- *
  */
 public class AntTaskDoclet extends Standard {
+        private static final String ENCODING_UTF_8 = "UTF-8";
         private static final String ANT_TASK_CLASS_NAME = "org.apache.tools.ant.Task";
         private static String destDir;
         private static String doctitle = "Ant tasks documentation";
@@ -50,33 +53,46 @@ public class AntTaskDoclet extends Standard {
         private static String windowtitle = "Ant tasks documentation";
         private static String bottom;
         private static String overview;
+        private static final Logger LOG = Logger.getLogger(AntTaskDoclet.class.getName());
+        private static final List<String> ELEMENT_PREFIXES = Arrays.asList("create", "add", "addConfigured");
+        private static final List<String> ATTRIBUTE_PREFIXES = Arrays.asList("set");
+        private static final String TAG_ANTDOC_NOTREQUIRED = "antdoc.notrequired";
+        private static Map<String, ClassData> classDataMap = new HashMap<String, ClassData>();
 
-        public static void copyFile(File sourceFile, File destFile) throws IOException {
-                if(!destFile.exists()) {
-                        destFile.createNewFile();
-                }
-
-                FileChannel source = null;
-                FileChannel destination = null;
+        private static void copyFile(File sourceFile, File destFile) throws IOException {
+                InputStream in = null;
+                OutputStream out = null;
 
                 try {
-                        source = new FileInputStream(sourceFile).getChannel();
-                        destination = new FileOutputStream(destFile).getChannel();
-                        destination.transferFrom(source, 0, source.size());
-                }
-                finally {
-                        if(source != null) {
-                                source.close();
+                        in = new FileInputStream(sourceFile);
+                        out = new FileOutputStream(destFile);
+                        byte[] buf = new byte[4096];
+                        int len;
+                        while ((len = in.read(buf)) > 0) {
+                                out.write(buf, 0, len);
                         }
-                        if(destination != null) {
-                                destination.close();
+                } finally {
+                        try {
+                                if (in != null) {
+                                        in.close();
+                                }
+                        } finally {
+                                if (out != null) {
+                                        out.close();
+                                }
                         }
                 }
         }
 
         public static final boolean start(RootDoc root) {
                 readDestDirOption(root.options());
-                writeContents(root.classes());
+                try {
+                        writeContents(root.classes());
+                } catch (IOException ioe) {
+                        LOG.log(Level.SEVERE, "Ant tasks documentation failed", ioe);
+                        return false;
+                }
+
                 return true;
         }
 
@@ -98,11 +114,6 @@ public class AntTaskDoclet extends Standard {
                         }
                 }
         }
-
-        private static final List<String> ELEMENT_PREFIXES = Arrays.asList("create", "add", "addConfigured");
-        private static final List<String> ATTRIBUTE_PREFIXES = Arrays.asList("set");
-
-        private static Map<String, ClassData> classDataMap = new HashMap<String, ClassData>();
 
         private static String sanitizeName(String objectName, List<String> prefixes) {
                 String newName = objectName;
@@ -145,7 +156,7 @@ public class AntTaskDoclet extends Standard {
                 static AttributeData fromMethodDoc(MethodDoc methodDoc) {
                         AttributeData data = new AttributeData();
                         data.description = methodDoc.commentText();
-                        data.required = !(methodDoc.tags("antdoc.notrequired").length > 0);
+                        data.required = !(methodDoc.tags(TAG_ANTDOC_NOTREQUIRED).length > 0);
                         data.name = sanitizeName(methodDoc.name(), ATTRIBUTE_PREFIXES);
 
                         return data;
@@ -194,7 +205,7 @@ public class AntTaskDoclet extends Standard {
                 Writer w = null;
 
                 try {
-                        w = new OutputStreamWriter(new FileOutputStream(f));
+                        w = new OutputStreamWriter(new FileOutputStream(f), ENCODING_UTF_8);
                         wc.doWithWriter(w);
                 } finally {
                         if (w != null) {
@@ -204,208 +215,189 @@ public class AntTaskDoclet extends Standard {
                 }
         }
 
-        private static void writeIndexPage() {
-                try {
-                        withWriter(new File(new File(destDir), "index.html"), new WriterCallback() {
+        private static void writeIndexPage() throws IOException {
+                withWriter(new File(new File(destDir), "index.html"), new WriterCallback() {
 
-                                        @Override
-                                        public void doWithWriter(Writer w) throws IOException {
-                                                StringBuilder sb = new StringBuilder();
+                        @Override
+                        public void doWithWriter(Writer w) throws IOException {
+                                StringBuilder sb = new StringBuilder();
 
-                                                sb.append("<html>");
-                                                sb.append("<head><title>").append(windowtitle).append("</head></title>");
-                                                sb.append("<frameset rows=\"15%,*\">");
-                                                sb.append(" <frame src=\"header.html\">");
-                                                sb.append(" <frameset cols=\"25%,75%\">");
-                                                sb.append("<frame src=\"nav.html\">");
-                                                sb.append("<frame name=\"bodycontents\" src=\"body.html\">");
-                                                sb.append("</frameset></frameset></html>");
-                                                sb.append("</html>");
+                                sb.append("<html>");
+                                sb.append("<head><title>").append(windowtitle).append("</head></title>");
+                                sb.append("<frameset rows=\"15%,*\">");
+                                sb.append(" <frame src=\"header.html\">");
+                                sb.append(" <frameset cols=\"25%,75%\">");
+                                sb.append("<frame src=\"nav.html\">");
+                                sb.append("<frame name=\"bodycontents\" src=\"body.html\">");
+                                sb.append("</frameset></frameset></html>");
+                                sb.append("</html>");
 
-                                                w.write(sb.toString());
-                                        }
-                                });
-                } catch (Exception e) {
-                        System.exit(1);
-                }
-        }
-
-        private static void writeHeaderPage() {
-                try {
-                        withWriter(new File(new File(destDir), "header.html"), new WriterCallback() {
-                                        @Override
-                                        public void doWithWriter(Writer w) throws IOException {
-                                                StringBuilder sb = new StringBuilder();
-
-                                                sb.append("<html><head><title>");
-                                                sb.append(windowtitle).append("</title></head><body><h1>");
-                                                sb.append(windowtitle);
-                                                sb.append("</h1></body></html>");
-
-                                                w.write(sb.toString());
-                                        }
-                                });
-                } catch (Exception e) {
-                        System.exit(1);
-                }
-        }
-
-        private static void writeBodyPage() {
-                try {
-                        if (overview == null) {
-                                withWriter(new File(new File(destDir), "body.html"), new WriterCallback() {
-                                                @Override
-                                                public void doWithWriter(Writer w) throws IOException {
-                                                        StringBuilder sb = new StringBuilder();
-
-                                                        sb.append("<html><head><title>");
-                                                        sb.append(windowtitle);
-                                                        sb.append("</title></head><body><div>");
-                                                        sb.append(doctitle);
-                                                        sb.append("</div></body></html>");
-
-                                                        w.write(sb.toString());
-                                                }
-                                        });
+                                w.write(sb.toString());
                         }
-                        else {
-                                copyFile(new File(overview), new File(new File(destDir), "body.html"));
+                });
+        }
+
+        private static void writeHeaderPage() throws IOException {
+                withWriter(new File(new File(destDir), "header.html"), new WriterCallback() {
+                        @Override
+                        public void doWithWriter(Writer w) throws IOException {
+                                StringBuilder sb = new StringBuilder();
+
+                                sb.append("<html><head><title>");
+                                sb.append(windowtitle).append("</title></head><body><h1>");
+                                sb.append(header);
+                                sb.append("</h1></body></html>");
+
+                                w.write(sb.toString());
                         }
-                } catch (Exception e) {
-                        System.exit(1);
+                });
+        }
+
+        private static void writeBodyPage() throws IOException {
+                if (overview == null) {
+                        withWriter(new File(new File(destDir), "body.html"), new WriterCallback() {
+                                @Override
+                                public void doWithWriter(Writer w) throws IOException {
+                                        StringBuilder sb = new StringBuilder();
+
+                                        sb.append("<html><head><title>");
+                                        sb.append(windowtitle);
+                                        sb.append("</title></head><body><div>");
+                                        sb.append(doctitle);
+                                        sb.append("</div></body></html>");
+
+                                        w.write(sb.toString());
+                                }
+                        });
+                } else {
+                        copyFile(new File(overview), new File(new File(destDir), "body.html"));
                 }
         }
 
-        private static void writeNavPage() {
-                try {
-                        File outputFile = new File(new File(destDir), "nav.html");
-                        OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(outputFile));
-                        StringBuilder sb = new StringBuilder();
+        private static void writeNavPage() throws IOException {
+                withWriter(new File(new File(destDir), "nav.html"), new WriterCallback() {
+                        @Override
+                        public void doWithWriter(Writer w) throws IOException {
+                                StringBuilder sb = new StringBuilder();
 
-                        sb.append("<html><head><title>Nav</title></head><body><div><ul>");
+                                sb.append("<html><head><title>Nav</title></head><body><div><ul>");
 
-                        for (Map.Entry<String, ClassData> entry : classDataMap.entrySet()) {
-                                if (!entry.getValue().hidden) {
-                                        sb.append("<li>");
-                                        sb.append("<a target=\"bodycontents\" href=\"");
-                                        sb.append(entry.getKey()).append(".html");
-                                        sb.append("\">");
-                                        sb.append(entry.getValue().simpleName);
-                                        sb.append("</a></li>");
+                                for (Map.Entry<String, ClassData> entry : classDataMap.entrySet()) {
+                                        if (!entry.getValue().hidden) {
+                                                sb.append("<li>");
+                                                sb.append("<a target=\"bodycontents\" href=\"");
+                                                sb.append(entry.getKey()).append(".html");
+                                                sb.append("\">");
+                                                sb.append(entry.getValue().simpleName);
+                                                sb.append("</a></li>");
+                                        }
+                                }
+
+                                sb.append("</ul></div></body></html>");
+                                w.write(sb.toString());
+                        }
+                });
+        }
+
+        private static void writeHtmlTasks() throws IOException {
+
+                Map<String, ClassData> classDataCopy = new HashMap<String, AntTaskDoclet.ClassData>(classDataMap);
+
+                for (Map.Entry<String, ClassData> entry : classDataMap.entrySet()) {
+
+                        String classDocName = entry.getKey();
+                        ClassData classData = entry.getValue();
+
+                        if (classData.hidden) {
+                                continue;
+                        }
+
+                        File outputFile = new File(new File(destDir), classDocName + ".html");
+
+                        OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(outputFile), ENCODING_UTF_8);
+
+                        StringBuilder header = new StringBuilder();
+
+                        header.append("<html><head><title>classDocName</title><body><div>");
+                        w.write(header.toString());
+
+                        header = new StringBuilder();
+                        header.append("<h1>").append(classData.simpleName).append("</h1>");
+                        header.append("<hr/>");
+
+                        header.append("<h2>Description</h2>");
+                        header.append("<div>").append(classData.description).append("</div>");
+
+                        w.write(header.toString());
+
+                        List<AttributeData> attributesCopy = new ArrayList<AntTaskDoclet.AttributeData>(classData.attributesList);
+                        List<ElementData> elementsCopy = new ArrayList<AntTaskDoclet.ElementData>(classData.elementsList);
+
+                        if (!classData.parentClassDatas.isEmpty()) {
+                                for (String parent : classData.parentClassDatas) {
+                                        attributesCopy.addAll(classDataCopy.get(parent).attributesList);
+                                        elementsCopy.addAll(classDataCopy.get(parent).elementsList);
                                 }
                         }
 
-                        sb.append("</ul></div></body></html>");
-                        w.write(sb.toString());
+                        if (!attributesCopy.isEmpty()) {
+                                StringBuilder sb = new StringBuilder();
+
+                                sb.append("<h2>Attributes</h2>");
+                                sb.append("<table border='1'>");
+                                sb.append("<tr>");
+                                sb.append("<th>Name</th>").append("<th>Description</th>").append("<th>Required</th>");
+                                sb.append("</tr>");
+
+                                for (AttributeData attr : attributesCopy) {
+                                        sb.append("<tr>");
+                                        sb.append("<td>").append(attr.name).append("</td>");
+                                        sb.append("<td>").append(attr.description).append("</td>");
+                                        sb.append("<td>").append(attr.required).append("</td>");
+                                        sb.append("</tr>");
+                                }
+
+                                sb.append("</table>");
+
+                                w.write(sb.toString());
+                        }
+
+                        if (!elementsCopy.isEmpty()) {
+                                StringBuilder sb = new StringBuilder();
+
+                                sb.append("<h2>Nested elements</h2>");
+                                sb.append("<table border='1'>");
+                                sb.append("<tr>");
+                                sb.append("<th>Name</th>").append("<th>Description</th>");
+                                sb.append("</tr>");
+
+                                for (ElementData attr : elementsCopy) {
+                                        sb.append("<tr>");
+                                        sb.append("<td>").append(attr.name).append("</td>");
+                                        sb.append("<td>").append(attr.description).append("</td>");
+                                        sb.append("</tr>");
+                                }
+
+                                sb.append("</table>");
+
+                                w.write(sb.toString());
+                        }
+
+                        header = new StringBuilder();
+                        header.append("<div><p>").append(bottom).append("</p></div>");
+                        w.write(header.toString());
+
+                        header = new StringBuilder();
+                        header.append("</div></body></html>");
+                        w.write(header.toString());
 
                         w.flush();
                         w.close();
-                } catch (Exception e) {
-                        System.exit(1);
                 }
+
         }
 
-        private static void writeHtmlTasks() {
-                try {
-                        Map<String, ClassData> classDataCopy = new HashMap<String, AntTaskDoclet.ClassData>(classDataMap);
-
-                        for (Map.Entry<String, ClassData> entry : classDataMap.entrySet()) {
-
-                                String classDocName = entry.getKey();
-                                ClassData classData = entry.getValue();
-
-                                if (classData.hidden) {
-                                        continue;
-                                }
-
-                                File outputFile = new File(new File(destDir), classDocName + ".html");
-
-                                OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(outputFile));
-
-                                StringBuilder header = new StringBuilder();
-
-                                header.append("<html><head><title>classDocName</title><body><div>");
-                                w.write(header.toString());
-
-                                header = new StringBuilder();
-                                header.append("<h1>").append(classData.simpleName).append("</h1>");
-                                header.append("<hr/>");
-
-                                header.append("<h2>Description</h2>");
-                                header.append("<div>").append(classData.description).append("</div>");
-
-                                w.write(header.toString());
-
-                                List<AttributeData> attributesCopy = new ArrayList<AntTaskDoclet.AttributeData>(classData.attributesList);
-                                List<ElementData> elementsCopy = new ArrayList<AntTaskDoclet.ElementData>(classData.elementsList);
-
-                                if (!classData.parentClassDatas.isEmpty()) {
-                                        for (String parent : classData.parentClassDatas) {
-                                                attributesCopy.addAll(classDataCopy.get(parent).attributesList);
-                                                elementsCopy.addAll(classDataCopy.get(parent).elementsList);
-                                        }
-                                }
-
-                                if (!attributesCopy.isEmpty()) {
-                                        StringBuilder sb = new StringBuilder();
-
-                                        sb.append("<h2>Attributes</h2>");
-                                        sb.append("<table border='1'>");
-                                        sb.append("<tr>");
-                                        sb.append("<th>Name</th>").append("<th>Description</th>").append("<th>Required</th>");
-                                        sb.append("</tr>");
-
-                                        for (AttributeData attr : attributesCopy) {
-                                                sb.append("<tr>");
-                                                sb.append("<td>").append(attr.name).append("</td>");
-                                                sb.append("<td>").append(attr.description).append("</td>");
-                                                sb.append("<td>").append(attr.required).append("</td>");
-                                                sb.append("</tr>");
-                                        }
-
-                                        sb.append("</table>");
-
-                                        w.write(sb.toString());
-                                }
-
-                                if (!elementsCopy.isEmpty()) {
-                                        StringBuilder sb = new StringBuilder();
-
-                                        sb.append("<h2>Nested elements</h2>");
-                                        sb.append("<table border='1'>");
-                                        sb.append("<tr>");
-                                        sb.append("<th>Name</th>").append("<th>Description</th>");
-                                        sb.append("</tr>");
-
-                                        for (ElementData attr : elementsCopy) {
-                                                sb.append("<tr>");
-                                                sb.append("<td>").append(attr.name).append("</td>");
-                                                sb.append("<td>").append(attr.description).append("</td>");
-                                                sb.append("</tr>");
-                                        }
-
-                                        sb.append("</table>");
-
-                                        w.write(sb.toString());
-                                }
-
-                                header = new StringBuilder();
-                                header.append("<div><p>").append(bottom).append("</p></div>");
-                                w.write(header.toString());
-
-                                header = new StringBuilder();
-                                header.append("</div></body></html>");
-                                w.write(header.toString());
-
-                                w.flush();
-                                w.close();
-                        }
-                } catch (Exception e) {
-                        System.exit(1);
-                }
-        }
-
-        private static void writeHtmlToOutputDir() {
+        private static void writeHtmlToOutputDir() throws IOException {
                 writeBodyPage();
                 writeNavPage();
                 writeHeaderPage();
@@ -491,7 +483,7 @@ public class AntTaskDoclet extends Standard {
                 return namePrefixMatches(methodDoc.name(), ELEMENT_PREFIXES);
         }
 
-        private static void writeContents(ClassDoc[] classDocs) {
+        private static void writeContents(ClassDoc[] classDocs) throws IOException {
                 for (ClassDoc classDoc : classDocs) {
                         if (isAntTask(classDoc)) {
                                 registerClassData(classDoc);

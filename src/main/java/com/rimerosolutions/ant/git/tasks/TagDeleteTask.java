@@ -20,7 +20,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
-import com.rimerosolutions.ant.git.GitUtils;
+import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
  * Delete tags
@@ -55,7 +55,7 @@ public class TagDeleteTask extends AbstractGitRepoAwareTask {
          * @param tags Comma-separted list of tags to delete
          */
         public void setTags(String tags) {
-                if (GitUtils.isNullOrBlankString(tags)) {
+                if (GitTaskUtils.isNullOrBlankString(tags)) {
                         throw new BuildException("Invalid tag names provided.");
                 }
                 

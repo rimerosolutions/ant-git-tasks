@@ -40,9 +40,9 @@ limitations under the License.
         <property name="dummy.tag.name" value="dummytag"/>
         <property name="master.branch.name" value="master"/>
 
-        <!-- ================================ -->
+        <!-- ****************************************** -->
         <!-- Test lifecycle -->
-        <!-- ================================ -->
+        <!-- ****************************************** -->
         <target name="setUp">
                 <mkdir dir="${testLocalRepo}"/>
                 <mkdir dir="${testLocalRepoClone}"/>
@@ -65,14 +65,15 @@ limitations under the License.
 
                         <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
                                 <git:init directory="${testLocalRepo}" bare="false" />
-                                <git:commit message="${dummy.commit.message}" revCommitIdProperty="revcommit"/>
+                                <git:commit message="${dummy.commit.message}"
+                                            revCommitIdProperty="revcommit"/>
                         </git:git>
                 </sequential>
         </macrodef>
 
-        <!-- ================================ -->
+        <!-- ****************************************** -->
         <!-- Tags -->
-        <!-- ================================ -->
+        <!-- ****************************************** -->
         <target name="testTagDelete" description="Test git-tag-delete">
                 <initLocalRepo/>
 
@@ -83,7 +84,8 @@ limitations under the License.
 
                 <au:expectfailure>
                         <git:git localDirectory="${testLocalRepo}" verbose="true">
-                                <git:taglist verifycontainnames="${dummy.tag.name}" failonerror="true"/>
+                                <git:taglist verifycontainnames="${dummy.tag.name}"
+                                             failonerror="true"/>
                         </git:git>
                 </au:expectfailure>
         </target>
@@ -93,7 +95,9 @@ limitations under the License.
 
                 <git:git localDirectory="${testLocalRepo}" verbose="true">
                         <git:tag name="${dummy.tag.name}"/>
-                        <git:taglist outputfilename="${taglist.file}" verifycontainnames="${dummy.tag.name}" failonerror="true"/>
+                        <git:taglist outputfilename="${taglist.file}"
+                                     verifycontainnames="${dummy.tag.name}"
+                                     failonerror="true"/>
                 </git:git>
         </target>
 
@@ -102,7 +106,8 @@ limitations under the License.
 
                 <git:git localDirectory="${testLocalRepo}" verbose="true">
                         <git:tag name="${dummy.tag.name}"/>
-                        <git:taglist outputfilename="${taglist.file}" failonerror="true"/>
+                        <git:taglist outputfilename="${taglist.file}"
+                                     failonerror="true"/>
                 </git:git>
 
                 <au:assertFileExists file="${taglist.file}"/>
@@ -120,15 +125,16 @@ limitations under the License.
                                      message="Tags list don't match baseline"/>
         </target>
 
-        <!-- ================================ -->
+        <!-- ****************************************** -->
         <!-- Branches -->
-        <!-- ================================ -->
+        <!-- ****************************************** -->
         <target name="testBranchDelete" description="Test git-branch-delete">
                 <initLocalRepo/>
 
                 <au:expectfailure>
                         <git:git localDirectory="${testLocalRepo}" verbose="true">
-                                <git:checkout branchName="${dummy.checkout.branch}" createBranch="true"/>
+                                <git:checkout branchName="${dummy.checkout.branch}"
+                                              createBranch="true"/>
                                 <git:branchDelete failonerror="true" branches="${dummy.checkout.branch}"/>
                         </git:git>
                 </au:expectfailure>
@@ -173,9 +179,9 @@ limitations under the License.
                 </git:git>
         </target>
 
-        <!-- ================================ -->
+        <!-- ****************************************** -->
         <!-- Others -->
-        <!-- ================================ -->
+        <!-- ****************************************** -->
         <target name="testClone" description="Test git-clone">
                 <initLocalRepo/>
 
@@ -197,6 +203,25 @@ limitations under the License.
                         <git:commit message="${dummy.commit.message}" revCommitIdProperty="testAdd.revcommit"/>
                         <git:uptodate failOnError="true"/>
                 </git:git>
+        </target>
+
+        <target name="testCommit" description="Test git-commit">
+                <initLocalRepo/>
+                <echo file="${testLocalRepo}/test.txt" message="test"/>
+
+                <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+                        <git:add>
+                                <fileset dir="${testLocalRepo}" includes="*.txt"/>
+                        </git:add>
+                        <git:commit message="${dummy.commit.message}" revCommitIdProperty="testAdd.revcommit"/>
+                        <git:uptodate failOnError="true"/>
+                </git:git>
+
+                <au:expectfailure>
+                        <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+                                <git:commit message="${dummy.commit.message}" only="test.txt"/>
+                        </git:git>
+                </au:expectfailure>
         </target>
 
         <target name="testClean" description="Test git-clean">
@@ -229,6 +254,51 @@ limitations under the License.
                         <equals arg1="${updatedCountProperty}" arg2="1"/>
                 </au:assertTrue>
         </target>
+
+        <target name="testPull" description="Test git-pull">
+                <initLocalRepo/>
+
+                <git:git localDirectory="${testLocalRepoClone}" verbose="true">
+                        <git:clone uri="file://${testLocalRepo}/.git" directory="${testLocalRepoClone}"/>
+                </git:git>
+
+                <echo file="${testLocalRepo}/file.txt" message="test file"/>
+                <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+                        <git:add>
+                                <fileset dir="${testLocalRepo}" includes="*.txt"/>
+                        </git:add>
+                        <git:commit message="${dummy.commit.message}"/>
+                </git:git>
+
+                <git:git localDirectory="${testLocalRepoClone}" verbose="true">
+                        <git:pull/>
+                </git:git>
+
+                <au:assertFileExists file="${testLocalRepoClone}/file.txt"/>
+        </target>
+
+        <!-- needs some work... -->
+        <!-- <target name="testPush" description="Test git-push"> -->
+        <!--         <initLocalRepo/> -->
+
+        <!--         <git:git localDirectory="${testLocalRepoClone}" verbose="true"> -->
+        <!--                 <git:clone uri="file://${testLocalRepo}/.git" directory="${testLocalRepoClone}"/> -->
+        <!--         </git:git> -->
+
+        <!--         <echo file="${testLocalRepoClone}/file.txt" message="test file"/> -->
+        <!--         <git:git localDirectory="${testLocalRepoClone}" verbose="true" settingsRef="git.testing"> -->
+        <!--                 <git:add> -->
+        <!--                         <fileset dir="${testLocalRepoClone}" includes="*.txt"/> -->
+        <!--                 </git:add> -->
+        <!--                 <git:commit message="${dummy.commit.message}"/> -->
+        <!--                 <git:push/> -->
+        <!--         </git:git> -->
+
+        <!--         <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing"> -->
+        <!--                 <git:pull/> -->
+        <!--         </git:git> -->
+        <!--         <au:assertFileExists file="${testLocalRepo}/file.txt"/> -->
+        <!-- </target> -->
 
         <target name="testUpToDateFailure" description="Test git-status">
                 <initLocalRepo/>

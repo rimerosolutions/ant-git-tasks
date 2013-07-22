@@ -59,7 +59,9 @@ public abstract class AbstractGitRepoAwareTask extends AbstractGitTask {
         public final void execute() {
                 try {
                         try {
-                                Repository repo = new RepositoryBuilder().findGitDir(getDirectory()).build();
+                                Repository repo = new RepositoryBuilder().
+                                        readEnvironment().
+                                        findGitDir(getDirectory()).build();
                                 git = new Git(repo);
                         }
                         catch (IOException ioe) {

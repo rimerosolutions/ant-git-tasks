@@ -27,42 +27,42 @@ import com.rimerosolutions.ant.git.tasks.InitTask;
  *
  * @author Yves Zoundi
  */
-public class GitUtilsTest {
+public class GitTaskUtilsTest {
 
         @Test
         public void testIsNullOrBlankString() {
                 String s = null;
 
-                assertTrue(GitUtils.isNullOrBlankString(s));
+                assertTrue(GitTaskUtils.isNullOrBlankString(s));
 
                 s = "";
-                assertTrue(GitUtils.isNullOrBlankString(s));
+                assertTrue(GitTaskUtils.isNullOrBlankString(s));
 
                 s = " ";
-                assertTrue(GitUtils.isNullOrBlankString(s));
+                assertTrue(GitTaskUtils.isNullOrBlankString(s));
 
                 s = "abc";
-                assertFalse(GitUtils.isNullOrBlankString(s));
+                assertFalse(GitTaskUtils.isNullOrBlankString(s));
         }
 
         @Test
         public void  testSanitizeBranchName() {
                 String branchName = "refs/heads/mybranch";
-                assertEquals("mybranch", GitUtils.sanitizeRefName(branchName));
+                assertEquals("mybranch", GitTaskUtils.sanitizeRefName(branchName));
 
                 branchName = "refs/tags/mybranch";
-                assertEquals("mybranch", GitUtils.sanitizeRefName(branchName));
+                assertEquals("mybranch", GitTaskUtils.sanitizeRefName(branchName));
         }
 
         @Test
         public void testValidateDefinitionSingleCondition() {
                 InitTask t = new InitTask();
                 t.setIf("Hello");
-                GitUtils.validateTaskConditions(t);
+                GitTaskUtils.validateTaskConditions(t);
 
                 t = new InitTask();
                 t.setUnless("Hello");
-                GitUtils.validateTaskConditions(t);
+                GitTaskUtils.validateTaskConditions(t);
         }
 
         @Test(expected=BuildException.class)
@@ -70,6 +70,6 @@ public class GitUtilsTest {
                 InitTask t = new InitTask();
                 t.setIf("Hello");
                 t.setUnless("Hello");
-                GitUtils.validateTaskConditions(t);
+                GitTaskUtils.validateTaskConditions(t);
         }
 }
