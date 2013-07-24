@@ -277,20 +277,19 @@ limitations under the License.
                 <au:assertFileExists file="${testLocalRepoClone}/file.txt"/>
         </target>
 
-         
+        <!--
         <target name="testFetch" description="Test git-fetch"> 
                 <initLocalRepo/>
                 <git:git localDirectory="${testLocalRepoClone}" settingsRef="git.testing">
                                                 <git:init directory="${testLocalRepoClone}" bare="true" /> 
                         <git:commit message="${dummy.commit.message}" failonerror="true"/>
-                        <git:fetch uri="https://github.com/rimerosolutions/playground-repo.git" directory="${testLocalRepoClone}" failonerror="true"/>
+                        <git:fetch uri="file://${testLocalRepo}/.git" directory="${testLocalRepoClone}" failonerror="true"/>
                         
                  </git:git> 
 
                 <au:assertFileExists file="${testLocalRepoClone}/README.md"/>
         </target>
-
-        <!--
+        
         <target name="testPush" description="Test git-push">
                 <initLocalRepo/>
 
