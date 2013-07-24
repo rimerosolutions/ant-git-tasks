@@ -43,7 +43,6 @@ public class CommitTask extends AbstractGitRepoAwareTask {
         private static final String TASK_NAME = "git-commit";
 
         private String message = "Commit message";
-        private boolean all = true;
         private boolean amend = false;
         private String reflogComment;
         private String revCommitIdProperty;
@@ -88,7 +87,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                                 cmd.setOnly(only);
                         }
                         else {
-                                cmd.setAll(all);
+                                cmd.setAll(true);
                         }
 
                         cmd.setAmend(amend).setAuthor(lookupSettings().getIdentity());
@@ -108,16 +107,6 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                 } catch (GitAPIException ex) {
                         throw new GitBuildException("Cannot commit to Git repository", ex);
                 }
-        }
-
-        /**
-         * Whether or not to commit everything
-         *
-         * @antdoc.notrequired
-         * @param all Commit all files
-         */
-        public void setAll(boolean all) {
-                this.all = all;
         }
 
         /**

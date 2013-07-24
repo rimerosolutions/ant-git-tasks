@@ -37,16 +37,21 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
 public class PullTask extends AbstractGitRepoAwareTask {
 
         private static final String TASK_NAME = "git-pull";
+private boolean rebase = false;
 
         @Override
         public String getName() {
                 return TASK_NAME;
         }
-
+        
+        
+public void setRebase(boolean rebase) {
+        this.rebase = rebase;
+}
         @Override
         public void doExecute() {
                 try {
-                        PullCommand pullCommand = git.pull();
+                        PullCommand pullCommand = git.pull().setRebase(rebase);
 
                         if (getProgressMonitor() != null) {
                                 pullCommand.setProgressMonitor(getProgressMonitor());

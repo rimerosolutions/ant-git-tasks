@@ -122,7 +122,7 @@ limitations under the License.
 
                 <au:assertFilesMatch expected="${taglist.file.baseline}"
                                      actual="${taglist.file}"
-                                     message="Tags list don't match baseline"/>
+                                     message="Tags list doesn't match baseline"/>
         </target>
 
         <!-- ****************************************** -->
@@ -165,7 +165,7 @@ limitations under the License.
 
                 <au:assertFilesMatch expected="${branchlist.file.baseline}"
                                      actual="${branchlist.file}"
-                                     message="Branches list don't match baseline"/>
+                                     message="Branches list doesn't match baseline"/>
         </target>
 
         <target name="testCheckout" description="Test git-checkout">
@@ -277,28 +277,47 @@ limitations under the License.
                 <au:assertFileExists file="${testLocalRepoClone}/file.txt"/>
         </target>
 
-        <!-- needs some work... -->
-        <!-- <target name="testPush" description="Test git-push"> -->
-        <!--         <initLocalRepo/> -->
+         
+        <target name="testFetch" description="Test git-fetch"> 
+                <initLocalRepo/>
+                <git:git localDirectory="${testLocalRepoClone}" settingsRef="git.testing">
+                                                <git:init directory="${testLocalRepoClone}" bare="true" /> 
+                        <git:commit message="${dummy.commit.message}" failonerror="true"/>
+                        <git:fetch uri="https://github.com/rimerosolutions/playground-repo.git" directory="${testLocalRepoClone}" failonerror="true"/>
+                        
+                 </git:git> 
 
-        <!--         <git:git localDirectory="${testLocalRepoClone}" verbose="true"> -->
-        <!--                 <git:clone uri="file://${testLocalRepo}/.git" directory="${testLocalRepoClone}"/> -->
-        <!--         </git:git> -->
+                <au:assertFileExists file="${testLocalRepoClone}/README.md"/>
+        </target>
 
-        <!--         <echo file="${testLocalRepoClone}/file.txt" message="test file"/> -->
-        <!--         <git:git localDirectory="${testLocalRepoClone}" verbose="true" settingsRef="git.testing"> -->
-        <!--                 <git:add> -->
-        <!--                         <fileset dir="${testLocalRepoClone}" includes="*.txt"/> -->
-        <!--                 </git:add> -->
-        <!--                 <git:commit message="${dummy.commit.message}"/> -->
-        <!--                 <git:push/> -->
-        <!--         </git:git> -->
+        <!--
+        <target name="testPush" description="Test git-push">
+                <initLocalRepo/>
 
-        <!--         <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing"> -->
-        <!--                 <git:pull/> -->
-        <!--         </git:git> -->
-        <!--         <au:assertFileExists file="${testLocalRepo}/file.txt"/> -->
-        <!-- </target> -->
+                <git:git localDirectory="${testLocalRepoClone}" verbose="true">
+                        <git:clone uri="file://${testLocalRepo}/.git" directory="${testLocalRepoClone}"/>
+                </git:git>
+
+                <echo file="${testLocalRepoClone}/file.txt" message="test file" />
+                <git:git localDirectory="${testLocalRepoClone}" verbose="true" >
+                        <git:checkout branchName="${dummy.checkout.branch}" createBranch="true"/>
+                        <git:add>
+                                <fileset dir="${testLocalRepoClone}" includes="*.txt"/>
+                        </git:add>
+                        <git:commit message="${dummy.commit.message}" settingsRef="git.testing" failonerror="true"/>
+                </git:git>
+
+                <git:git localDirectory="${testLocalRepoClone}/.git" verbose="true"  settingsRef="git.testing">
+
+                        <git:push uri="file://${testLocalRepo}/.git" failonerror="true"/>
+                </git:git>
+
+                <git:git localDirectory="${testLocalRepo}" verbose="true"  >
+                        <git:pull/>
+                </git:git>
+                <au:assertFileExists file="${testLocalRepo}/file.txt"/>
+        </target>
+        -->
 
         <target name="testUpToDateFailure" description="Test git-status">
                 <initLocalRepo/>

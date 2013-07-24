@@ -507,7 +507,7 @@ limitations under the License.
                 </jar>
         </target>
 
-        <target name="javadoc" depends="compile" description="Generate javadocs">
+        <target name="-javadoc" depends="compile">
                 <echo>Generating Javadoc documentation.</echo>
                 <javadoc packagenames="**/*.*"
                          sourcepath="${src.dir}"
@@ -528,7 +528,11 @@ limitations under the License.
                         <link href="http://download.eclipse.org/jgit/docs/latest/apidocs/" />
                         <link href="http://javadoc.haefelinger.it/org.apache.ant/1.7.1/"/>
                 </javadoc>
-
+        </target>
+        
+        <target name="-antdoc" depends="compile">
+                <echo>Generating Ant tasks documentation.</echo>
+                        
                 <path id="antdoc.classpath">
                         <path refid="compile.classpath"/>
                         <path location="${classes.dir}"/>
@@ -547,8 +551,9 @@ limitations under the License.
                                 <path refid="antdoc.classpath"/>
                         </classpath>
                 </javadoc>
-
-        </target>
+                </target>
+        
+        <target name="javadoc" depends="-javadoc,-antdoc" description="Generate javadocs"/>
 
         <target name="jar-sources" depends="compile" description="Generate sources jar">
                 <echo>Generating sources jar.</echo>

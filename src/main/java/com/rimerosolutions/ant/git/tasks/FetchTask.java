@@ -15,10 +15,14 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
+import java.util.List;
+import java.util.ArrayList;
 import org.eclipse.jgit.api.FetchCommand;
-
+import org.eclipse.jgit.transport.FetchResult;
+import org.eclipse.jgit.transport.RefSpec;
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
+import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
  * Git fetch Ant task
@@ -30,18 +34,20 @@ import com.rimerosolutions.ant.git.GitBuildException;
  * @author Yves Zoundi
  */
 public class FetchTask extends AbstractGitRepoAwareTask {
-        private boolean dryRun = true;
+        private boolean dryRun = false;
         private boolean removeDeletedRefs = true;
         private boolean thinPack = true;
         private static final String TASK_NAME = "git-fetch";
+        private static final String FETCH_FAILED_MESSAGE = "Fetch failed";
 
         @Override
         public String getName() {
                 return TASK_NAME;
         }
+
         /**
          * Sets the thin-pack preference for fetch operation.
-         *
+         * 
          * @param thinPack (Default value is true)
          */
         public void setThinPack(boolean thinPack) {
@@ -50,7 +56,7 @@ public class FetchTask extends AbstractGitRepoAwareTask {
 
         /**
          * If set to true, refs are removed which no longer exist in the source
-         *
+         * 
          * @param removeDeletedRefs (Default value is true)
          */
         public void setRemoveDeletedRefs(boolean removeDeletedRefs) {
@@ -59,7 +65,7 @@ public class FetchTask extends AbstractGitRepoAwareTask {
 
         /**
          * Sets whether the fetch operation should be a dry run
-         *
+         * 
          * @param dryRun (Default value is true)
          */
         public void setDryRun(boolean dryRun) {
@@ -69,19 +75,30 @@ public class FetchTask extends AbstractGitRepoAwareTask {
         @Override
         public void doExecute() {
                 try {
-                        FetchCommand cmd = git.fetch().
-                                setDryRun(dryRun).
-                                setThin(thinPack).
-                                setRemote(getUri()).
-                                setRemoveDeletedRefs(removeDeletedRefs);
 
-                        setupCredentials(cmd);
+                        List<RefSpec> specs = new ArrayList<RefSpec>(3);
+                        specs.add(new RefSpec("+refs/heads/*:refs/remotes/origin/*"));
+                        specs.add(new RefSpec("+refs/notes/*:refs/notes/*"));
+                        specs.add(new RefSpec("+refs/tags/*:refs/tags/*"));
+
+                        FetchCommand fetchCommand = git.fetch().
+                                        setDryRun(dryRun).
+                                        setThin(thinPack).
+                                        setRemote(getUri()).
+                                        setRefSpecs(specs).
+                                        setRemoveDeletedRefs(removeDeletedRefs);
+
+                        setupCredentials(fetchCommand);
 
                         if (getProgressMonitor() != null) {
-                                cmd.setProgressMonitor(getProgressMonitor());
+                                fetchCommand.setProgressMonitor(getProgressMonitor());
                         }
 
-                        cmd.call();
+                        FetchResult fetchResult = fetchCommand.call();
+                        
+                        GitTaskUtils.validateTrackingRefUpdates(FETCH_FAILED_MESSAGE, fetchResult.getTrackingRefUpdates());
+                        
+                        log(fetchResult.getMessages());
                 } catch (Exception e) {
                         throw new GitBuildException("Unexpected exception: " + e.getMessage(), e);
                 }
