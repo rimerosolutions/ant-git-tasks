@@ -35,19 +35,21 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
  * @author Yves Zoundi
  */
 public class PullTask extends AbstractGitRepoAwareTask {
-
+        
         private static final String TASK_NAME = "git-pull";
-private boolean rebase = false;
+        private static final String MESSAGE_PULLED_FAILED = "Pull failed.";
+        private static final String MESSAGE_PULLED_FAILED_WITH_STATUS = "Pull failed, status '%s'.";
+        private static final String MESSAGE_PULLED_FAILED_WITH_STATUS = "Could not pull from uri '%s'.";
+        private boolean rebase = false;
 
         @Override
         public String getName() {
                 return TASK_NAME;
         }
-        
-        
-public void setRebase(boolean rebase) {
-        this.rebase = rebase;
-}
+
+        public void setRebase(boolean rebase) {
+                this.rebase = rebase;
+        }
         @Override
         public void doExecute() {
                 try {
@@ -58,23 +60,20 @@ public void setRebase(boolean rebase) {
                         }
 
                         setupCredentials(pullCommand);
-
                         PullResult pullResult = pullCommand.call();
 
                         if (!pullResult.isSuccessful()) {
                                 FetchResult fetchResult = pullResult.getFetchResult();
-
-                                GitTaskUtils.validateTrackingRefUpdates("Merge failed", fetchResult.getTrackingRefUpdates());
-
+                                GitTaskUtils.validateTrackingRefUpdates(MESSAGE_PULLED_FAILED, fetchResult.getTrackingRefUpdates());
                                 MergeStatus mergeStatus = pullResult.getMergeResult().getMergeStatus();
 
                                 if (!mergeStatus.isSuccessful()) {
-                                        throw new BuildException(String.format("Merge failed - Status '%s'.", mergeStatus.name()));
+                                        throw new BuildException(String.format(MESSAGE_PULLED_FAILED_WITH_STATUS, mergeStatus.name()));
                                 }
                         }
                 }
                 catch (Exception e) {
-                        throw new GitBuildException(String.format("Could not clone URL '%s'.", getUri()), e);
+                        throw new GitBuildException(String.format(MESSAGE_PULLED_FAILED_WITH_URI, getUri()), e);
                 }
         }
 

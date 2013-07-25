@@ -34,6 +34,7 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
  * @author Yves Zoundi
  */
 public class FetchTask extends AbstractGitRepoAwareTask {
+
         private boolean dryRun = false;
         private boolean removeDeletedRefs = true;
         private boolean thinPack = true;
@@ -47,7 +48,7 @@ public class FetchTask extends AbstractGitRepoAwareTask {
 
         /**
          * Sets the thin-pack preference for fetch operation.
-         * 
+         *
          * @param thinPack (Default value is true)
          */
         public void setThinPack(boolean thinPack) {
@@ -56,7 +57,7 @@ public class FetchTask extends AbstractGitRepoAwareTask {
 
         /**
          * If set to true, refs are removed which no longer exist in the source
-         * 
+         *
          * @param removeDeletedRefs (Default value is true)
          */
         public void setRemoveDeletedRefs(boolean removeDeletedRefs) {
@@ -65,7 +66,7 @@ public class FetchTask extends AbstractGitRepoAwareTask {
 
         /**
          * Sets whether the fetch operation should be a dry run
-         * 
+         *
          * @param dryRun (Default value is true)
          */
         public void setDryRun(boolean dryRun) {
@@ -75,18 +76,17 @@ public class FetchTask extends AbstractGitRepoAwareTask {
         @Override
         public void doExecute() {
                 try {
-
                         List<RefSpec> specs = new ArrayList<RefSpec>(3);
                         specs.add(new RefSpec("+refs/heads/*:refs/remotes/origin/*"));
                         specs.add(new RefSpec("+refs/notes/*:refs/notes/*"));
                         specs.add(new RefSpec("+refs/tags/*:refs/tags/*"));
 
                         FetchCommand fetchCommand = git.fetch().
-                                        setDryRun(dryRun).
-                                        setThin(thinPack).
-                                        setRemote(getUri()).
-                                        setRefSpecs(specs).
-                                        setRemoveDeletedRefs(removeDeletedRefs);
+                                setDryRun(dryRun).
+                                setThin(thinPack).
+                                setRemote(getUri()).
+                                setRefSpecs(specs).
+                                setRemoveDeletedRefs(removeDeletedRefs);
 
                         setupCredentials(fetchCommand);
 
@@ -95,9 +95,9 @@ public class FetchTask extends AbstractGitRepoAwareTask {
                         }
 
                         FetchResult fetchResult = fetchCommand.call();
-                        
+
                         GitTaskUtils.validateTrackingRefUpdates(FETCH_FAILED_MESSAGE, fetchResult.getTrackingRefUpdates());
-                        
+
                         log(fetchResult.getMessages());
                 } catch (Exception e) {
                         throw new GitBuildException("Unexpected exception: " + e.getMessage(), e);
