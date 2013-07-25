@@ -113,7 +113,7 @@ public class FetchTask extends AbstractGitRepoAwareTask {
 
                         List<RefSpec> specs = new ArrayList<RefSpec>(4);
 
-                        specs.add(new RefSpec("+" + Constants.R_HEADS + "/*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*"));
+                        specs.add(new RefSpec("+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*"));
                         specs.add(new RefSpec("+" + Constants.R_NOTES + "*:" + Constants.R_NOTES + "*"));
                         specs.add(new RefSpec("+" + Constants.R_TAGS + "*:" + Constants.R_TAGS + "*"));
                         specs.add(new RefSpec(currentBranch + ":" + currentBranch));
