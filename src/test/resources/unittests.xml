@@ -238,7 +238,7 @@ limitations under the License.
                 <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
                         <git:clean paths="test.txt"/>
                         <git:uptodate failOnError="true"/>
-                </git:git>
+                </git:git>                
         </target>
 
         <target name="testApply" description="Test git-apply">
