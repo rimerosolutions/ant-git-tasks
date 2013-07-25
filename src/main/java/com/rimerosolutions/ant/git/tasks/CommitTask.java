@@ -26,7 +26,7 @@ import com.rimerosolutions.ant.git.GitBuildException;
 import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
- * Commits all local changes
+ * Commits all local changes.
  *
  * <pre>{@code
  *  <git:git localDirectory="${testLocalRepo}">

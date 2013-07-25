@@ -34,6 +34,7 @@ limitations under the License.
         <property name="taglist.file" value="${testData.folder}/tag-list.txt"/>
         <property name="taglist.file.baseline" value="${testData.folder}/tag-list-baseline.txt"/>
         <property name="testLocalRepo" value="${testData.folder}/testLocalRepo"/>
+        <property name="testLocalRepoClient" value="${testData.folder}/testLocalRepoClient"/>
         <property name="testLocalRepoClone" value="${testData.folder}/testLocalRepoClone"/>
         <property name="dummy.commit.message" value="Initial commit"/>
         <property name="dummy.checkout.branch" value="feature/checkout"/>
@@ -46,16 +47,19 @@ limitations under the License.
         <target name="setUp">
                 <mkdir dir="${testLocalRepo}"/>
                 <mkdir dir="${testLocalRepoClone}"/>
+                <mkdir dir="${testLocalRepoClient}"/>
         </target>
 
         <target name="tearDown">
                 <delete dir="${testLocalRepo}" quiet="true"/>
                 <delete dir="${testLocalRepoClone}" quiet="true"/>
+                <delete dir="${testLocalRepoClient}" quiet="true"/>
                 <delete file="${branchlist.file}" quiet="true"/>
                 <delete file="${taglist.file}" quiet="true"/>
         </target>
 
         <macrodef name="initLocalRepo" description="Macro to ensure good setUp-tearDown behavior">
+                <attribute name="bare" default="false"/>
                 <sequential>
                         <git:settings refId="git.testing"
                                       username="xxxtesting"
@@ -64,7 +68,7 @@ limitations under the License.
                                       email="xxxtesting@gmail.com"/>
 
                         <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
-                                <git:init directory="${testLocalRepo}" bare="false" />
+                                <git:init directory="${testLocalRepo}" bare="@{bare}" />
                                 <git:commit message="${dummy.commit.message}"
                                             revCommitIdProperty="revcommit"/>
                         </git:git>
@@ -192,6 +196,58 @@ limitations under the License.
                 <au:assertFileExists file="${testLocalRepoClone}/.git/index"/>
         </target>
 
+        <target name="testPush" description="Test git-push">
+                <initLocalRepo bare="true"/>
+
+                <git:git localDirectory="${testLocalRepoClone}" verbose="true">
+                        <git:clone uri="file://${testLocalRepo}" directory="${testLocalRepoClone}"/>
+                </git:git>
+
+                <echo file="${testLocalRepoClone}/test.txt" message="test"/>
+
+                <git:git localDirectory="${testLocalRepoClone}" verbose="true" settingsRef="git.testing">
+                        <git:add>
+                                <fileset dir="${testLocalRepoClone}" includes="*.txt"/>
+                        </git:add>
+                        <git:commit message="${dummy.commit.message}"/>
+                        <git:uptodate failOnError="true"/>
+                        <git:push uri="file://${testLocalRepo}"/>
+                </git:git>
+
+                <git:git localDirectory="${testLocalRepoClient}" verbose="true" settingsRef="git.testing">
+                        <git:clone uri="file://${testLocalRepo}" directory="${testLocalRepoClient}"/>
+                </git:git>
+
+                <au:assertFileExists file="${testLocalRepoClient}/test.txt"/>
+        </target>
+
+        <target name="testFetch" description="Test git-fetch">
+                <initLocalRepo bare="true"/>
+
+                <git:git localDirectory="${testLocalRepoClone}" verbose="true">
+                        <git:clone uri="file://${testLocalRepo}" directory="${testLocalRepoClone}"/>
+                </git:git>
+
+                <echo file="${testLocalRepoClone}/test.txt" message="test"/>
+
+                <git:git localDirectory="${testLocalRepoClone}" verbose="true" settingsRef="git.testing">
+                        <git:add>
+                                <fileset dir="${testLocalRepoClone}" includes="*.txt"/>
+                        </git:add>
+                        <git:commit message="${dummy.commit.message}"/>
+                        <git:uptodate failOnError="true"/>
+                        <git:push uri="file://${testLocalRepo}"/>
+                </git:git>
+
+                <git:git localDirectory="${testLocalRepoClient}" verbose="true" settingsRef="git.testing">
+                        <git:init directory="${testLocalRepoClient}"/>
+                        <git:fetch uri="file://${testLocalRepo}" directory="${testLocalRepoClient}"/>
+                        <git:pull/>
+                </git:git>
+
+                <au:assertFileExists file="${testLocalRepoClient}/test.txt"/>
+        </target>
+
         <target name="testAdd" description="Test git-add">
                 <initLocalRepo/>
                 <echo file="${testLocalRepo}/test.txt" message="test"/>
@@ -238,7 +294,7 @@ limitations under the License.
                 <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
                         <git:clean paths="test.txt"/>
                         <git:uptodate failOnError="true"/>
-                </git:git>                
+                </git:git>
         </target>
 
         <target name="testApply" description="Test git-apply">
@@ -293,4 +349,5 @@ limitations under the License.
                 <initLocalRepo/>
                 <au:assertFileExists file="${testLocalRepo}/.git/index"/>
         </target>
+
 </project>

@@ -28,7 +28,7 @@ import org.eclipse.jgit.transport.URIish;
 
 
 /**
- * Abstract Git task
+ * Abstract Git task.
  *
  * @author Fabrizio Cannizzo
  * @author Yves Zoundi

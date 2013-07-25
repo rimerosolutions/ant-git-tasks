@@ -23,6 +23,7 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.transport.URIish;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
@@ -30,7 +31,7 @@ import com.rimerosolutions.ant.git.GitBuildException;
 import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
- * Pushes a Git tag to a remote repository
+ * Push changes to a remote repository.
  *
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-push.html">Git documentation about push</a></p>
  *
@@ -43,6 +44,7 @@ public class PushTask extends AbstractGitRepoAwareTask {
         private String pushFailedProperty;
         private boolean includeTags = true;
         private static final String TASK_NAME = "git-push";
+        private static final String PUSH_FAILED_MESSAGE = "Push failed.";
 
         @Override
         public String getName() {
@@ -51,7 +53,7 @@ public class PushTask extends AbstractGitRepoAwareTask {
 
         /**
          * Whether or not to include all tags while pushing
-         * 
+         *
          * @antdoc.notrequired
          * @param includeTags Default is true
          */
@@ -61,7 +63,7 @@ public class PushTask extends AbstractGitRepoAwareTask {
 
         /**
          * Sets a boolean property if the git push fails
-         * 
+         *
          * @antdoc.notrequired
          * @param pushFailedProperty Property to set
          */
@@ -72,28 +74,30 @@ public class PushTask extends AbstractGitRepoAwareTask {
         @Override
         protected void doExecute() {
                 try {
+                        StoredConfig config = git.getRepository().getConfig();
+                        List<RemoteConfig> remoteConfigs = RemoteConfig.getAllRemoteConfigs(config);
 
-                        RemoteConfig remoteConfig = new RemoteConfig(git.getRepository().getConfig(), Constants.DEFAULT_REMOTE_NAME);
-                        remoteConfig.addURI(new URIish(getUri()));
-                        remoteConfig.addFetchRefSpec(new RefSpec("+refs/heads/*:refs/remotes/origin/*"));
-                        remoteConfig.update(git.getRepository().getConfig());
+                        if (remoteConfigs.isEmpty()) {
+                                URIish uri = new URIish(getUri());
 
-                        git.getRepository().getConfig().setString("receive", null, "denyCurrentBranch", "ignore");
-                        git.getRepository().getConfig().save();
+                                RemoteConfig remoteConfig = new RemoteConfig(config, Constants.DEFAULT_REMOTE_NAME);
+                                remoteConfig.addURI(uri);
+                                remoteConfig.addFetchRefSpec(new RefSpec("+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*"));
+                                remoteConfig.addPushRefSpec(new RefSpec("+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*"));
+                                remoteConfig.update(config);
 
-                        log("Pushing tags.");
+                                config.save();
+                        }
 
-                        List<RefSpec> specs = new ArrayList<RefSpec>(3);
-
-                        specs.add(new RefSpec("+refs/heads/*:refs/remotes/origin/*"));
-                        specs.add(new RefSpec("+refs/notes/*:refs/notes/*"));
-                        specs.add(new RefSpec("+refs/tags/*:refs/tags/*"));
+                        List<RefSpec> specs = new ArrayList<RefSpec>(1);
+                        String currentBranch = git.getRepository().getBranch();
+                        specs.add(new RefSpec(currentBranch + ":" + currentBranch));
 
                         PushCommand pushCommand = git.push().
-                                                      setPushAll().
-                                                      setRefSpecs(specs).
-                                                      setDryRun(false).
-                                                      setRemote(getUri());
+                                setPushAll().
+                                setRefSpecs(specs).
+                                setDryRun(false).
+                                setRemote(getUri());
 
                         setupCredentials(pushCommand);
 
@@ -108,14 +112,14 @@ public class PushTask extends AbstractGitRepoAwareTask {
                         Iterable<PushResult> pushResults = pushCommand.setForce(true).call();
 
                         for (PushResult pushResult : pushResults) {
-                                GitTaskUtils.validateTrackingRefUpdates("Push failed", pushResult.getTrackingRefUpdates());
+                                GitTaskUtils.validateTrackingRefUpdates(PUSH_FAILED_MESSAGE, pushResult.getTrackingRefUpdates());
                         }
                 } catch (Exception e) {
                         if (pushFailedProperty != null) {
                                 getProject().setProperty(pushFailedProperty, e.getMessage());
                         }
 
-                        throw new GitBuildException("Git push failed.", e);
+                        throw new GitBuildException(PUSH_FAILED_MESSAGE, e);
                 }
         }
 }

@@ -15,7 +15,6 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +25,7 @@ import com.rimerosolutions.ant.git.AbstractGitTask;
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
- * Clone a repository
+ * Clone a repository.
  * 
  * <pre>{@code 
  *  <git:git localDirectory="${testLocalRepoClone}">
@@ -130,7 +129,7 @@ public class CloneTask extends AbstractGitTask {
                                 setCloneAllBranches(cloneAllBranches).
                                 setCloneSubmodules(cloneSubModules).
                                 setNoCheckout(noCheckout).
-                                setDirectory(new File(getDirectory().getAbsolutePath()));
+                                setDirectory(getDirectory());
 
                         setupCredentials(cloneCommand);
 

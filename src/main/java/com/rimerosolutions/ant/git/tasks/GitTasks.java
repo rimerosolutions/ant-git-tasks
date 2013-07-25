@@ -27,7 +27,7 @@ import com.rimerosolutions.ant.git.GitTaskMonitor;
 import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
- * Git tasks container
+ * Git tasks container.
  *
  * <pre>{@code
  * <git:settings refId="git.testing"

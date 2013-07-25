@@ -20,7 +20,7 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 /**
- * Git settings to reuse credentials and identity information
+ * Git settings to reuse credentials and identity information.
  * 
  * @author Yves Zoundi
  */

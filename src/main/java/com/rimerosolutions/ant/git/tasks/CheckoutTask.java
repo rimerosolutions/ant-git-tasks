@@ -27,16 +27,17 @@ import org.eclipse.jgit.api.errors.RefNotFoundException;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
+import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
- * Perform a checkout
- * 
- * <pre>{@code 
+ * Perform a checkout.
+ *
+ * <pre>{@code
  * <git:git localDirectory="${testLocalRepo}" verbose="true">
  *  <git:checkout branchName="${dummy.checkout.branch}" createBranch="true"/>
  *  <git:branchDelete failonerror="true" branches="${dummy.checkout.branch}"/>
  * </git:git>}</pre>
- * 
+ *
  * <p><a href="https://www.kernel.org/pub/software/scm/git/docs/git-checkout.html">Git documentation about checkout</a></p>
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/CheckoutCommand.html">JGit CheckoutCommand</a></p>
  *
@@ -96,19 +97,22 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
                                 }
                         }
 
-                        checkoutCommand.setName(branchName);
+                        if (!GitTaskUtils.isNullOrBlankString(branchName)) {
+                                checkoutCommand.setName(branchName);
+                        }
+                        
                         checkoutCommand.call();
 
                         CheckoutResult checkoutResult = checkoutCommand.getResult();
 
                         if (checkoutResult.getStatus().equals(CheckoutResult.Status.CONFLICTS)) {
                                 String conflicts = checkoutResult.getConflictList().toString();
-                                
+
                                 throw new GitBuildException(String.format("Conflicts were found:%s.", conflicts));
                         }
                         else if (checkoutResult.getStatus().equals(CheckoutResult.Status.NONDELETED)) {
                                 String undeleted = checkoutResult.getUndeletedList().toString();
-                                
+
                                 throw new GitBuildException(String.format("Some files could not be deleted:%s.", undeleted));
                         }
                 } catch (RefAlreadyExistsException e) {

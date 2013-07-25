@@ -15,8 +15,6 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
-import java.io.File;
-
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
@@ -24,20 +22,20 @@ import com.rimerosolutions.ant.git.AbstractGitTask;
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
- * Task to initialize a git repository
- * 
+ * Initialize a Git repository.
+ *
  * <pre>{@code
  * <git:settings refId="git.testing"
  *               username="xxxtesting"
  *               password="xxxtesting"
  *               name="xxxtesting"
  *               email="xxxtesting@gmail.com"/>
- * 
+ *
  *  <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
  *     <git:init directory="${testLocalRepo}" bare="false" />
  *     <git:commit message="${dummy.commit.message}" revCommitIdProperty="revcommit"/>
  *  </git:git>}</pre>
- * 
+ *
  * <p><a href="https://www.kernel.org/pub/software/scm/git/docs/git-init.html">Git documentation about init</a></p>
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/index.html?org/eclipse/jgit/api/InitCommand.html">JGit Initcommand</a></p>
  *
@@ -67,7 +65,7 @@ public class InitTask extends AbstractGitTask {
                 try {
                         Git.init().
                                 setBare(bare).
-                                setDirectory(new File(getDirectory().getAbsolutePath())).
+                                setDirectory(getDirectory()).
                                 call();
                 } catch (GitAPIException e) {
                         throw new GitBuildException("Could not initialize repository.", e);

@@ -22,7 +22,7 @@ import com.rimerosolutions.ant.git.GitBuildException;
 import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
- * Delete branches
+ * Delete branches.
  * 
  * <pre>{@code 
  * <git:git localDirectory="${testLocalRepo}" verbose="true">

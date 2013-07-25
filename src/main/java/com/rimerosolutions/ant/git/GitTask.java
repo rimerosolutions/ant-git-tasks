@@ -20,7 +20,7 @@ import java.io.File;
 import org.eclipse.jgit.lib.ProgressMonitor;
 
 /**
- * Git task interface
+ * Git task interface.
  *
  * @author Fabrizio Cannizzo
  * @author Yves Zoundi

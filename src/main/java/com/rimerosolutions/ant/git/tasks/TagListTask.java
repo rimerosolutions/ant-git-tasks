@@ -30,7 +30,7 @@ import com.rimerosolutions.ant.git.GitBuildException;
 import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
- * List tags
+ * List tags.
  *
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-tag.html">Git documentation about tag</a></p>
  *

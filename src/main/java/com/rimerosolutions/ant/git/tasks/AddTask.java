@@ -27,7 +27,7 @@ import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
- * Add files
+ * Add files.
  *
  * <pre>{@code
  *  <git:git localDirectory="${testLocalRepo}">

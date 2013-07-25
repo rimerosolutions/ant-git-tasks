@@ -23,7 +23,7 @@ import com.rimerosolutions.ant.git.GitBuildException;
 import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
- * Delete tags
+ * Delete tags.
  * 
  * <pre>
  * {@code 

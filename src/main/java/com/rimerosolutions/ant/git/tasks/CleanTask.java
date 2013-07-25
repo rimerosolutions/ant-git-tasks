@@ -26,7 +26,7 @@ import com.rimerosolutions.ant.git.GitBuildException;
 
 
 /**
- * Git clean Ant task
+ * Git clean Ant task.
  *
  * <pre>{@code
  * <echo file="${testLocalRepo}/test.txt" message="test"/>

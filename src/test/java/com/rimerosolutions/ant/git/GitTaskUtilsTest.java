@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 package com.rimerosolutions.ant.git;
-
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
-import org.apache.tools.ant.BuildException;
-import com.rimerosolutions.ant.git.tasks.InitTask;
 
+import org.apache.tools.ant.BuildException;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import com.rimerosolutions.ant.git.tasks.InitTask;
 /**
  * Unit test for some utility classes
  *
@@ -29,6 +31,9 @@ import com.rimerosolutions.ant.git.tasks.InitTask;
  */
 public class GitTaskUtilsTest {
 
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
+	
         @Test
         public void testIsNullOrBlankString() {
                 String s = null;
@@ -53,7 +58,7 @@ public class GitTaskUtilsTest {
                 branchName = "refs/tags/mybranch";
                 assertEquals("mybranch", GitTaskUtils.sanitizeRefName(branchName));
         }
-
+			
         @Test
         public void testValidateDefinitionSingleCondition() {
                 InitTask t = new InitTask();

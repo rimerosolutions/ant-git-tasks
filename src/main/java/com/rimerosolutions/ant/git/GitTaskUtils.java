@@ -22,7 +22,7 @@ import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.transport.TrackingRefUpdate;
 
 /**
- * Utility class
+ * Utility class.
  *
  * @author Yves Zoundi
  */

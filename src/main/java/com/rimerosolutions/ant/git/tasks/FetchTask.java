@@ -20,12 +20,17 @@ import java.util.ArrayList;
 import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.RefSpec;
+import org.eclipse.jgit.transport.RemoteConfig;
+import org.eclipse.jgit.transport.URIish;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.StoredConfig;
+import org.eclipse.jgit.lib.ConfigConstants;
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
 import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
- * Git fetch Ant task
+ * Fetch remote repository data.
  *
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-fetch.html">Git documentation about fetch</a></p>
  *
@@ -76,10 +81,35 @@ public class FetchTask extends AbstractGitRepoAwareTask {
         @Override
         public void doExecute() {
                 try {
-                        List<RefSpec> specs = new ArrayList<RefSpec>(3);
-                        specs.add(new RefSpec("+refs/heads/*:refs/remotes/origin/*"));
-                        specs.add(new RefSpec("+refs/notes/*:refs/notes/*"));
-                        specs.add(new RefSpec("+refs/tags/*:refs/tags/*"));
+                        StoredConfig config = git.getRepository().getConfig();
+                        List<RemoteConfig> remoteConfigs = RemoteConfig.getAllRemoteConfigs(config);
+
+                        if (remoteConfigs.isEmpty()) {                                
+                                URIish uri = new URIish(getUri());
+
+                                RemoteConfig remoteConfig = new RemoteConfig(config, Constants.DEFAULT_REMOTE_NAME);
+                                remoteConfig.addURI(uri);                                
+                                remoteConfig.addFetchRefSpec(new RefSpec("+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*"));
+                                
+                                config.setString(ConfigConstants.CONFIG_BRANCH_SECTION, Constants.MASTER, ConfigConstants.CONFIG_KEY_REMOTE, Constants.DEFAULT_REMOTE_NAME);
+                                config.setString(ConfigConstants.CONFIG_BRANCH_SECTION, Constants.MASTER, ConfigConstants.CONFIG_KEY_MERGE, Constants.R_HEADS + Constants.MASTER);
+
+                                remoteConfig.update(config);
+                                config.save();
+                        }
+
+                        String currentBranch = git.getRepository().getBranch();
+
+                        if (GitTaskUtils.isNullOrBlankString(currentBranch)) {
+                                currentBranch = Constants.R_HEADS + Constants.MASTER;
+                        }
+
+                        List<RefSpec> specs = new ArrayList<RefSpec>(4);
+                        
+                        specs.add(new RefSpec("+" + Constants.R_HEADS + "/*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*"));
+                        specs.add(new RefSpec("+" + Constants.R_NOTES + "*:" + Constants.R_NOTES + "*"));
+                        specs.add(new RefSpec("+" + Constants.R_TAGS + "*:" + Constants.R_TAGS + "*"));
+                        specs.add(new RefSpec(currentBranch + ":" + currentBranch));
 
                         FetchCommand fetchCommand = git.fetch().
                                 setDryRun(dryRun).

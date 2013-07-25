@@ -17,10 +17,8 @@ package com.rimerosolutions.ant.git;
 
 import org.eclipse.jgit.lib.ProgressMonitor;
 
-
-
 /**
- * Basic Task execution monitor
+ * Basic Task execution monitor.
  *
  * @author Yves Zoundi
  */
