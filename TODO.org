@@ -3,5 +3,6 @@
 - Implement most of the possible useful [[http://eclipse.org/jgit/][JGit]] commands as Ant tasks.
 - Error handling and inheritance hierarchy.
 - The Ant task doesn't seem that much friendly at this time even though it's usable.
+- Move antunit tests out of the git tree, few things got pushed automatically with a dummy user.
 
 Last modification date : <2013-07-25 Thu>
