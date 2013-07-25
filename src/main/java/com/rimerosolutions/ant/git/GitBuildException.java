@@ -37,5 +37,5 @@ public class GitBuildException extends BuildException {
         public GitBuildException(String msg) {
                 super(msg);
         }
-        
+
 }

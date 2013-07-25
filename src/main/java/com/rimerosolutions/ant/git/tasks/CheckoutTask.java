@@ -100,7 +100,7 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
                         if (!GitTaskUtils.isNullOrBlankString(branchName)) {
                                 checkoutCommand.setName(branchName);
                         }
-                        
+
                         checkoutCommand.call();
 
                         CheckoutResult checkoutResult = checkoutCommand.getResult();

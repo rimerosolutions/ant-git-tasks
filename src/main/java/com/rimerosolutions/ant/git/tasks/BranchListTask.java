@@ -28,13 +28,13 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
  * List branches.
- * 
- * <pre>{@code 
+ *
+ * <pre>{@code
  * <git:git localDirectory="${testLocalRepo}" verbose="true">
  *    <git:branchlist outputfilename="${branchlist.file}"/>
  * </git:git>
  * }</pre>
- * 
+ *
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-branch.html">Git branch documentation</a></p>
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/ListBranchCommand.html">JGit ListBranchCommand</a></p>
  *
@@ -71,7 +71,7 @@ public class BranchListTask extends TagListTask {
                                 }
 
                                 String validModes = listModeValidValues.toString();
-                                
+
                                 throw new BuildException(String.format("Valid listMode options are: %s.", validModes));
                         }
                 }

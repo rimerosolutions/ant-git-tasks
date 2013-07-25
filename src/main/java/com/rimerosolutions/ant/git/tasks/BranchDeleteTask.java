@@ -23,13 +23,13 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
  * Delete branches.
- * 
- * <pre>{@code 
+ *
+ * <pre>{@code
  * <git:git localDirectory="${testLocalRepo}" verbose="true">
  *    <git:checkout branchName="${master.branch.name}"/>
  *    <git:branchDelete failonerror="true" branches="${dummy.checkout.branch}"/>
  * </git:git>}</pre>
- * 
+ *
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-branch.html">Git branch documentation</a></p>
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/DeleteBranchCommand.html">JGit DeleteBranchCommand</a></p>
  *

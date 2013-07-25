@@ -23,7 +23,6 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
 
-
 /**
  * Base Ant Task with a managed reference to the Git repository.
  *

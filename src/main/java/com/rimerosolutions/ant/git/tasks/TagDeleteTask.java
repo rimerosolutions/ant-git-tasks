@@ -24,15 +24,15 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
  * Delete tags.
- * 
+ *
  * <pre>
- * {@code 
+ * {@code
  *  <git:git localDirectory="${testLocalRepo}">
  *    <git:tagdelete tags="${dummy.tag.name}"/>
  *  </git:git>
  * }
- * </pre> 
- * 
+ * </pre>
+ *
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-tag.html">Git documentation about tag</a></p>
  *
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/DeleteTagCommand.html">JGit DeleteTagCommand</a></p>
@@ -42,6 +42,7 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
 public class TagDeleteTask extends AbstractGitRepoAwareTask {
 
         private String[] tags = {};
+        private static final String MESSAGE_TAG_DELETE_FAILED = "Could not delete specified tags";
         private static final String TASK_NAME = "git-tag-delete";
 
         @Override
@@ -58,7 +59,7 @@ public class TagDeleteTask extends AbstractGitRepoAwareTask {
                 if (GitTaskUtils.isNullOrBlankString(tags)) {
                         throw new BuildException("Invalid tag names provided.");
                 }
-                
+
                 this.tags = tags.split(",");
         }
 
@@ -67,7 +68,7 @@ public class TagDeleteTask extends AbstractGitRepoAwareTask {
                 try {
                         git.tagDelete().setTags(tags).call();
                 } catch (GitAPIException e) {
-                        throw new GitBuildException("Could not delete specified tags", e);
+                        throw new GitBuildException(MESSAGE_TAG_DELETE_FAILED, e);
                 }
         }
 

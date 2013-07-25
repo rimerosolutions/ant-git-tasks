@@ -47,7 +47,7 @@ public class CleanTask extends AbstractGitRepoAwareTask {
         private boolean ignore = true;
         private Set<String> pathList = new HashSet<String>();
         private static final String TASK_NAME = "git-clean";
-        
+
         @Override
         public String getName() {
                 return TASK_NAME;

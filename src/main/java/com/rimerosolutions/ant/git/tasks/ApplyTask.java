@@ -31,12 +31,12 @@ import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
  * Apply a patch
- * 
- * <pre>{@code 
+ *
+ * <pre>{@code
  * <git:git localDirectory="${testLocalRepo}" verbose="true">
  *   <git:apply updatedCountProperty="updatedCountProperty" patchfile="${dummy.patch.file}"/>
  * </git:git>}</pre>
- * 
+ *
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-apply.html">Git documentation about apply</a></p>
  * <p><a href="http://download.eclipse.org/jgit/docs/latet/apidocs/org/eclipse/jgit/api/ApplyCommand.html">JGit ApplyCommand</a></p>
  *

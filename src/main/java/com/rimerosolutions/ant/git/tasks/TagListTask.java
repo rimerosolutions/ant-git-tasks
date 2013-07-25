@@ -43,6 +43,7 @@ public class TagListTask extends AbstractGitRepoAwareTask {
         private static final String TASK_NAME = "git-tag-list";
         private static final String REF_NAME_TEMPLATE = "* %s" + System.getProperty("line.separator");
         private static final String MISSING_REFS_TEMPLATE = "Some references could not be found '%s'.";
+        private static final String MESSAGE_TAG_LIST_FAILED = "Could not list tags.";
         private List<String> namesToCheck = new ArrayList<String>();
         private String outputFilename;
 
@@ -86,7 +87,7 @@ public class TagListTask extends AbstractGitRepoAwareTask {
                         List<Ref> tagRefList = git.tagList().call();
                         processReferencesAndOutput(tagRefList);
                 } catch (GitAPIException e) {
-                        throw new GitBuildException("Could not list tags.", e);
+                        throw new GitBuildException(MESSAGE_TAG_LIST_FAILED, e);
                 }
         }
 

@@ -41,7 +41,7 @@ public interface GitTask {
          * See {@link com.rimerosolutions.ant.git.GitSettings}
          */
         void setSettingsRef(String settingsRef);
-        
+
         /**
          * Sets the Git repo directory or initial folder
          *

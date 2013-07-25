@@ -35,6 +35,8 @@ public class TagTask extends AbstractGitRepoAwareTask {
         private String name;
         private String message;
         private static final String TASK_NAME = "git-tag-add";
+        private static final String MESSAGE_TAG_CREATE_FAILED = "Could not create tag %s";
+        private static final String TAG_MESSAGE_TEMPLATE = "Creating tag '%s'";
 
         @Override
         public String getName() {
@@ -63,7 +65,7 @@ public class TagTask extends AbstractGitRepoAwareTask {
         @Override
         protected void doExecute() {
                 if (message == null) {
-                        message = String.format("Creating tag '%s'", name);
+                        message = String.format(TAG_MESSAGE_TEMPLATE, name);
                 }
 
                 message = GitTaskUtils.BRANDING_MESSAGE + " " + message;
@@ -71,7 +73,7 @@ public class TagTask extends AbstractGitRepoAwareTask {
                 try {
                         git.tag().setName(name).setMessage(message).call();
                 } catch (GitAPIException ex) {
-                        throw new GitBuildException(String.format("Could not create tag %s", name), ex);
+                        throw new GitBuildException(String.format(MESSAGE_TAG_CREATE_FAILED, name), ex);
                 }
         }
 }

@@ -84,13 +84,13 @@ public class FetchTask extends AbstractGitRepoAwareTask {
                         StoredConfig config = git.getRepository().getConfig();
                         List<RemoteConfig> remoteConfigs = RemoteConfig.getAllRemoteConfigs(config);
 
-                        if (remoteConfigs.isEmpty()) {                                
+                        if (remoteConfigs.isEmpty()) {
                                 URIish uri = new URIish(getUri());
 
                                 RemoteConfig remoteConfig = new RemoteConfig(config, Constants.DEFAULT_REMOTE_NAME);
-                                remoteConfig.addURI(uri);                                
+                                remoteConfig.addURI(uri);
                                 remoteConfig.addFetchRefSpec(new RefSpec("+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*"));
-                                
+
                                 config.setString(ConfigConstants.CONFIG_BRANCH_SECTION, Constants.MASTER, ConfigConstants.CONFIG_KEY_REMOTE, Constants.DEFAULT_REMOTE_NAME);
                                 config.setString(ConfigConstants.CONFIG_BRANCH_SECTION, Constants.MASTER, ConfigConstants.CONFIG_KEY_MERGE, Constants.R_HEADS + Constants.MASTER);
 
@@ -105,7 +105,7 @@ public class FetchTask extends AbstractGitRepoAwareTask {
                         }
 
                         List<RefSpec> specs = new ArrayList<RefSpec>(4);
-                        
+
                         specs.add(new RefSpec("+" + Constants.R_HEADS + "/*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*"));
                         specs.add(new RefSpec("+" + Constants.R_NOTES + "*:" + Constants.R_NOTES + "*"));
                         specs.add(new RefSpec("+" + Constants.R_TAGS + "*:" + Constants.R_TAGS + "*"));

@@ -26,7 +26,6 @@ import org.eclipse.jgit.api.TransportCommand;
 import org.eclipse.jgit.lib.ProgressMonitor;
 import org.eclipse.jgit.transport.URIish;
 
-
 /**
  * Abstract Git task.
  *
@@ -118,7 +117,7 @@ public abstract class AbstractGitTask extends Task implements GitTask {
                         throw new BuildException("Invalid URI: " + uri, e);
                 }
         }
-        
+
         /**
          * Sets the Git repository directory
          *
@@ -132,7 +131,7 @@ public abstract class AbstractGitTask extends Task implements GitTask {
                 this.directory = new File(dir.getAbsolutePath());
         }
 
-        
+
         /**
          * Sets the Git command progress monitor
          *
@@ -174,7 +173,7 @@ public abstract class AbstractGitTask extends Task implements GitTask {
          * Lookup the git settings for this task via a project reference
          *
          * @return The configured git settings for this task
-         */ 
+         */
         protected GitSettings lookupSettings() {
                 if (getProject() != null && settingsRef != null) {
                         Reference ref = (Reference) getProject().getReference(settingsRef);
@@ -199,7 +198,7 @@ public abstract class AbstractGitTask extends Task implements GitTask {
 
                 if (settings != null && command instanceof TransportCommand) {
                         @SuppressWarnings("rawtypes")
-                        TransportCommand cmd = (TransportCommand) command;
+                                TransportCommand cmd = (TransportCommand) command;
                         cmd.setCredentialsProvider(settings.getCredentials());
                 }
         }

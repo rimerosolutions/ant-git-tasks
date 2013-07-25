@@ -26,7 +26,7 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
 /**
  * Sets reusable Git settings (credentials and identity).
  *
- * <pre>{@code 
+ * <pre>{@code
  *<git:settings refId="git.testing"
  *              username="xxxtesting"
  *              password="xxxtesting"

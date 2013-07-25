@@ -44,6 +44,9 @@ public class UpToDateTask extends AbstractGitRepoAwareTask {
 
         private String modificationExistProperty;
         private static final String TASK_NAME = "git-status";
+        private static final String MESSAGE_UPTODATE_FAILED = "IO Error when checking repository status";
+        private static final String MESSAGE_UPTODATE_SUCCESS = "The Git tree is up to date!";
+        private static final String STATUS_NOT_CLEAN_TEMPLATE = "Status is not clean:";
 
         @Override
         public String getName() {
@@ -87,13 +90,13 @@ public class UpToDateTask extends AbstractGitRepoAwareTask {
                                         msg.append("\n").append("Removed:").append(status.getRemoved());
                                         msg.append("\n").append("Untracked:").append(status.getUntracked());
 
-                                        throw new GitBuildException("Status is not clean:" + msg.toString());
+                                        throw new GitBuildException(String.format(STATUS_NOT_CLEAN_TEMPLATE, msg.toString()));
                                 }
                         } else {
-                                log("The Git tree is up to date!");
+                                log(MESSAGE_UPTODATE_SUCCESS);
                         }
                 } catch (IOException ioe) {
-                        throw new GitBuildException("IO Error when checking repository status", ioe);
+                        throw new GitBuildException(MESSAGE_UPTODATE_FAILED, ioe);
                 }
 
         }

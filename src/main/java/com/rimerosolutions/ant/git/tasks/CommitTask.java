@@ -41,7 +41,7 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
 public class CommitTask extends AbstractGitRepoAwareTask {
 
         private static final String TASK_NAME = "git-commit";
-
+        private static final String MESSAGE_COMMIT_FAILED = "Cannot commit to Git repository";
         private String message = "Commit message";
         private boolean amend = false;
         private String reflogComment;
@@ -105,7 +105,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
 
                         log(revCommit.getFullMessage());
                 } catch (GitAPIException ex) {
-                        throw new GitBuildException("Cannot commit to Git repository", ex);
+                        throw new GitBuildException(MESSAGE_COMMIT_FAILED, ex);
                 }
         }
 

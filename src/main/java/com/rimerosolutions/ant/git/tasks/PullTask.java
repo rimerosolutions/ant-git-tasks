@@ -35,7 +35,7 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
  * @author Yves Zoundi
  */
 public class PullTask extends AbstractGitRepoAwareTask {
-        
+
         private static final String TASK_NAME = "git-pull";
         private static final String MESSAGE_PULLED_FAILED = "Pull failed.";
         private static final String MESSAGE_PULLED_FAILED_WITH_STATUS = "Pull failed, status '%s'.";

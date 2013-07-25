@@ -35,16 +35,16 @@ public class BranchTask extends AbstractGitRepoAwareTask {
         private static final String TASK_NAME = "git-branch-add";
         private String branchName;
         private boolean force = true;
-        private CreateBranchCommand.SetupUpstreamMode upstreamMode = CreateBranchCommand.SetupUpstreamMode.TRACK;        
-        
+        private CreateBranchCommand.SetupUpstreamMode upstreamMode = CreateBranchCommand.SetupUpstreamMode.TRACK;
+
         @Override
         public String getName() {
                 return TASK_NAME;
-        }        
+        }
 
         /**
          * Creates a branch name
-         * 
+         *
          * @param branchName the branchName to set
          */
         public void setBranchName(String branchName) {
@@ -52,9 +52,9 @@ public class BranchTask extends AbstractGitRepoAwareTask {
         }
 
         /**
-         *  if true and the branch with the given name already exists, the start-point of an existing branch will be set to a new start-point; 
+         *  if true and the branch with the given name already exists, the start-point of an existing branch will be set to a new start-point;
          *  if false, the existing branch will not be changed
-         *  
+         *
          * @antdoc.notrequired
          * @param force Whether or not to force branch creation (Default false)
          */
@@ -64,9 +64,9 @@ public class BranchTask extends AbstractGitRepoAwareTask {
 
         /**
          * Corresponds to the --track/--no-track/--set-upstream options; may be null
-         * 
+         *
          * @see <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/CreateBranchCommand.SetupUpstreamMode.html">CreateBranchCommand.SetupUpstreamMode string values</a>
-         * 
+         *
          * @antdoc.notrequired
          * @param upstreamMode the upstreamMode to set (Default is --track).
          */
@@ -78,10 +78,10 @@ public class BranchTask extends AbstractGitRepoAwareTask {
         protected void doExecute() throws BuildException {
                 try {
                         git.branchCreate().
-                        setForce(force).
-                        setUpstreamMode(upstreamMode).
-                        setName(branchName).
-                        call();
+                                setForce(force).
+                                setUpstreamMode(upstreamMode).
+                                setName(branchName).
+                                call();
                 } catch (GitAPIException e) {
                         throw new GitBuildException(String.format("Could not create branch '%s'.", branchName), e);
                 }

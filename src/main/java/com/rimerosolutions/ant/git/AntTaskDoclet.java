@@ -39,9 +39,9 @@ import com.sun.javadoc.RootDoc;
 import com.sun.tools.doclets.standard.Standard;
 
 /**
- * Quick and very dirty doclet for Ant tasks documentation. 
+ * Quick and very dirty doclet for Ant tasks documentation.
  * Self-Contained for now, no template engine or external dependencies.
- * 
+ *
  * @author Yves Zoundi
  */
 public class AntTaskDoclet extends Standard {
@@ -218,57 +218,57 @@ public class AntTaskDoclet extends Standard {
         private static void writeIndexPage() throws IOException {
                 withWriter(new File(new File(destDir), "index.html"), new WriterCallback() {
 
-                        @Override
-                        public void doWithWriter(Writer w) throws IOException {
-                                StringBuilder sb = new StringBuilder();
+                                @Override
+                                public void doWithWriter(Writer w) throws IOException {
+                                        StringBuilder sb = new StringBuilder();
 
-                                sb.append("<html>");
-                                sb.append("<head><title>").append(windowtitle).append("</head></title>");
-                                sb.append("<frameset rows=\"15%,*\">");
-                                sb.append(" <frame src=\"header.html\">");
-                                sb.append(" <frameset cols=\"25%,75%\">");
-                                sb.append("<frame src=\"nav.html\">");
-                                sb.append("<frame name=\"bodycontents\" src=\"body.html\">");
-                                sb.append("</frameset></frameset></html>");
-                                sb.append("</html>");
+                                        sb.append("<html>");
+                                        sb.append("<head><title>").append(windowtitle).append("</head></title>");
+                                        sb.append("<frameset rows=\"15%,*\">");
+                                        sb.append(" <frame src=\"header.html\">");
+                                        sb.append(" <frameset cols=\"25%,75%\">");
+                                        sb.append("<frame src=\"nav.html\">");
+                                        sb.append("<frame name=\"bodycontents\" src=\"body.html\">");
+                                        sb.append("</frameset></frameset></html>");
+                                        sb.append("</html>");
 
-                                w.write(sb.toString());
-                        }
-                });
+                                        w.write(sb.toString());
+                                }
+                        });
         }
 
         private static void writeHeaderPage() throws IOException {
                 withWriter(new File(new File(destDir), "header.html"), new WriterCallback() {
-                        @Override
-                        public void doWithWriter(Writer w) throws IOException {
-                                StringBuilder sb = new StringBuilder();
-
-                                sb.append("<html><head><title>");
-                                sb.append(windowtitle).append("</title></head><body><h1>");
-                                sb.append(header);
-                                sb.append("</h1></body></html>");
-
-                                w.write(sb.toString());
-                        }
-                });
-        }
-
-        private static void writeBodyPage() throws IOException {
-                if (overview == null) {
-                        withWriter(new File(new File(destDir), "body.html"), new WriterCallback() {
                                 @Override
                                 public void doWithWriter(Writer w) throws IOException {
                                         StringBuilder sb = new StringBuilder();
 
                                         sb.append("<html><head><title>");
-                                        sb.append(windowtitle);
-                                        sb.append("</title></head><body><div>");
-                                        sb.append(doctitle);
-                                        sb.append("</div></body></html>");
+                                        sb.append(windowtitle).append("</title></head><body><h1>");
+                                        sb.append(header);
+                                        sb.append("</h1></body></html>");
 
                                         w.write(sb.toString());
                                 }
                         });
+        }
+
+        private static void writeBodyPage() throws IOException {
+                if (overview == null) {
+                        withWriter(new File(new File(destDir), "body.html"), new WriterCallback() {
+                                        @Override
+                                        public void doWithWriter(Writer w) throws IOException {
+                                                StringBuilder sb = new StringBuilder();
+
+                                                sb.append("<html><head><title>");
+                                                sb.append(windowtitle);
+                                                sb.append("</title></head><body><div>");
+                                                sb.append(doctitle);
+                                                sb.append("</div></body></html>");
+
+                                                w.write(sb.toString());
+                                        }
+                                });
                 } else {
                         copyFile(new File(overview), new File(new File(destDir), "body.html"));
                 }
@@ -276,27 +276,27 @@ public class AntTaskDoclet extends Standard {
 
         private static void writeNavPage() throws IOException {
                 withWriter(new File(new File(destDir), "nav.html"), new WriterCallback() {
-                        @Override
-                        public void doWithWriter(Writer w) throws IOException {
-                                StringBuilder sb = new StringBuilder();
+                                @Override
+                                public void doWithWriter(Writer w) throws IOException {
+                                        StringBuilder sb = new StringBuilder();
 
-                                sb.append("<html><head><title>Nav</title></head><body><div><ul>");
+                                        sb.append("<html><head><title>Nav</title></head><body><div><ul>");
 
-                                for (Map.Entry<String, ClassData> entry : classDataMap.entrySet()) {
-                                        if (!entry.getValue().hidden) {
-                                                sb.append("<li>");
-                                                sb.append("<a target=\"bodycontents\" href=\"");
-                                                sb.append(entry.getKey()).append(".html");
-                                                sb.append("\">");
-                                                sb.append(entry.getValue().simpleName);
-                                                sb.append("</a></li>");
+                                        for (Map.Entry<String, ClassData> entry : classDataMap.entrySet()) {
+                                                if (!entry.getValue().hidden) {
+                                                        sb.append("<li>");
+                                                        sb.append("<a target=\"bodycontents\" href=\"");
+                                                        sb.append(entry.getKey()).append(".html");
+                                                        sb.append("\">");
+                                                        sb.append(entry.getValue().simpleName);
+                                                        sb.append("</a></li>");
+                                                }
                                         }
-                                }
 
-                                sb.append("</ul></div></body></html>");
-                                w.write(sb.toString());
-                        }
-                });
+                                        sb.append("</ul></div></body></html>");
+                                        w.write(sb.toString());
+                                }
+                        });
         }
 
         private static void writeHtmlTasks() throws IOException {

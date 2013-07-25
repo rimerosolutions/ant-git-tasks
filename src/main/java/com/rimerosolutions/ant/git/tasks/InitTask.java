@@ -43,8 +43,9 @@ import com.rimerosolutions.ant.git.GitBuildException;
  */
 public class InitTask extends AbstractGitTask {
 
-        private boolean bare = false;
         private static final String TASK_NAME = "git-init";
+        private static final String MESSAGE_INIT_FAILED = "Could not initialize repository.";
+        private boolean bare = false;
 
         @Override
         public String getName() {
@@ -68,7 +69,7 @@ public class InitTask extends AbstractGitTask {
                                 setDirectory(getDirectory()).
                                 call();
                 } catch (GitAPIException e) {
-                        throw new GitBuildException("Could not initialize repository.", e);
+                        throw new GitBuildException(MESSAGE_INIT_FAILED, e);
                 }
         }
 

@@ -72,18 +72,18 @@ public class AddTask extends AbstractGitRepoAwareTask {
         }
 
         private synchronized Union getPath() {
-		if (path == null) {
-			path = new Union();
-			path.setProject(getProject());
-		}
-		return path;
-	}
-        
+                if (path == null) {
+                        path = new Union();
+                        path.setProject(getProject());
+                }
+                return path;
+        }
+
         private String translateFilePathUsingPrefix(String file, String prefix) throws IOException {
                 if (file.equals(prefix)) {
                         return ".";
                 }
-                
+
                 return new File(file).getCanonicalPath().substring(prefix.length() + 1);
         }
 
@@ -92,13 +92,13 @@ public class AddTask extends AbstractGitRepoAwareTask {
                 try {
                         AddCommand addCommand = git.add().setUpdate(update);
                         String prefix = getDirectory().getCanonicalPath();
-			String[] allFiles = getPath().list();
+                        String[] allFiles = getPath().list();
 
                         for (String file : allFiles) {
-				String addedFile = translateFilePathUsingPrefix(file, prefix);
+                                String addedFile = translateFilePathUsingPrefix(file, prefix);
                                 addCommand.addFilepattern(addedFile);
                         }
-                        
+
                         addCommand.call();
                 }
                 catch (GitAPIException e) {
