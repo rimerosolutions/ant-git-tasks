@@ -17,6 +17,9 @@ package com.rimerosolutions.ant.git.tasks;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.net.URISyntaxException;
+import java.io.IOException;
+
 import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.RefSpec;
@@ -25,6 +28,10 @@ import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.lib.ConfigConstants;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.api.errors.TransportException;
+import org.eclipse.jgit.api.errors.GitAPIException;
+
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
 import com.rimerosolutions.ant.git.GitTaskUtils;
@@ -129,7 +136,21 @@ public class FetchTask extends AbstractGitRepoAwareTask {
                         GitTaskUtils.validateTrackingRefUpdates(FETCH_FAILED_MESSAGE, fetchResult.getTrackingRefUpdates());
 
                         log(fetchResult.getMessages());
-                } catch (Exception e) {
+
+                }
+                catch (URISyntaxException e) {
+                        throw new GitBuildException("Invalid URI syntax: " + e.getMessage(), e);
+                }
+                catch (IOException e) {
+                        throw new GitBuildException("Could not save or get repository configuration: " + e.getMessage(), e);
+                }
+                catch (InvalidRemoteException e) {
+                        throw new GitBuildException("Invalid remote URI: " + e.getMessage(), e);
+                }
+                catch (TransportException e) {
+                        throw new GitBuildException("Communication error: " + e.getMessage(), e);
+                }
+                catch (GitAPIException e) {
                         throw new GitBuildException("Unexpected exception: " + e.getMessage(), e);
                 }
         }

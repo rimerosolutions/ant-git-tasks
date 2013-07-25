@@ -46,7 +46,7 @@ public class UpToDateTask extends AbstractGitRepoAwareTask {
         private static final String TASK_NAME = "git-status";
         private static final String MESSAGE_UPTODATE_FAILED = "IO Error when checking repository status";
         private static final String MESSAGE_UPTODATE_SUCCESS = "The Git tree is up to date!";
-        private static final String STATUS_NOT_CLEAN_TEMPLATE = "Status is not clean:";
+        private static final String STATUS_NOT_CLEAN_TEMPLATE = "Status is not clean:'%s'";
 
         @Override
         public String getName() {
