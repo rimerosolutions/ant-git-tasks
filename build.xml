@@ -137,6 +137,16 @@ limitations under the License.
                 <format property="build.current.time" pattern="yyyyMMdd_HHmmss" />
         </tstamp>
 
+        <condition property="jdk-tools.jar"
+                   value="/System/Library/Frameworks/JavaVM.Framework/Versions/CurrentJDK/Classes/classes.jar">
+                <os family="mac"/>
+        </condition>
+        <condition property="jdk-tools.jar" value="${env.JAVA_HOME}/lib/tools.jar">
+                <not>
+                        <os family="mac"/>
+                </not>
+        </condition>
+
         <echo>Ant Git Tasks ${project.version} Build.</echo>
 
         <!-- ****************************************** -->
@@ -283,7 +293,7 @@ limitations under the License.
 
                 <!-- no old git test data in your data folder -->
                 <delete dir="${test.data.dir}" quiet="true"/>
-                
+
                 <mkdir dir="${target.dir}"/>
                 <mkdir dir="${lib.dir}"/>
                 <mkdir dir="${apidocs.dir}"/>
@@ -319,7 +329,10 @@ limitations under the License.
                        destdir="${classes.dir}"
                        includeantruntime="false">
                         <src path="${src.dir}"/>
-                        <classpath refid="compile.classpath"/>
+                        <classpath>
+                                <path refid="compile.classpath"/>
+                                <pathelement location="${jdk-tools.jar}"/>
+                        </classpath>
                 </javac>
 
                 <echo>Copying project resources.</echo>
@@ -347,6 +360,7 @@ limitations under the License.
                                 <path refid="test.classpath"/>
                                 <path refid="compile.classpath"/>
                                 <path location="${classes.dir}"/>
+                                <pathelement location="${jdk-tools.jar}"/>
                         </classpath>
                 </javac>
         </target>
@@ -541,6 +555,7 @@ limitations under the License.
 
                 <path id="antdoc.classpath">
                         <path refid="compile.classpath"/>
+                        <pathelement location="${jdk-tools.jar}"/>
                         <path location="${classes.dir}"/>
                 </path>
 
