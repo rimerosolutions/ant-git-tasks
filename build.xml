@@ -137,6 +137,7 @@ limitations under the License.
                 <format property="build.current.time" pattern="yyyyMMdd_HHmmss" />
         </tstamp>
 
+        <property environment="env."/>
         <condition property="jdk-tools.jar"
                    value="/System/Library/Frameworks/JavaVM.Framework/Versions/CurrentJDK/Classes/classes.jar">
                 <os family="mac"/>
