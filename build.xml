@@ -480,6 +480,7 @@ limitations under the License.
                                    outputFile="${reports.findbugs.dir}/index.html"
                                    stylesheet="default.xsl">
                         <auxAnalyzePath>
+                          <pathelement location="${jdk-tools.jar}"/>
                                 <fileset dir="${lib.dir}" includes="**/*annotation*.jar"/>
                         </auxAnalyzePath>
                         <auxClasspath refid="compile.classpath"/>
@@ -542,6 +543,7 @@ limitations under the License.
                         <tag name="antdoc.notrequired" description="Non required attribute for the Ant task"/>
                         <classpath>
                                 <path refid="compile.classpath"/>
+                                <pathelement location="${jdk-tools.jar}"/>
                         </classpath>
                         <doctitle><![CDATA[<h1>Ant Git Tasks API</h1>]]></doctitle>
                         <bottom><![CDATA[<i>Copyright &#169; 2013 Rimero Solutions Inc. All Rights Reserved.</i>]]></bottom>
