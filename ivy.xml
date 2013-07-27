@@ -49,7 +49,6 @@ limitations under the License.
 
                 <!-- test -->
                 <dependency org="junit" name="junit" rev="4.4" conf="test"/>
-                <dependency org="org.apache.ant" name="ant-testutil" rev="1.7.1" conf="test"/>
                 <dependency org="org.apache.ant" name="ant-junit" rev="1.7.1" conf="test"/>
                 <dependency org="org.apache.ant" name="ant-antunit" rev="1.2" conf="test"/>
 

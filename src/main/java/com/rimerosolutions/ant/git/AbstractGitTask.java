@@ -57,6 +57,11 @@ public abstract class AbstractGitTask extends Task implements GitTask {
          * @param settingsRef the settingsRef to set
          */
         public void setSettingsRef(String settingsRef) {
+                if (GitTaskUtils.isNullOrBlankString(settingsRef)) {
+                        throw new BuildException("Can't set blank git settings reference.");
+                }
+
+                // no override
                 if (this.settingsRef == null) {
                         this.settingsRef = settingsRef;
                 }
@@ -69,6 +74,10 @@ public abstract class AbstractGitTask extends Task implements GitTask {
          * @param unlessCondition The condition veto execution
          */
         public void setUnless(String unlessCondition) {
+                if (GitTaskUtils.isNullOrBlankString(unlessCondition)) {
+                        throw new BuildException("Can't set blank unless condition.");
+                }
+
                 this.unlessCondition = unlessCondition;
         }
 
@@ -79,6 +88,10 @@ public abstract class AbstractGitTask extends Task implements GitTask {
          * @param ifCondition The condition to meet
          */
         public void setIf(String ifCondition) {
+                if (GitTaskUtils.isNullOrBlankString(ifCondition)) {
+                        throw new BuildException("Can't set blank if condition.");
+                }
+
                 this.ifCondition = ifCondition;
         }
 
@@ -107,14 +120,17 @@ public abstract class AbstractGitTask extends Task implements GitTask {
          * @param uri The repository uri
          */
         public void setUri(String uri) {
-                if (uri == null) {
+                if (GitTaskUtils.isNullOrBlankString(uri)) {
                         throw new BuildException("Can't set null URI attribute.");
                 }
-                try {
-                        new URIish(uri);
-                        this.uri = uri;
-                } catch (URISyntaxException e) {
-                        throw new BuildException("Invalid URI: " + uri, e);
+
+                if (this.uri == null) {
+                        try {
+                                new URIish(uri);
+                                this.uri = uri;
+                        } catch (URISyntaxException e) {
+                                throw new BuildException(String.format("Invalid URI '%s'.", uri), e);
+                        }
                 }
         }
 
@@ -128,7 +144,11 @@ public abstract class AbstractGitTask extends Task implements GitTask {
                 if (dir == null) {
                         throw new BuildException("Cannot set null directory attribute.");
                 }
-                this.directory = new File(dir.getAbsolutePath());
+
+                // no override
+                if (this.directory == null) {
+                        this.directory = new File(dir.getAbsolutePath());
+                }
         }
 
 
@@ -193,12 +213,12 @@ public abstract class AbstractGitTask extends Task implements GitTask {
          *
          * @param command The git command to configure
          */
+        @SuppressWarnings("rawtypes")
         protected void setupCredentials(GitCommand<?> command) {
                 GitSettings settings = lookupSettings();
 
                 if (settings != null && command instanceof TransportCommand) {
-                        @SuppressWarnings("rawtypes")
-                                TransportCommand cmd = (TransportCommand) command;
+                        TransportCommand cmd = (TransportCommand) command;
                         cmd.setCredentialsProvider(settings.getCredentials());
                 }
         }

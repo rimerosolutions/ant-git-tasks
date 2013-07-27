@@ -36,7 +36,7 @@ public class GitSettings {
          * @param password The password
          */
         public void setCredentials(String username, String password) {
-                if (username == null || password == null) {
+                if (GitTaskUtils.isNullOrBlankString(username) || GitTaskUtils.isNullOrBlankString(password)) {
                         throw new IllegalArgumentException("Credentials must not be empty.");
                 }
 
@@ -50,7 +50,7 @@ public class GitSettings {
          * @param email The Git user's email
          */
         public void setIdentity(String name, String email) {
-                if (name == null || email == null) {
+                if (GitTaskUtils.isNullOrBlankString(name) || GitTaskUtils.isNullOrBlankString(email)) {
                         throw new IllegalArgumentException("Both the username and password must be provided.");
                 }
 

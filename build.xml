@@ -529,10 +529,10 @@ limitations under the License.
                         <link href="http://javadoc.haefelinger.it/org.apache.ant/1.7.1/"/>
                 </javadoc>
         </target>
-        
+
         <target name="-antdoc" depends="compile">
                 <echo>Generating Ant tasks documentation.</echo>
-                        
+
                 <path id="antdoc.classpath">
                         <path refid="compile.classpath"/>
                         <path location="${classes.dir}"/>
@@ -551,8 +551,8 @@ limitations under the License.
                                 <path refid="antdoc.classpath"/>
                         </classpath>
                 </javadoc>
-                </target>
-        
+        </target>
+
         <target name="javadoc" depends="-javadoc,-antdoc" description="Generate javadocs"/>
 
         <target name="jar-sources" depends="compile" description="Generate sources jar">
