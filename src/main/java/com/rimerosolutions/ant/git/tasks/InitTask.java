@@ -64,10 +64,12 @@ public class InitTask extends AbstractGitTask {
         @Override
         public void execute() {
                 try {
-                        Git.init().
+                        Git git = Git.init().
                                 setBare(bare).
                                 setDirectory(getDirectory()).
                                 call();
+
+                        git.getRepository().close();
                 } catch (GitAPIException e) {
                         throw new GitBuildException(MESSAGE_INIT_FAILED, e);
                 }

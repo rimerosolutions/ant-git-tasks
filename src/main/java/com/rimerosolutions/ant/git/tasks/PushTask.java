@@ -15,7 +15,7 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jgit.api.PushCommand;
@@ -45,6 +45,7 @@ public class PushTask extends AbstractGitRepoAwareTask {
         private boolean includeTags = true;
         private static final String TASK_NAME = "git-push";
         private static final String PUSH_FAILED_MESSAGE = "Push failed.";
+        private static final String DEFAULT_REFSPEC_STRING = "+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*";
 
         @Override
         public String getName() {
@@ -81,17 +82,17 @@ public class PushTask extends AbstractGitRepoAwareTask {
                                 URIish uri = new URIish(getUri());
 
                                 RemoteConfig remoteConfig = new RemoteConfig(config, Constants.DEFAULT_REMOTE_NAME);
+                                
                                 remoteConfig.addURI(uri);
-                                remoteConfig.addFetchRefSpec(new RefSpec("+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*"));
-                                remoteConfig.addPushRefSpec(new RefSpec("+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*"));
+                                remoteConfig.addFetchRefSpec(new RefSpec(DEFAULT_REFSPEC_STRING));
+                                remoteConfig.addPushRefSpec(new RefSpec(DEFAULT_REFSPEC_STRING));
                                 remoteConfig.update(config);
 
                                 config.save();
                         }
-
-                        List<RefSpec> specs = new ArrayList<RefSpec>(1);
+                        
                         String currentBranch = git.getRepository().getBranch();
-                        specs.add(new RefSpec(currentBranch + ":" + currentBranch));
+                        List<RefSpec> specs = Arrays.asList(new RefSpec(currentBranch + ":" + currentBranch));
 
                         PushCommand pushCommand = git.push().
                                 setPushAll().
@@ -113,6 +114,7 @@ public class PushTask extends AbstractGitRepoAwareTask {
 
                         for (PushResult pushResult : pushResults) {
                                 GitTaskUtils.validateTrackingRefUpdates(PUSH_FAILED_MESSAGE, pushResult.getTrackingRefUpdates());
+                                log(pushResult.getMessages());
                         }
                 } catch (Exception e) {
                         if (pushFailedProperty != null) {

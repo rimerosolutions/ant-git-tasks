@@ -44,7 +44,7 @@ import com.sun.tools.doclets.standard.Standard;
  *
  * @author Yves Zoundi
  */
-public class AntTaskDoclet extends Standard {
+public final class AntTaskDoclet extends Standard {
         private static final String ENCODING_UTF_8 = "UTF-8";
         private static final String ANT_TASK_CLASS_NAME = "org.apache.tools.ant.Task";
         private static String destDir;
@@ -58,6 +58,52 @@ public class AntTaskDoclet extends Standard {
         private static final List<String> ATTRIBUTE_PREFIXES = Arrays.asList("set");
         private static final String TAG_ANTDOC_NOTREQUIRED = "antdoc.notrequired";
         private static Map<String, ClassData> classDataMap = new HashMap<String, ClassData>();
+        private static final String HTML_INDEX_PAGE = "index.html";
+        private static final String HTML_HEADER_PAGE = "header.html";
+        private static final String HTML_BODY_PAGE = "body.html";
+        private static final String HTML_NAV_PAGE = "nav.html";
+
+        private static final class ElementData {
+                String name;
+                String description;
+
+                static ElementData fromMethodDoc(MethodDoc methodDoc) {
+                        ElementData data = new ElementData();
+                        data.name = sanitizeName(methodDoc.name(), ELEMENT_PREFIXES);
+                        data.description = methodDoc.commentText();
+
+                        return data;
+                }
+        }
+
+        private static final class AttributeData {
+                String name;
+                String description;
+                boolean required;
+
+                static AttributeData fromMethodDoc(MethodDoc methodDoc) {
+                        AttributeData data = new AttributeData();
+                        data.description = methodDoc.commentText();
+                        data.required = !(methodDoc.tags(TAG_ANTDOC_NOTREQUIRED).length > 0);
+                        data.name = sanitizeName(methodDoc.name(), ATTRIBUTE_PREFIXES);
+
+                        return data;
+                }
+        }
+
+        private static final class ClassData {
+                String qualifiedName;
+                String simpleName;
+                String description;
+                List<String> parentClassDatas = new ArrayList<String>();
+                List<AttributeData> attributesList = new ArrayList<AttributeData>();
+                List<ElementData> elementsList = new ArrayList<ElementData>();
+                boolean hidden;
+        }
+
+        static interface WriterCallback {
+                void doWithWriter(Writer w) throws IOException;
+        }
 
         private static void copyFile(File sourceFile, File destFile) throws IOException {
                 InputStream in = null;
@@ -86,6 +132,7 @@ public class AntTaskDoclet extends Standard {
 
         public static final boolean start(RootDoc root) {
                 readDestDirOption(root.options());
+                
                 try {
                         writeContents(root.classes());
                 } catch (IOException ioe) {
@@ -129,78 +176,6 @@ public class AntTaskDoclet extends Standard {
 
         }
 
-        private static class ElementData {
-                String name;
-                String description;
-
-                static ElementData fromMethodDoc(MethodDoc methodDoc) {
-                        ElementData data = new ElementData();
-
-                        data.name = sanitizeName(methodDoc.name(), ELEMENT_PREFIXES);
-                        data.description = methodDoc.commentText();
-
-                        return data;
-                }
-
-                @Override
-                public String toString() {
-                        return name + ":" + description;
-                }
-        }
-
-        private static class AttributeData {
-                String name;
-                String description;
-                boolean required;
-
-                static AttributeData fromMethodDoc(MethodDoc methodDoc) {
-                        AttributeData data = new AttributeData();
-                        data.description = methodDoc.commentText();
-                        data.required = !(methodDoc.tags(TAG_ANTDOC_NOTREQUIRED).length > 0);
-                        data.name = sanitizeName(methodDoc.name(), ATTRIBUTE_PREFIXES);
-
-                        return data;
-                }
-
-                @Override
-                public String toString() {
-                        return name + ", required:" + required + ", description:" + description;
-                }
-        }
-
-        private static class ClassData {
-                String qualifiedName;
-                String simpleName;
-                String description;
-                List<String> parentClassDatas = new ArrayList<String>();
-                List<AttributeData> attributesList = new ArrayList<AttributeData>();
-                List<ElementData> elementsList = new ArrayList<ElementData>();
-                boolean hidden;
-
-                @Override
-                public String toString() {
-                        StringBuilder sb = new StringBuilder(512);
-
-                        sb.append("------------------------\n");
-                        sb.append(description);
-                        sb.append("\n");
-                        sb.append(qualifiedName);
-                        sb.append("------------------------\n");
-
-                        sb.append("parents:" + parentClassDatas + "\n");
-
-                        sb.append("-> Elements:").append(elementsList).append("\n");
-
-                        sb.append("-> Attributes:").append(attributesList).append("\n");
-
-                        return sb.toString();
-                }
-        }
-
-        static interface WriterCallback {
-                void doWithWriter(Writer w) throws IOException;
-        }
-
         static void withWriter(File f, WriterCallback wc) throws IOException {
                 Writer w = null;
 
@@ -216,19 +191,26 @@ public class AntTaskDoclet extends Standard {
         }
 
         private static void writeIndexPage() throws IOException {
-                withWriter(new File(new File(destDir), "index.html"), new WriterCallback() {
+                withWriter(new File(new File(destDir), HTML_INDEX_PAGE), new WriterCallback() {
 
                                 @Override
                                 public void doWithWriter(Writer w) throws IOException {
                                         StringBuilder sb = new StringBuilder();
 
-                                        sb.append("<html>");
-                                        sb.append("<head><title>").append(windowtitle).append("</head></title>");
+                                        sb.append("<html><head>");
+                                        sb.append(htmlElement("title", windowtitle));
+                                        sb.append("</head>");
                                         sb.append("<frameset rows=\"15%,*\">");
-                                        sb.append(" <frame src=\"header.html\">");
+                                        sb.append(" <frame src=\"");
+                                        sb.append(HTML_HEADER_PAGE);
+                                        sb.append("\">");
                                         sb.append(" <frameset cols=\"25%,75%\">");
-                                        sb.append("<frame src=\"nav.html\">");
-                                        sb.append("<frame name=\"bodycontents\" src=\"body.html\">");
+                                        sb.append("<frame src=\"");
+                                        sb.append(HTML_NAV_PAGE);
+                                        sb.append("\">");
+                                        sb.append("<frame name=\"bodycontents\" src=\"");
+                                        sb.append(HTML_BODY_PAGE);
+                                        sb.append("\">");
                                         sb.append("</frameset></frameset></html>");
                                         sb.append("</html>");
 
@@ -238,15 +220,16 @@ public class AntTaskDoclet extends Standard {
         }
 
         private static void writeHeaderPage() throws IOException {
-                withWriter(new File(new File(destDir), "header.html"), new WriterCallback() {
+                withWriter(new File(new File(destDir), HTML_HEADER_PAGE), new WriterCallback() {
                                 @Override
                                 public void doWithWriter(Writer w) throws IOException {
                                         StringBuilder sb = new StringBuilder();
 
-                                        sb.append("<html><head><title>");
-                                        sb.append(windowtitle).append("</title></head><body><h1>");
-                                        sb.append(header);
-                                        sb.append("</h1></body></html>");
+                                        sb.append("<html><head>");
+                                        sb.append(htmlElement("title", windowtitle));
+                                        sb.append("</head><body>");
+                                        sb.append(htmlElement("h1", header));
+                                        sb.append("</body></html>");
 
                                         w.write(sb.toString());
                                 }
@@ -255,27 +238,27 @@ public class AntTaskDoclet extends Standard {
 
         private static void writeBodyPage() throws IOException {
                 if (overview == null) {
-                        withWriter(new File(new File(destDir), "body.html"), new WriterCallback() {
+                        withWriter(new File(new File(destDir), HTML_BODY_PAGE), new WriterCallback() {
                                         @Override
                                         public void doWithWriter(Writer w) throws IOException {
                                                 StringBuilder sb = new StringBuilder();
 
-                                                sb.append("<html><head><title>");
-                                                sb.append(windowtitle);
-                                                sb.append("</title></head><body><div>");
-                                                sb.append(doctitle);
-                                                sb.append("</div></body></html>");
+                                                sb.append("<html><head>");
+                                                sb.append(htmlElement("title", windowtitle));
+                                                sb.append("</head><body>");
+                                                sb.append(htmlElement("div", doctitle));
+                                                sb.append("</body></html>");
 
                                                 w.write(sb.toString());
                                         }
                                 });
                 } else {
-                        copyFile(new File(overview), new File(new File(destDir), "body.html"));
+                        copyFile(new File(overview), new File(new File(destDir), HTML_BODY_PAGE));
                 }
         }
 
         private static void writeNavPage() throws IOException {
-                withWriter(new File(new File(destDir), "nav.html"), new WriterCallback() {
+                withWriter(new File(new File(destDir), HTML_NAV_PAGE), new WriterCallback() {
                                 @Override
                                 public void doWithWriter(Writer w) throws IOException {
                                         StringBuilder sb = new StringBuilder();
@@ -299,12 +282,22 @@ public class AntTaskDoclet extends Standard {
                         });
         }
 
-        private static void writeHtmlTasks() throws IOException {
+        private static String htmlElement(String tagName, Object contents) {
+                return new StringBuilder().
+                        append('<').
+                        append(tagName).
+                        append('>').
+                        append(contents).
+                        append("</").
+                        append(tagName).
+                        append('>').
+                        toString();
+        }
 
+        private static void writeHtmlTasks() throws IOException {
                 Map<String, ClassData> classDataCopy = new HashMap<String, AntTaskDoclet.ClassData>(classDataMap);
 
                 for (Map.Entry<String, ClassData> entry : classDataMap.entrySet()) {
-
                         String classDocName = entry.getKey();
                         ClassData classData = entry.getValue();
 
@@ -313,20 +306,18 @@ public class AntTaskDoclet extends Standard {
                         }
 
                         File outputFile = new File(new File(destDir), classDocName + ".html");
-
                         OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(outputFile), ENCODING_UTF_8);
-
                         StringBuilder header = new StringBuilder();
 
                         header.append("<html><head><title>classDocName</title><body><div>");
                         w.write(header.toString());
 
                         header = new StringBuilder();
-                        header.append("<h1>").append(classData.simpleName).append("</h1>");
+                        header.append(htmlElement("h1", classData.simpleName));
                         header.append("<hr/>");
 
-                        header.append("<h2>Description</h2>");
-                        header.append("<div>").append(classData.description).append("</div>");
+                        header.append(htmlElement("h2", "Description"));
+                        header.append(htmlElement("div", classData.description));
 
                         w.write(header.toString());
 
@@ -351,9 +342,9 @@ public class AntTaskDoclet extends Standard {
 
                                 for (AttributeData attr : attributesCopy) {
                                         sb.append("<tr>");
-                                        sb.append("<td>").append(attr.name).append("</td>");
-                                        sb.append("<td>").append(attr.description).append("</td>");
-                                        sb.append("<td>").append(attr.required).append("</td>");
+                                        sb.append(htmlElement("td", attr.name));
+                                        sb.append(htmlElement("td", attr.description));
+                                        sb.append(htmlElement("td", attr.required));
                                         sb.append("</tr>");
                                 }
 
@@ -373,8 +364,8 @@ public class AntTaskDoclet extends Standard {
 
                                 for (ElementData attr : elementsCopy) {
                                         sb.append("<tr>");
-                                        sb.append("<td>").append(attr.name).append("</td>");
-                                        sb.append("<td>").append(attr.description).append("</td>");
+                                        sb.append(htmlElement("td", attr.name));
+                                        sb.append(htmlElement("td", attr.description));
                                         sb.append("</tr>");
                                 }
 
@@ -394,7 +385,6 @@ public class AntTaskDoclet extends Standard {
                         w.flush();
                         w.close();
                 }
-
         }
 
         private static void writeHtmlToOutputDir() throws IOException {
@@ -403,12 +393,10 @@ public class AntTaskDoclet extends Standard {
                 writeHeaderPage();
                 writeIndexPage();
                 writeHtmlTasks();
-
         }
 
         private static List<String> collectParentClassesNames(ClassDoc doc) {
                 List<String> parents = new ArrayList<String>();
-
                 ClassDoc currentParent = doc.superclass();
 
                 while (currentParent != null) {
@@ -496,5 +484,4 @@ public class AntTaskDoclet extends Standard {
         public static LanguageVersion languageVersion() {
                 return LanguageVersion.JAVA_1_5;
         }
-
 }

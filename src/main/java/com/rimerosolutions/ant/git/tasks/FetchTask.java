@@ -105,18 +105,11 @@ public class FetchTask extends AbstractGitRepoAwareTask {
                                 config.save();
                         }
 
-                        String currentBranch = git.getRepository().getBranch();
-
-                        if (GitTaskUtils.isNullOrBlankString(currentBranch)) {
-                                currentBranch = Constants.R_HEADS + Constants.MASTER;
-                        }
-
-                        List<RefSpec> specs = new ArrayList<RefSpec>(4);
+                        List<RefSpec> specs = new ArrayList<RefSpec>(3);
 
                         specs.add(new RefSpec("+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*"));
                         specs.add(new RefSpec("+" + Constants.R_NOTES + "*:" + Constants.R_NOTES + "*"));
                         specs.add(new RefSpec("+" + Constants.R_TAGS + "*:" + Constants.R_TAGS + "*"));
-                        specs.add(new RefSpec(currentBranch + ":" + currentBranch));
 
                         FetchCommand fetchCommand = git.fetch().
                                 setDryRun(dryRun).

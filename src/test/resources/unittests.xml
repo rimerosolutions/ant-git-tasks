@@ -59,7 +59,6 @@ limitations under the License.
         </target>
 
         <macrodef name="initLocalRepo" description="Macro to ensure good setUp-tearDown behavior">
-                <attribute name="bare" default="false"/>
                 <sequential>
                         <git:settings refId="git.testing"
                                       username="xxxtesting"
@@ -68,13 +67,27 @@ limitations under the License.
                                       email="xxxtesting@gmail.com"/>
 
                         <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
-                                <git:init directory="${testLocalRepo}" bare="@{bare}" />
+                                <git:init/>
                                 <git:commit message="${dummy.commit.message}"
                                             revCommitIdProperty="revcommit"/>
                         </git:git>
                 </sequential>
         </macrodef>
 
+        <macrodef name="initLocalRepoBare" description="Macro to ensure good setUp-tearDown behavior">
+                <sequential>
+                        <git:settings refId="git.testing"
+                                      username="xxxtesting"
+                                      password="xxxtesting"
+                                      name="xxxtesting"
+                                      email="xxxtesting@gmail.com"/>
+
+                        <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
+                                <git:init bare="true" directory="${testLocalRepo}"/>
+                        </git:git>
+                </sequential>
+        </macrodef>
+        
         <!-- ****************************************** -->
         <!-- Tags -->
         <!-- ****************************************** -->
@@ -197,7 +210,7 @@ limitations under the License.
         </target>
 
         <target name="testPush" description="Test git-push">
-                <initLocalRepo bare="true"/>
+                <initLocalRepoBare/>
 
                 <git:git localDirectory="${testLocalRepoClone}" verbose="true">
                         <git:clone uri="file://${testLocalRepo}" directory="${testLocalRepoClone}"/>
@@ -215,17 +228,17 @@ limitations under the License.
                 </git:git>
 
                 <git:git localDirectory="${testLocalRepoClient}" verbose="true" settingsRef="git.testing">
-                        <git:clone uri="file://${testLocalRepo}" directory="${testLocalRepoClient}"/>
+                        <git:clone uri="file://${testLocalRepo}"/>
                 </git:git>
 
                 <au:assertFileExists file="${testLocalRepoClient}/test.txt"/>
         </target>
 
         <target name="testFetch" description="Test git-fetch">
-                <initLocalRepo bare="true"/>
+                <initLocalRepoBare/>
 
                 <git:git localDirectory="${testLocalRepoClone}" verbose="true">
-                        <git:clone uri="file://${testLocalRepo}" directory="${testLocalRepoClone}"/>
+                        <git:clone uri="file://${testLocalRepo}"/>
                 </git:git>
 
                 <echo file="${testLocalRepoClone}/test.txt" message="test"/>

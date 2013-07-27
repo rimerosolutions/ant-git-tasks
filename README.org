@@ -1,27 +1,124 @@
 #+TITLE: Ant tasks for Git using JGit
 
 * Summary
-This is a set of basic [[http://ant.apache.org/][Apache Ant]] tasks for [[http://git-scm.com/][Git]] to automate GitHub/Maven processes.
+This is a set of basic [[http://ant.apache.org/][Apache Ant]] tasks for [[http://git-scm.com/][Git]] to automate release processes, using the [[http://www.eclipse.org/jgit/][Eclipse JGit API]].
 
-This set of Ant tasks is currently used by the [[https://github.com/rimerosolutions/ant-wrapper][Ant Command Line Wrapper]] project.
+The goal is to leverage release management processes for Apache Ant based projects that use Git for version control.
 
-Below is the current workflow:
+This set of Ant tasks is currently used by the [[https://github.com/rimerosolutions/ant-wrapper][Ant Command Line Wrapper]] project and by the =ant-git-tasks= project itself!
 
-: ant release-prepare-[fix|feature|major] (increment version number)
-: ant maven-publish-local (local testing -> build, publish to local maven repo)
-: ant maven-publish-remote (build, commit and tag, push to remote maven repo)
+* Tasks description
+For an overview of available Ant tasks, please consult the [[https://github.com/rimerosolutions/ant-git-tasks/wiki][wiki pages]].
 
-* Why this project
-For *reusable* Apache Ant projects that use Git for version control, the release process is more or less the same:
+The [[https://github.com/rimerosolutions/ant-git-tasks/blob/master/src/test/resources/unittests.xml][available Apache AntUnit tests]] give a good overview of the intended usage.
 
-- Write code on a dedicated branch or in the trunk or elsewhere.
-- Make sure that the Git tree is up to date.
-- Get ready for a release and increment the release number according to some conventions.
-- Commit the changes to the local repository, only files affected by the version number change.
-- Tag and push to the remote repository origin.
-- Publish the build artifacts to a Maven/Ivy repository, or some shared repository of some kind.
-- Do other things such as sending an announcement email.
+The *ant-git-tasks* project is tested with Apache Ant itself, to have a feel of what's working and how usable the tasks are.
 
-* No full set of Ant tasks for Git available
-It looks like the JGit Eclipse project [[http://wiki.eclipse.org/JGit/User_Guide#Ant_Tasks][is not going to provide a full ready to use set of Apache Ant tasks anytime soon]].
-Luckily the JGit API can be wrapped without much pain.
+* General information
+
+** Overview
+
+The expectation is that you create a *git* tasks container where you nest commands as needed.
+
+*** User identify and credentials
+The Git settings tasks allows specifying reusable credentials and identity settings.
+
+You typically first setup settings prior to running tasks unless you're not doing any *commits*'.
+
+*For now if you attempt a commit without settings, a null pointer exception is thrown, TBD fix it*.
+
+: <git:settings refId="git.testing"
+:  username="xxxtesting"
+:  password="xxxtesting"
+:  name="xxxtesting"
+:  email="xxxtesting@gmail.com"/>
+
+*** Usage
+Once the settings are initialize, you just reference them in your root *git* tasks container.
+The *git* user information is require to commit to a repository and sometimes to push to remote repositories.
+
+: <git:git localDirectory="repositoryCloneFolder" verbose="true" settingsRef="git.testing">
+:  <git:clone uri="https://github.com/rimerosolutions/playground-repo.git"/>
+:  <git:checkout branchName="dummyBranch" createBranch="true"/>
+: </git:git>
+
+* Integration
+
+** Git namespace
+You'll need to add a reference to the git namespace to handle git related tasks.
+
+: <project name="myproject"
+:         xmlns:git="antlib:com.rimerosolutions.ant.git"
+:  // other build.xml elements
+: </project>
+
+As noticed in the above lines, =ant-git-tasks= use [[http://ant.apache.org/manual/Types/antlib.html][Antlib]] to define tasks.
+
+Inside the target(s) where you intend to call *git*, you'll need to setup the classpath and 
+initialize the custom task.
+
+See the section below for dependency management strategies and classpath handling.
+
+** Dependency Management
+
+*** Apache Ivy (preferred)
+
+You'll need the following dependencies in your =ivy.xml= file.
+
+: <dependency org="org.eclipse.jgit" 
+:             name="org.eclipse.jgit.ant" 
+:             rev="3.0.0.201306101825-r" conf="YOUR_IVY_CONFIGURATION"/>
+:
+: <dependency org="org.eclipse.jgit" 
+:             name="org.eclipse.jgit" 
+:             rev="3.0.0.201306101825-r" conf="YOUR_IVY_CONFIGURATION"/>
+:
+: <dependency org="com.jcraft" 
+:             name="jsch" 
+:             rev="0.1.50" conf="YOUR_IVY_CONFIGURATION"/>
+:
+: <dependency org="com.rimerosolutions.ant" 
+:             name="ant-git-tasks"
+:             rev="0.0.1-SNAPSHOT" 
+:             changing="true" conf="YOUR_IVY_CONFIGURATION"/>
+:
+
+In your =ivysettings.xml= file, you need a reference to two repositories:
+- Maven Central for general dependencies
+- Sonatype snapshot repositories for =ant-git-tasks=
+
+: <url name="sonatype-snapshots" m2compatible="true">
+:  <artifact pattern="https://oss.sonatype.org/content/repositories/snapshots/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
+: </url>
+: <ibiblio name="central" m2compatible="true"/>
+
+In your =build.xml=, initialize the task definition and its classpath.
+
+: <ivy:cachepath pathid="ant.git.tasks.classpath" conf="YOUR_IVY_CONFIGURATION"/>
+:
+: <taskdef uri="antlib:com.rimerosolutions.ant.git"
+:          resource="com/rimerosolutions/ant/git/jgit-ant-lib.xml">
+:   <classpath>
+:     <path refid="ant.git.tasks.classpath"/>
+:   </classpath>
+: </taskdef>
+
+*** Manual download ('quicker', but not recommended)
+You can grab the files below from the Maven central and Sonatype OSS repositories:
+
+- [[https://oss.sonatype.org/content/repositories/snapshots/com/rimerosolutions/ant/ant-git-tasks/0.0.1-SNAPSHOT/ant-git-tasks-0.0.1-SNAPSHOT.jar][ant-git-tasks-0.0.1-SNAPSHOT.jar]]
+- [[http://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit.ant/3.0.0.201306101825-r/org.eclipse.jgit.ant-3.0.0.201306101825-r.jar][org.eclipse.jgit.ant-3.0.0.201306101825-r.jar]]
+- [[http://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/3.0.0.201306101825-r/org.eclipse.jgit-3.0.0.201306101825-r.jar][org.eclipse.jgit-3.0.0.201306101825-r.jar]]
+- [[http://repo1.maven.org/maven2/com/jcraft/jsch/0.1.50/jsch-0.1.50.jar][jsch-0.1.50.jar]]
+
+In your =build.xml=, initialize the task definition and its classpath.
+
+: <taskdef uri="antlib:com.rimerosolutions.ant.git"
+:          resource="com/rimerosolutions/ant/git/jgit-ant-lib.xml">
+:  <classpath>
+:   <pathelement location="path/to/org.eclipse.jgit.ant-3.0.0.201306101825-r.jar"/>
+:   <pathelement location="path/to/org.eclipse.jgit-3.0.0.201306101825-r.jar"/>
+:   <pathelement location="path/to/jsch-0.1.50.jar"/>
+:   <pathelement location="path/to/ant-git-tasks-0.0.1-SNAPSHOT.jar"/>
+:  </classpath>
+: </taskdef>

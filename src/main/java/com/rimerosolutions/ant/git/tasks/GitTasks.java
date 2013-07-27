@@ -315,11 +315,7 @@ public class GitTasks extends Task {
 
                         t.setDirectory(localDirectory);
 
-                        try {
-                                task.perform();
-                        } catch (Exception e) {
-                                throw new BuildException("Unexpected exception occurred!", e);
-                        }
+                        task.perform();
                 }
         }
 }

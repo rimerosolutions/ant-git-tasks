@@ -29,7 +29,7 @@ public class GitTaskMonitorTest {
 
         private final StringBuilder sb = new StringBuilder();
         private final String taskName = "monitor-test";
-        private final GitTaskMonitor monitor = new GitTaskMonitor(mockedGitTask());
+        private final GitTaskMonitor monitor = new GitTaskMonitor(newMockedGitTask());
 
         // Mock a Git task, we only care about the name and log capabilities.
         private GitTask newMockedGitTask() {

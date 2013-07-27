@@ -45,10 +45,11 @@ limitations under the License.
         <property name="resources.dir" value="src/main/resources"/>
         <property name="test.resources.dir" value="src/test/resources"/>
         <property name="target.dir" value="target"/>
-        <property name="test.data.dir" value="${target.dir}/testData"/>
+        <property name="test.data.dir" value="${java.io.tmpdir}/ant-git-tasks"/>
         <property name="dist.dir" value="dist"/>
-        <property name="apidocs.dir" value="${target.dir}/apidocs"/>
-        <property name="antdocs.dir" value="${target.dir}/antdocs"/>
+        <property name="docs.dir" value="${target.dir}/docs"/>
+        <property name="apidocs.dir" value="${docs.dir}/apidocs"/>
+        <property name="antdocs.dir" value="${docs.dir}/antdocs"/>
         <property name="cobertura.data.filename" value="cobertura.ser"/>
         <property name="cobertura.data.file" value="${test.data.dir}/${cobertura.data.filename}"/>
         <property name="javadoc.overview.html" value="${resources.dir}/com/rimerosolutions/ant/git/overview.html"/>
@@ -279,6 +280,10 @@ limitations under the License.
         <!-- ****************************************** -->
         <target name="init" depends="-resolve" description="Create build folder layout">
                 <echo>Setting up build layout.</echo>
+
+                <!-- no old git test data in your data folder -->
+                <delete dir="${test.data.dir}" quiet="true"/>
+                
                 <mkdir dir="${target.dir}"/>
                 <mkdir dir="${lib.dir}"/>
                 <mkdir dir="${apidocs.dir}"/>
@@ -297,10 +302,11 @@ limitations under the License.
 
         <target name="clean" description="Cleanup build">
                 <echo>Cleaning up build.</echo>
-                <delete dir="${target.dir}" failonerror="false"/>
-                <delete dir="${lib.dir}" failonerror="false"/>
-                <delete dir="${target.dir}" failonerror="false"/>
-                <delete dir="${dist.dir}" failonerror="false"/>
+                <delete dir="${target.dir}" quiet="true"/>
+                <delete dir="${lib.dir}" quiet="true"/>
+                <delete dir="${target.dir}" quiet="true"/>
+                <delete dir="${dist.dir}" quiet="true"/>
+                <delete dir="${test.data.dir}" quiet="true"/>
         </target>
 
         <target name="compile" depends="init" description="Compile sources">
@@ -542,7 +548,7 @@ limitations under the License.
                          destdir="${antdocs.dir}"
                          overview="${antdoc.overview.html}"
                          doctitle="Ant Git Tasks documentation"
-                         header="Ant tasks usage. Use the git tasks container, GitTasks task."
+                         header="Ant Git tasks usage."
                          bottom="Copyright 2013, Rimero Solutions"
                          doclet="com.rimerosolutions.ant.git.AntTaskDoclet"
                          docletpathref="antdoc.classpath"
@@ -605,19 +611,19 @@ limitations under the License.
         </target>
 
         <target name="maven-publish-local"
-                depends="maven-pom,-resolve"
+                depends="maven-pom"
                 description="Publish build artifacts to the local Maven repository">
                 <maven-publish mavenRepoId="${maven.repo.local}"/>
         </target>
 
         <target name="-maven-publish-sonatype-release"
-                depends="maven-pom,-resolve,release-perform"
+                depends="maven-pom,release-perform"
                 if="sonatype.deployment.releases.enabled">
                 <maven-publish mavenRepoId="${maven.repo.sonatype.releases}"/>
         </target>
 
         <target name="-maven-publish-sonatype-snapshots"
-                depends="maven-pom,-resolve,release-perform"
+                depends="maven-pom,release-perform"
                 if="sonatype.deployment.snapshots.enabled">
                 <maven-publish mavenRepoId="${maven.repo.sonatype.snapshots}"/>
         </target>

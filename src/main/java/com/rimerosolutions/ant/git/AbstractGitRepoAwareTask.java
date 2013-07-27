@@ -31,7 +31,7 @@ import org.eclipse.jgit.lib.RepositoryBuilder;
 public abstract class AbstractGitRepoAwareTask extends AbstractGitTask {
 
         protected Git git;
-        private boolean failOnError = false;
+        private boolean failOnError = true;
 
         /**
          * Whether or not an exception should be thrown if the task fails.
@@ -58,10 +58,11 @@ public abstract class AbstractGitRepoAwareTask extends AbstractGitTask {
         public final void execute() {
                 try {
                         try {
-                                Repository repo = new RepositoryBuilder().
+                                Repository repository = new RepositoryBuilder().
                                         readEnvironment().
-                                        findGitDir(getDirectory()).build();
-                                git = new Git(repo);
+                                        findGitDir(getDirectory()).
+                                        build();
+                                git = new Git(repository);
                         }
                         catch (IOException ioe) {
                                 String errorMsg = "Specified path (%s) doesn't seem to be a git repository.";
