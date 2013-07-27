@@ -31,7 +31,7 @@ public class GitTaskMonitorTest {
         private final String taskName = "monitor-test";
         private final GitTaskMonitor monitor = new GitTaskMonitor(mockedGitTask());
 
-        // Mock the task with don't really care about other thing than the name and the log capability
+        // Mock a Git task, we only care about the name and log capabilities.
         private GitTask newMockedGitTask() {
                 InvocationHandler handler = new InvocationHandler() {
 
