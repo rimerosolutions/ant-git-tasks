@@ -38,6 +38,7 @@ limitations under the License.
         <property name="testLocalRepoClone" value="${testData.folder}/testLocalRepoClone"/>
         <property name="dummy.commit.message" value="Initial commit"/>
         <property name="dummy.checkout.branch" value="feature/checkout"/>
+        <property name="tree.modified.property" value="treeModified"/>
         <property name="dummy.tag.name" value="dummytag"/>
         <property name="master.branch.name" value="master"/>
 
@@ -353,9 +354,12 @@ limitations under the License.
 
                 <au:expectfailure>
                         <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
-                                <git:uptodate failOnError="true"/>
+                                <git:uptodate failOnError="true" modificationExistProperty="${tree.modified.property}"/>
                         </git:git>
                 </au:expectfailure>
+
+                <au:assertPropertySet name="${tree.modified.property}"/>
+                <au:assertPropertyEquals name="${tree.modified.property}" value="true"/>                
         </target>
 
         <target name="testInit" description="Test git-init">
