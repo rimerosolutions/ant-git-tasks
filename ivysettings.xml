@@ -32,7 +32,7 @@ limitations under the License.
         </signers>
 
         <resolvers>
-                <chain name="chain">
+                <chain name="chain" returnFirst="true">
                         <ibiblio name="central" m2compatible="true"/>
                         
                         <ibiblio name="springsource-external"
