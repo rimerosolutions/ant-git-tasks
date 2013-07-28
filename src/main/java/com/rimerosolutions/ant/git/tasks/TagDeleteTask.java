@@ -27,14 +27,13 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
  *
  * <pre>
  * {@code
- *  <git:git localDirectory="${testLocalRepo}">
+ *  <git:git directory="${testLocalRepo}">
  *    <git:tagdelete tags="${dummy.tag.name}"/>
  *  </git:git>
  * }
  * </pre>
  *
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-tag.html">Git documentation about tag</a></p>
- *
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/DeleteTagCommand.html">JGit DeleteTagCommand</a></p>
  *
  * @author Yves Zoundi

@@ -23,7 +23,15 @@ import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
- * Create a branch or switch an existing one.
+ * Create a branch.
+ *
+ * <pre>@{code
+ * <git:git directory="${testLocalRepo}" verbose="true">
+ *  <git:branch branchName="${dummy.checkout.branch}"/>
+ *   <git:branchlist  verifycontainnames="${dummy.checkout.branch}"
+ *                    outputfilename="${branchlist.file}"
+ *                    failonerror="true"/>
+ * </git:git>}</pre>
  *
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-branch.html">Git documentation about branch</a></p>
  * <p>See <a href="http://download.eclipse.org/jgit/docs/latest/apidocs/index.html?org/eclipse/jgit/api/CreateBranchCommand.html">JGit CreateBranchCommand</a></p>

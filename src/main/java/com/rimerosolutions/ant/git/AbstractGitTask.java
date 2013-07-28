@@ -137,6 +137,7 @@ public abstract class AbstractGitTask extends Task implements GitTask {
         /**
          * Sets the Git repository directory
          *
+         * @antdoc.notrequired
          * @param dir The repository directory
          */
         @Override

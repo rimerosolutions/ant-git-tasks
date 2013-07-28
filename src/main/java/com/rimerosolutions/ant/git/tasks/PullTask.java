@@ -28,8 +28,12 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
 /**
  * Pull changes from a repository.
  *
- * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-pull.html">Git documentation about pull</a></p>
+ * <pre>{@code
+ * <git:git directory="${testLocalRepoClient}" verbose="true" settingsRef="git.testing">
+ *  <git:pull/>
+ * </git:git>}</pre>
  *
+ * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-pull.html">Git documentation about pull</a></p>
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/PullCommand.html">JGit PullCommand</a></p>
  *
  * @author Yves Zoundi
@@ -47,9 +51,16 @@ public class PullTask extends AbstractGitRepoAwareTask {
                 return TASK_NAME;
         }
 
+        /**
+         * Set if rebase should be used after fetching
+         *
+         * @param rebase Whether or not to rebase
+         * @antdoc.notrequired
+         */
         public void setRebase(boolean rebase) {
                 this.rebase = rebase;
         }
+        
         @Override
         public void doExecute() {
                 try {

@@ -33,7 +33,7 @@ import com.rimerosolutions.ant.git.GitBuildException;
  * Apply a patch
  *
  * <pre>{@code
- * <git:git localDirectory="${testLocalRepo}" verbose="true">
+ * <git:git directory="${testLocalRepo}" verbose="true">
  *   <git:apply updatedCountProperty="updatedCountProperty" patchfile="${dummy.patch.file}"/>
  * </git:git>}</pre>
  *

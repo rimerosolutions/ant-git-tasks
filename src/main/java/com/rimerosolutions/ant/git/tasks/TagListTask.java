@@ -32,8 +32,13 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
 /**
  * List tags.
  *
- * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-tag.html">Git documentation about tag</a></p>
+ * <pre>{@code
+ * <git:git directory="${testLocalRepo}" verbose="true">
+ *  <git:taglist verifycontainnames="${dummy.tag.name}"
+ *               failonerror="true"/>
+ * </git:git>}</pre>
  *
+ * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-tag.html">Git documentation about tag</a></p>
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/ListTagCommand.html">JGit ListTagCommand</a></p>
  *
  * @author Yves Zoundi

@@ -15,7 +15,7 @@
               password="xxxtesting"
               name="xxxtesting"
               email="xxxtesting@gmail.com"/&gt;
-&lt;git:git localDirectory="${testLocalRepo}" settingsRef="git.testing"&gt;
+&lt;git:git directory="${testLocalRepo}" settingsRef="git.testing"&gt;
   &lt;git:init directory="${testLocalRepo}" bare="false" /&gt;
   &lt;git:commit message="${dummy.commit.message}" revCommitIdProperty="revcommit"/&gt;
 &lt;/git:git&gt;

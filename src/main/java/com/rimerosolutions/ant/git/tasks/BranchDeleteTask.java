@@ -25,7 +25,7 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
  * Delete branches.
  *
  * <pre>{@code
- * <git:git localDirectory="${testLocalRepo}" verbose="true">
+ * <git:git directory="${testLocalRepo}" verbose="true">
  *    <git:checkout branchName="${master.branch.name}"/>
  *    <git:branchDelete failonerror="true" branches="${dummy.checkout.branch}"/>
  * </git:git>}</pre>

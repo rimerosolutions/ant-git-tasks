@@ -31,7 +31,7 @@ import com.rimerosolutions.ant.git.GitBuildException;
  *               name="xxxtesting"
  *               email="xxxtesting@gmail.com"/>
  *
- *  <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
+ *  <git:git directory="${testLocalRepo}" settingsRef="git.testing">
  *     <git:init directory="${testLocalRepo}" bare="false" />
  *     <git:commit message="${dummy.commit.message}" revCommitIdProperty="revcommit"/>
  *  </git:git>}</pre>
@@ -55,6 +55,7 @@ public class InitTask extends AbstractGitTask {
         /**
          * Whether the repository is bare or not
          *
+         * @antdoc.notrequired
          * @param bare (Default false)
          */
         public void setBare(boolean bare) {

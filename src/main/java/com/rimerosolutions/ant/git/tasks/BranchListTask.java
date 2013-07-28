@@ -30,7 +30,7 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
  * List branches.
  *
  * <pre>{@code
- * <git:git localDirectory="${testLocalRepo}" verbose="true">
+ * <git:git directory="${testLocalRepo}" verbose="true">
  *    <git:branchlist outputfilename="${branchlist.file}"/>
  * </git:git>
  * }</pre>

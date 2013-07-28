@@ -22,7 +22,12 @@ import com.rimerosolutions.ant.git.GitBuildException;
 import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
- * Create a git tag and commit unless conditions are not met.
+ * Create a git tag.
+ *
+ * <pre>{@code
+ * <git:git directory="${testLocalRepo}" verbose="true">
+ * <git:tag name="${dummy.tag.name}"/>
+ * </git:git>}</pre>
  *
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-tag.html">Git documentation about tag</a></p>
  *
@@ -44,7 +49,7 @@ public class TagTask extends AbstractGitRepoAwareTask {
         }
 
         /**
-         * Sets the commit message
+         * Sets the tag creation message.
          *
          * @antdoc.notrequired
          * @param message The message

@@ -40,7 +40,6 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
  * Fetch remote repository data.
  *
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-fetch.html">Git documentation about fetch</a></p>
- *
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/FetchCommand.html">JGit FetchCommand</a></p>
  *
  * @author Yves Zoundi
@@ -61,6 +60,7 @@ public class FetchTask extends AbstractGitRepoAwareTask {
         /**
          * Sets the thin-pack preference for fetch operation.
          *
+         * @antdoc.notrequired
          * @param thinPack (Default value is true)
          */
         public void setThinPack(boolean thinPack) {
@@ -70,6 +70,7 @@ public class FetchTask extends AbstractGitRepoAwareTask {
         /**
          * If set to true, refs are removed which no longer exist in the source
          *
+         * @antdoc.notrequired
          * @param removeDeletedRefs (Default value is true)
          */
         public void setRemoveDeletedRefs(boolean removeDeletedRefs) {
@@ -79,6 +80,7 @@ public class FetchTask extends AbstractGitRepoAwareTask {
         /**
          * Sets whether the fetch operation should be a dry run
          *
+         * @antdoc.notrequired
          * @param dryRun (Default value is true)
          */
         public void setDryRun(boolean dryRun) {

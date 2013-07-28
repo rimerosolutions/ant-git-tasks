@@ -31,7 +31,7 @@ import com.rimerosolutions.ant.git.GitBuildException;
  * Checks whether or not the Git Tree is up to date.
  *
  * <pre>{@code
- * <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+ * <git:git directory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
  *  <git:uptodate failOnError="true"/>
  * </git:git>}</pre>
  *

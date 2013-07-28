@@ -24,13 +24,12 @@ import org.eclipse.jgit.api.CleanCommand;
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
 
-
 /**
- * Git clean Ant task.
+ * Git clean.
  *
  * <pre>{@code
  * <echo file="${testLocalRepo}/test.txt" message="test"/>
- * <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+ * <git:git directory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
  *   <git:clean/>
  *   <git:uptodate failOnError="true"/>
  * </git:git>

@@ -21,7 +21,7 @@ The initial step would be to setup the Git user information and credentials prio
 :               username="me" password="pwd"
 :               name="me" email="email@email.com"/>
 :
-: <git:git localDirectory="." settingsRef="gitSettingsReference">
+: <git:git directory="." settingsRef="gitSettingsReference">
 :  <git:clone uri="someuri"/>
 : </git:git>
 
@@ -40,7 +40,7 @@ You typically first setup settings prior to running tasks unless you're not doin
 Once the settings are initialize, you just reference them in your root *git* tasks container.
 The *git* user information is require to commit to a repository and sometimes to push to remote repositories.
 
-: <git:git localDirectory="repositoryCloneFolder" verbose="true" settingsRef="git.testing">
+: <git:git directory="repositoryCloneFolder" verbose="true" settingsRef="git.testing">
 :  <git:clone uri="https://github.com/rimerosolutions/playground-repo.git"/>
 :  <git:checkout branchName="dummyBranch" createBranch="true"/>
 : </git:git>
@@ -128,8 +128,12 @@ In your =build.xml=, initialize the task definition and its classpath.
 
 * Building from source
 
-- You need to have at least JDK 6 installed as well as Apache Ant 1.8.0+.
-- =JAVA_HOME= is needed for the custom [[http://docs.oracle.com/javase/6/docs/technotes/guides/javadoc/doclet/overview.html][Doclet]] compilation so that the =tools.jar= file can be found.
+- You need to have at least JDK 6 installed.
+- If you don't want to use the ant wrapper =antw= script at the root of this folder, you'll need Apache Ant 1.8.0+.
+- =JAVA_HOME= is to be set for the custom [[http://docs.oracle.com/javase/6/docs/technotes/guides/javadoc/doclet/overview.html][Doclet]] compilation so that the =tools.jar= file can be found.
 
 Building with Apache Ant 1.7.1 leads to some intermittent errors when deleting temporary test folders.
 It looks like some kind of race condition is happening.
+
+To list available Apache Ant targets, please run =./antw -p= for Unix/Linux or =antw -p= for Windows.
+

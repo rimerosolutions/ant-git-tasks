@@ -36,7 +36,7 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
  *               name="xxxtesting"
  *               email="xxxtesting@gmail.com"/>
  *
- *  <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
+ *  <git:git directory="${testLocalRepo}" settingsRef="git.testing">
  *     <git:init directory="${testLocalRepo}" bare="false" />
  *     <git:commit message="${dummy.commit.message}" revCommitIdProperty="revcommit"/>
  *  </git:git>}</pre>
@@ -46,7 +46,7 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
 public class GitTasks extends Task {
 
         private boolean verbose = true;
-        private File localDirectory;
+        private File directory;
         private String settingsRef;
 
         private List<Task> tasks = new ArrayList<Task>();
@@ -71,12 +71,12 @@ public class GitTasks extends Task {
         }
 
         /**
-         * Sets the Git local directory
+         * Sets the Git local directory (Not required if set already at the parent task level).
          *
-         * @param dir The local directory to set
+         * @param dir The local directory to set. 
          */
-        public void setLocalDirectory(File dir) {
-                this.localDirectory = dir;
+        public void setDirectory(File dir) {
+                this.directory = dir;
         }
 
         /**
@@ -285,8 +285,8 @@ public class GitTasks extends Task {
 
         @Override
         public void execute() throws BuildException {
-                if (localDirectory == null) {
-                        throw new BuildException("Please specify a localDirectory attribute.");
+                if (directory == null) {
+                        throw new BuildException("Please specify a directory attribute.");
                 }
 
                 for (Task task : tasks) {
@@ -313,7 +313,7 @@ public class GitTasks extends Task {
                                 t.useProgressMonitor(new GitTaskMonitor(t));
                         }
 
-                        t.setDirectory(localDirectory);
+                        t.setDirectory(directory);
 
                         task.perform();
                 }

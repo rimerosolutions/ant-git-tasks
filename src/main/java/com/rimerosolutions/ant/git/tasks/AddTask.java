@@ -30,7 +30,7 @@ import com.rimerosolutions.ant.git.GitBuildException;
  * Add files.
  *
  * <pre>{@code
- *  <git:git localDirectory="${testLocalRepo}">
+ *  <git:git directory="${testLocalRepo}">
  *    <git:add>
  *      <fileset dir="${testLocalRepo}" includes="*.txt"/>
  </git:add>

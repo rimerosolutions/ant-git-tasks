@@ -28,7 +28,7 @@ import com.rimerosolutions.ant.git.GitBuildException;
  * Clone a repository.
  *
  * <pre>{@code
- *  <git:git localDirectory="${testLocalRepoClone}">
+ *  <git:git directory="${testLocalRepoClone}">
  *    <git:clone uri="file://${testLocalRepo}/.git" directory="${testLocalRepoClone}"/>
  *  </git:git>}</pre>
  *
@@ -52,9 +52,11 @@ public class CloneTask extends AbstractGitTask {
         public String getName() {
                 return TASK_NAME;
         }
+        
         /**
          * Sets the branch names to clone
          *
+         * @antdoc.notrequired
          * @param branchNames Comma separated list of branches to clone
          */
         public void setBranchNames(String branchNames) {

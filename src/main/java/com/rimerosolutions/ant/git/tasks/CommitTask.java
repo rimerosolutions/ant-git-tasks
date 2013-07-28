@@ -29,7 +29,7 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
  * Commits all local changes.
  *
  * <pre>{@code
- *  <git:git localDirectory="${testLocalRepo}">
+ *  <git:git directory="${testLocalRepo}">
  *   <git:commit message="${dummy.commit.message}" revCommitIdProperty="testAdd.revcommit"/>
  *  </git:git>}</pre>
  *

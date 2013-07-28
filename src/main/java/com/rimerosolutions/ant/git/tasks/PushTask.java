@@ -33,8 +33,17 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
 /**
  * Push changes to a remote repository.
  *
- * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-push.html">Git documentation about push</a></p>
+ * <pre>{@code
+ * <git:git directory="${testLocalRepoClone}" verbose="true" settingsRef="git.testing">
+ *  <git:add>
+ *   <fileset dir="${testLocalRepoClone}" includes="*.txt"/>
+ *  </git:add>
+ *  <git:commit message="${dummy.commit.message}"/>
+ *  <git:uptodate failOnError="true"/>
+ *  <git:push uri="file://${testLocalRepo}"/>
+ * </git:git>}</pre>
  *
+ * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-push.html">Git documentation about push</a></p>
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/PushCommand.html">JGit PushCommand</a></p>
  *
  * @author Yves Zoundi

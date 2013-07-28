@@ -67,7 +67,7 @@ limitations under the License.
                                       name="xxxtesting"
                                       email="xxxtesting@gmail.com"/>
 
-                        <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
+                        <git:git directory="${testLocalRepo}" settingsRef="git.testing">
                                 <git:init/>
                                 <git:commit message="${dummy.commit.message}"
                                             revCommitIdProperty="revcommit"/>
@@ -83,7 +83,7 @@ limitations under the License.
                                       name="xxxtesting"
                                       email="xxxtesting@gmail.com"/>
 
-                        <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
+                        <git:git directory="${testLocalRepo}" settingsRef="git.testing">
                                 <git:init bare="true" directory="${testLocalRepo}"/>
                         </git:git>
                 </sequential>
@@ -95,13 +95,13 @@ limitations under the License.
         <target name="testTagDelete" description="Test git-tag-delete">
                 <initLocalRepo/>
 
-                <git:git localDirectory="${testLocalRepo}" verbose="true">
+                <git:git directory="${testLocalRepo}" verbose="true">
                         <git:tag name="${dummy.tag.name}"/>
                         <git:tagdelete tags="${dummy.tag.name}"/>
                 </git:git>
 
                 <au:expectfailure>
-                        <git:git localDirectory="${testLocalRepo}" verbose="true">
+                        <git:git directory="${testLocalRepo}" verbose="true">
                                 <git:taglist verifycontainnames="${dummy.tag.name}"
                                              failonerror="true"/>
                         </git:git>
@@ -111,7 +111,7 @@ limitations under the License.
         <target name="testTagAdd" description="Test git-tag-add">
                 <initLocalRepo/>
 
-                <git:git localDirectory="${testLocalRepo}" verbose="true">
+                <git:git directory="${testLocalRepo}" verbose="true">
                         <git:tag name="${dummy.tag.name}"/>
                         <git:taglist outputfilename="${taglist.file}"
                                      verifycontainnames="${dummy.tag.name}"
@@ -122,7 +122,7 @@ limitations under the License.
         <target name="testTagList" description="Test git-tag-list">
                 <initLocalRepo/>
 
-                <git:git localDirectory="${testLocalRepo}" verbose="true">
+                <git:git directory="${testLocalRepo}" verbose="true">
                         <git:tag name="${dummy.tag.name}"/>
                         <git:taglist outputfilename="${taglist.file}"
                                      failonerror="true"/>
@@ -145,19 +145,30 @@ limitations under the License.
 
         <!-- ****************************************** -->
         <!-- Branches -->
-        <!-- ****************************************** -->
+        <!-- ****************************************** -->        
+        <target name="testBranch" description="Test git-branch">
+                <initLocalRepo/>
+
+                <git:git directory="${testLocalRepo}" verbose="true">
+                        <git:branch branchName="${dummy.checkout.branch}"/>
+                        <git:branchlist  verifycontainnames="${dummy.checkout.branch}"
+                                         outputfilename="${branchlist.file}"
+                                         failonerror="true"/>
+                </git:git>
+        </target>
+        
         <target name="testBranchDelete" description="Test git-branch-delete">
                 <initLocalRepo/>
 
                 <au:expectfailure>
-                        <git:git localDirectory="${testLocalRepo}" verbose="true">
+                        <git:git directory="${testLocalRepo}" verbose="true">
                                 <git:checkout branchName="${dummy.checkout.branch}"
                                               createBranch="true"/>
                                 <git:branchDelete failonerror="true" branches="${dummy.checkout.branch}"/>
                         </git:git>
                 </au:expectfailure>
 
-                <git:git localDirectory="${testLocalRepo}" verbose="true">
+                <git:git directory="${testLocalRepo}" verbose="true">
                         <git:checkout branchName="${master.branch.name}"/>
                         <git:branchDelete failonerror="true" branches="${dummy.checkout.branch}"/>
                 </git:git>
@@ -166,7 +177,7 @@ limitations under the License.
         <target name="testBranchList" description="Test git-branch-list">
                 <initLocalRepo/>
 
-                <git:git localDirectory="${testLocalRepo}" verbose="true">
+                <git:git directory="${testLocalRepo}" verbose="true">
                         <git:checkout branchName="${dummy.checkout.branch}" createBranch="true"/>
                         <git:branchlist outputfilename="${branchlist.file}"/>
                 </git:git>
@@ -185,11 +196,14 @@ limitations under the License.
                                      actual="${branchlist.file}"
                                      message="Branches list doesn't match baseline"/>
         </target>
-
+        
+        <!-- ****************************************** -->
+        <!-- Others -->
+        <!-- ****************************************** -->
         <target name="testCheckout" description="Test git-checkout">
                 <initLocalRepo/>
 
-                <git:git localDirectory="${testLocalRepo}" verbose="true">
+                <git:git directory="${testLocalRepo}" verbose="true">
                         <git:checkout branchName="${dummy.checkout.branch}" createBranch="true"/>
                         <git:branchlist  verifycontainnames="${dummy.checkout.branch}"
                                          outputfilename="${branchlist.file}"
@@ -197,13 +211,10 @@ limitations under the License.
                 </git:git>
         </target>
 
-        <!-- ****************************************** -->
-        <!-- Others -->
-        <!-- ****************************************** -->
         <target name="testClone" description="Test git-clone">
                 <initLocalRepo/>
 
-                <git:git localDirectory="${testLocalRepoClone}" verbose="true">
+                <git:git directory="${testLocalRepoClone}" verbose="true">
                         <git:clone uri="file://${testLocalRepo}/.git" directory="${testLocalRepoClone}"/>
                 </git:git>
 
@@ -213,13 +224,13 @@ limitations under the License.
         <target name="testPush" description="Test git-push">
                 <initLocalRepoBare/>
 
-                <git:git localDirectory="${testLocalRepoClone}" verbose="true">
+                <git:git directory="${testLocalRepoClone}" verbose="true">
                         <git:clone uri="file://${testLocalRepo}" directory="${testLocalRepoClone}"/>
                 </git:git>
 
                 <echo file="${testLocalRepoClone}/test.txt" message="test"/>
 
-                <git:git localDirectory="${testLocalRepoClone}" verbose="true" settingsRef="git.testing">
+                <git:git directory="${testLocalRepoClone}" verbose="true" settingsRef="git.testing">
                         <git:add>
                                 <fileset dir="${testLocalRepoClone}" includes="*.txt"/>
                         </git:add>
@@ -228,7 +239,7 @@ limitations under the License.
                         <git:push uri="file://${testLocalRepo}"/>
                 </git:git>
 
-                <git:git localDirectory="${testLocalRepoClient}" verbose="true" settingsRef="git.testing">
+                <git:git directory="${testLocalRepoClient}" verbose="true" settingsRef="git.testing">
                         <git:clone uri="file://${testLocalRepo}"/>
                 </git:git>
 
@@ -238,13 +249,13 @@ limitations under the License.
         <target name="testFetch" description="Test git-fetch">
                 <initLocalRepoBare/>
 
-                <git:git localDirectory="${testLocalRepoClone}" verbose="true">
+                <git:git directory="${testLocalRepoClone}" verbose="true">
                         <git:clone uri="file://${testLocalRepo}"/>
                 </git:git>
 
                 <echo file="${testLocalRepoClone}/test.txt" message="test"/>
 
-                <git:git localDirectory="${testLocalRepoClone}" verbose="true" settingsRef="git.testing">
+                <git:git directory="${testLocalRepoClone}" verbose="true" settingsRef="git.testing">
                         <git:add>
                                 <fileset dir="${testLocalRepoClone}" includes="*.txt"/>
                         </git:add>
@@ -253,7 +264,7 @@ limitations under the License.
                         <git:push uri="file://${testLocalRepo}"/>
                 </git:git>
 
-                <git:git localDirectory="${testLocalRepoClient}" verbose="true" settingsRef="git.testing">
+                <git:git directory="${testLocalRepoClient}" verbose="true" settingsRef="git.testing">
                         <git:init directory="${testLocalRepoClient}"/>
                         <git:fetch uri="file://${testLocalRepo}" directory="${testLocalRepoClient}"/>
                         <git:pull/>
@@ -266,7 +277,7 @@ limitations under the License.
                 <initLocalRepo/>
                 <echo file="${testLocalRepo}/test.txt" message="test"/>
 
-                <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+                <git:git directory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
                         <git:add>
                                 <fileset dir="${testLocalRepo}" includes="*.txt"/>
                         </git:add>
@@ -279,7 +290,7 @@ limitations under the License.
                 <initLocalRepo/>
                 <echo file="${testLocalRepo}/test.txt" message="test"/>
 
-                <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+                <git:git directory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
                         <git:add>
                                 <fileset dir="${testLocalRepo}" includes="*.txt"/>
                         </git:add>
@@ -288,7 +299,7 @@ limitations under the License.
                 </git:git>
 
                 <au:expectfailure>
-                        <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+                        <git:git directory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
                                 <git:commit message="${dummy.commit.message}" only="test.txt"/>
                         </git:git>
                 </au:expectfailure>
@@ -298,14 +309,14 @@ limitations under the License.
                 <initLocalRepo/>
                 <echo file="${testLocalRepo}/test.txt" message="test"/>
 
-                <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+                <git:git directory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
                         <git:clean/>
                         <git:uptodate failOnError="true"/>
                 </git:git>
 
                 <echo file="${testLocalRepo}/test.txt" message="test"/>
 
-                <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+                <git:git directory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
                         <git:clean paths="test.txt"/>
                         <git:uptodate failOnError="true"/>
                 </git:git>
@@ -316,7 +327,7 @@ limitations under the License.
 
                 <echo file="${testLocalRepo}/file.txt" message="test file"/>
 
-                <git:git localDirectory="${testLocalRepo}" verbose="true">
+                <git:git directory="${testLocalRepo}" verbose="true">
                         <git:apply updatedCountProperty="updatedCountProperty" patchfile="${dummy.patch.file}"/>
                 </git:git>
 
@@ -328,19 +339,19 @@ limitations under the License.
         <target name="testPull" description="Test git-pull">
                 <initLocalRepo/>
 
-                <git:git localDirectory="${testLocalRepoClone}" verbose="true">
+                <git:git directory="${testLocalRepoClone}" verbose="true">
                         <git:clone uri="file://${testLocalRepo}/.git" directory="${testLocalRepoClone}"/>
                 </git:git>
 
                 <echo file="${testLocalRepo}/file.txt" message="test file"/>
-                <git:git localDirectory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+                <git:git directory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
                         <git:add>
                                 <fileset dir="${testLocalRepo}" includes="*.txt"/>
                         </git:add>
                         <git:commit message="${dummy.commit.message}"/>
                 </git:git>
 
-                <git:git localDirectory="${testLocalRepoClone}" verbose="true">
+                <git:git directory="${testLocalRepoClone}" verbose="true">
                         <git:pull/>
                 </git:git>
 
@@ -353,7 +364,7 @@ limitations under the License.
                 <echo file="${testLocalRepo}/test.txt" message="test"/>
 
                 <au:expectfailure>
-                        <git:git localDirectory="${testLocalRepo}" settingsRef="git.testing">
+                        <git:git directory="${testLocalRepo}" settingsRef="git.testing">
                                 <git:uptodate failOnError="true" modificationExistProperty="${tree.modified.property}"/>
                         </git:git>
                 </au:expectfailure>

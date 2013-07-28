@@ -33,7 +33,7 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
  * Perform a checkout.
  *
  * <pre>{@code
- * <git:git localDirectory="${testLocalRepo}" verbose="true">
+ * <git:git directory="${testLocalRepo}" verbose="true">
  *  <git:checkout branchName="${dummy.checkout.branch}" createBranch="true"/>
  *  <git:branchDelete failonerror="true" branches="${dummy.checkout.branch}"/>
  * </git:git>}</pre>
