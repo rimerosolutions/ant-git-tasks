@@ -137,3 +137,4 @@ It looks like some kind of race condition is happening.
 
 To list available Apache Ant targets, please run =./antw -p= for Unix/Linux or =antw -p= for Windows.
 
+If you use an IDE, take a look at [[http://ant.apache.org/ivy/links.html][Apache Ivy IDE Integration]] section on the Apache Ivy website.
