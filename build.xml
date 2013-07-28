@@ -467,24 +467,20 @@ limitations under the License.
         <!-- ****************************************** -->
         <target name="report-findbugs" depends="compile" description="Generate FindBugs report">
                 <echo>Generating FindBugs report.</echo>
-                <path id="findbugs.classpath.additions">
-                        <path refid="findbugs.classpath"/>
-                        <pathelement location="${jdk-tools.jar}"/>
-                </path>
                 <taskdef name="findbugs"
                          classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
                          uri="antlib:edu.umd.cs.findbugs"
-                         classpathref="findbugs.classpath.additions"/>
+                         classpathref="findbugs.classpath"/>
 
                 <findbugs:findbugs classpath="findbugs.classpath"
-                                   classpathref="findbugs.classpath.additions"
+                                   classpathref="findbugs.classpath"
                                    workHard="true"
                                    jvmargs="-Xmx512m -Xms512m"
                                    output="html"
                                    outputFile="${reports.findbugs.dir}/index.html"
                                    stylesheet="default.xsl">
                         <auxAnalyzePath>
-                          
+                                <pathelement location="${jdk-tools.jar}"/>
                                 <fileset dir="${lib.dir}" includes="**/*annotation*.jar"/>
                         </auxAnalyzePath>
                         <auxClasspath refid="compile.classpath"/>
