@@ -2,7 +2,7 @@
 
 * Summary
 This is a set of basic [[http://ant.apache.org/][Apache Ant]] tasks for [[http://git-scm.com/][Git]] to automate release processes, using the [[http://www.eclipse.org/jgit/][Eclipse JGit API]].
-The goal is to leverage release management processes for Apache Ant based projects that use Git for version control.
+The goal is to leverage release management processes for Apache Ant based projects that use Git for revision control.
 This set of Ant tasks is currently used by the [[https://github.com/rimerosolutions/ant-wrapper][Ant Command Line Wrapper]] project and by the =ant-git-tasks= project itself!
 
 Maven/Apache Ivy repository hosting is provided via [[https://oss.sonatype.org/index.html][Sonatype OSS repositories]].
