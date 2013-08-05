@@ -453,7 +453,7 @@ limitations under the License.
                 </au:antunit>
         </target>
 
-        <target name="tests" depends="-junit-tests,-antunit-tests" description="Run all unit tests">
+        <target name="test" depends="-junit-tests,-antunit-tests" description="Run all unit tests">
                 <condition property="test.passed">
                         <and>
                                 <not><isset property="junit.failed"/></not>
@@ -489,7 +489,7 @@ limitations under the License.
                 </findbugs:findbugs>
         </target>
 
-        <target name="report-junit" depends="tests" description="Generate JUnit report">
+        <target name="report-junit" depends="test" description="Generate JUnit report">
                 <echo>Generating JUnit report.</echo>
                 <junitreport todir="${reports.junit.dir}">
                         <fileset dir="${reports.junit.xml.dir}">
@@ -499,7 +499,7 @@ limitations under the License.
                 </junitreport>
         </target>
 
-        <target name="report-cobertura" depends="tests" description="Generate Cobertura report">
+        <target name="report-cobertura" depends="test" description="Generate Cobertura report">
                 <echo>Generating Cobertura report.</echo>
                 <cobertura:report format="html"
                                   destdir="${reports.cobertura.dir}"
