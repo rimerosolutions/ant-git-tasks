@@ -1,5 +1,9 @@
 #+TITLE: Ant tasks for Git using JGit
 
+#+ATTR_HTML: alt="Travis CI Build Status" title="Build status" align="left"
+[[https://travis-ci.org/rimerosolutions/ant-git-tasks.png]]
+#+HTML: <br clear="all"><br>
+
 * Summary
 This is a set of basic [[http://ant.apache.org/][Apache Ant]] tasks for [[http://git-scm.com/][Git]] to automate release processes, using the [[http://www.eclipse.org/jgit/][Eclipse JGit API]].
 The goal is to leverage release management processes for Apache Ant based projects that use Git for revision control.

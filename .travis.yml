@@ -1,0 +1,8 @@
+language: java
+install: ./antw clean
+script: ./antw test
+notifications:
+  email: false
+branches:
+  only:
+    - master
