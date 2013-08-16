@@ -23,7 +23,7 @@ The initial step would be to setup the Git user information and credentials prio
 : <git:settings refId="gitSettingsReference"
 :               username="me" password="pwd"
 :               name="me" email="email@email.com"/>
-:
+
 : <git:git directory="." settingsRef="gitSettingsReference">
 :  <git:clone uri="someuri"/>
 : </git:git>
@@ -74,20 +74,20 @@ You'll need the following dependencies in your =ivy.xml= file.
 : <dependency org="org.eclipse.jgit" 
 :             name="org.eclipse.jgit.ant" 
 :             rev="3.0.0.201306101825-r" conf="YOUR_IVY_CONFIGURATION"/>
-:
+
 : <dependency org="org.eclipse.jgit" 
 :             name="org.eclipse.jgit" 
 :             rev="3.0.0.201306101825-r" conf="YOUR_IVY_CONFIGURATION"/>
-:
+
 : <dependency org="com.jcraft" 
 :             name="jsch" 
 :             rev="0.1.50" conf="YOUR_IVY_CONFIGURATION"/>
-:
+
 : <dependency org="com.rimerosolutions.ant" 
 :             name="ant-git-tasks"
 :             rev="0.0.1-SNAPSHOT" 
 :             changing="true" conf="YOUR_IVY_CONFIGURATION"/>
-:
+
 
 In your =ivysettings.xml= file, you need a reference to two repositories:
 - Maven Central for general dependencies
