@@ -59,6 +59,6 @@ limitations under the License.
                 <dependency org="com.google.code.findbugs" name="findbugs-ant" rev="2.0.1" conf="findbugs"/>
 
                 <!-- wrapper -->
-                <dependency org="com.rimerosolutions.ant" name="ant-wrapper" rev="0.0.1-SNAPSHOT" changing="true" conf="wrapper"/>
+                <dependency org="com.rimerosolutions.ant" name="ant-wrapper" rev="0.0.1" conf="wrapper"/>
         </dependencies>
 </ivy-module>

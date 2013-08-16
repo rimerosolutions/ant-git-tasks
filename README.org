@@ -1,8 +1,7 @@
 #+TITLE: Ant tasks for Git using JGit
 
-[[https://travis-ci.org/rimerosolutions/ant-git-tasks][Build status page]]
-#+ATTR_HTML: style="float:left;"
-[[https://travis-ci.org/rimerosolutions/ant-git-tasks.png]]
+#+ATTR_HTML: title="travis-ci status page"
+[[https://travis-ci.org/rimerosolutions/ant-git-tasks/][file:https://travis-ci.org/rimerosolutions/ant-git-tasks.png]]
 
 * Summary
 This is a set of basic [[http://ant.apache.org/][Apache Ant]] tasks for [[http://git-scm.com/][Git]] to automate release processes, using the [[http://www.eclipse.org/jgit/][Eclipse JGit API]].
