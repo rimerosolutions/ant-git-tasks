@@ -112,7 +112,7 @@ In your =build.xml=, initialize the task definition and its classpath.
 *** Manual download ('quicker', but not recommended)
 You can grab the files below from the Maven central and Sonatype OSS repositories:
 
-- [[https://oss.sonatype.org/content/repositories/snapshots/com/rimerosolutions/ant/ant-git-tasks/0.0.1-SNAPSHOT/ant-git-tasks-0.0.1-SNAPSHOT.jar][ant-git-tasks-0.0.1-SNAPSHOT.jar]]
+- [[https://oss.sonatype.org/content/repositories/releases/com/rimerosolutions/ant/ant-git-tasks/0.0.1/ant-git-tasks-0.0.1.jar][ant-git-tasks-0.0.1.jar]]
 - [[http://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit.ant/3.0.0.201306101825-r/org.eclipse.jgit.ant-3.0.0.201306101825-r.jar][org.eclipse.jgit.ant-3.0.0.201306101825-r.jar]]
 - [[http://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/3.0.0.201306101825-r/org.eclipse.jgit-3.0.0.201306101825-r.jar][org.eclipse.jgit-3.0.0.201306101825-r.jar]]
 - [[http://repo1.maven.org/maven2/com/jcraft/jsch/0.1.50/jsch-0.1.50.jar][jsch-0.1.50.jar]]
