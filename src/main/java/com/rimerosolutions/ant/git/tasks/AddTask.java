@@ -83,8 +83,11 @@ public class AddTask extends AbstractGitRepoAwareTask {
                 if (file.equals(prefix)) {
                         return ".";
                 }
-
-                return new File(file).getCanonicalPath().substring(prefix.length() + 1);
+                String result = new File(file).getCanonicalPath().substring(prefix.length() + 1);
+                if (File.separatorChar != '/') {
+                	result = result.replace(File.separatorChar, '/');
+                }
+                return result;
         }
 
         @Override
