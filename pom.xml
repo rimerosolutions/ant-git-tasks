@@ -1,0 +1,170 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.rimerosolutions.ant</groupId>
+  <artifactId>ant-git-tasks</artifactId>
+  <version>0.0.2-SNAPSHOT</version>
+  
+   <licenses>
+    <license>
+      <name>Apache License version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>https://github.com/rimerosolutions/ant-git-tasks</url>
+    <connection>scm:git:https://github.com/rimerosolutions/ant-git-tasks.git</connection>
+    <developerConnection>scm:git:https://github.com/rimerosolutions/ant-git-tasks.git</developerConnection>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>rimerosolutions</id>
+      <name>Yves Zoundi</name>
+      <email>rimerosolutions@gmail.com</email>
+      <url>https://github.com/rimerosolutions</url>
+      <organization>Rimero Solutions</organization>
+      <organizationUrl>http://www.rimerosolutions.com</organizationUrl>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>-5</timezone>
+    </developer>
+  </developers>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+		        <version>1.7</version>
+		        <dependencies>
+		          <dependency>
+		            <groupId>org.eclipse.jgit</groupId>
+		            <artifactId>org.eclipse.jgit</artifactId>
+		            <version>3.2.0.201312181205-r</version>
+		          </dependency>
+		          <dependency>
+		            <groupId>com.jcraft</groupId>
+		            <artifactId>jsch</artifactId>
+		            <version>0.1.50</version>
+		          </dependency>
+		          <dependency>
+		            <groupId>com.rimerosolutions.ant</groupId>
+		            <artifactId>ant-git-tasks</artifactId>
+		            <version>${project.version}</version>
+		          </dependency>
+		        </dependencies>
+			<executions>
+	          <execution>
+	                <id>test ant tasks in maven</id>
+	                <phase>prepare-package</phase>
+	                <goals>
+	                  <goal>run</goal>
+	                </goals>
+	                <configuration>
+	                <target xmlns:git="antlib:com.rimerosolutions.ant.git">
+	                    <taskdef uri="antlib:com.rimerosolutions.ant.git"
+	                             resource="com/rimerosolutions/ant/git/jgit-ant-lib.xml"
+	                             classpath="${plugin_classpath}"/>
+<!-- 	                     <ant antfile="${basedir}/src/test/resources/unittests.xml" target="testAdd"/>
+-->
+        
+	                     <git:settings refId="git.test"
+	                                  username="test"
+	                                  password="test"
+	                                  name="test"
+	                                  email="test@gmail.com"/>
+	                        <path id="git.folder.path">
+	        					<fileset dir="${project.build.directory}/test-classes/tests"/>
+	    					</path>
+	    					<echo message="My git.folder.path is ${toString:git.folder.path}" />              
+	                    	<git:git directory="${project.build.directory}/test-classes/tests" verbose="true" settingsRef="git.test"> 
+	  							<git:init/>
+	  							<git:add>
+	                                <fileset dir="${project.build.directory}/test-classes/tests"/>
+	                        	</git:add>                        
+	  							<git:commit message="Initial commit" revCommitIdProperty="revcommit"/>
+							</git:git>
+	                  </target>
+	                </configuration>
+	          		</execution>
+			  </executions>
+			</plugin>
+      
+    </plugins>
+  </build>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.eclipse.jgit</groupId>
+  		<artifactId>org.eclipse.jgit</artifactId>
+  		<version>3.2.0.201312181205-r</version>
+  	</dependency>
+	<dependency>
+		<groupId>org.apache.ant</groupId>
+		<artifactId>ant</artifactId>
+		<version>1.9.2</version>
+	</dependency>
+<!-- 	    
+	<dependency>
+	  <groupId>com.rimerosolutions.ant</groupId>
+	  <artifactId>ant-wrapper</artifactId>
+	  <version>0.0.1</version>
+	</dependency>
+ -->	 	
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>4.8.1</version>
+		<scope>test</scope>
+	</dependency>
+  </dependencies>
+ 
+   <profiles>
+    <profile>
+      <id>tools.jar-Oracle</id>
+      <activation>
+        <property>
+          <name>java.vendor</name>
+          <value>Oracle Corporation</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.sun</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.4.2</version>
+          <scope>system</scope>
+          <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>tools.jar-Sun</id>
+      <activation>
+        <property>
+          <name>java.vendor</name>
+          <value>Sun Microsystems Inc.</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.sun</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.4.2</version>
+          <scope>system</scope>
+          <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+      </dependencies>
+    </profile>    
+  </profiles>
+</project>
