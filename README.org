@@ -144,9 +144,9 @@ If you use an IDE, take a look at [[http://ant.apache.org/ivy/links.html][Apache
 
 * Maven integration
 
-The =pom.xml= file at the root of this project is meant to illustrate Maven integration:
+The =pom.xml= file at the root of this project is only meant to illustrate Maven integration:
 
-- Apache AntUnit integration tests are run as part of the project source code.
+- Apache AntUnit integration tests are run as part of the test phase.
 - A simple Apache Ant Git task is executed to showcase integration.
 
 Notes about Apache Ant versions:
