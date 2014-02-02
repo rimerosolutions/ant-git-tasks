@@ -141,3 +141,22 @@ It looks like some kind of race condition is happening.
 To list available Apache Ant targets, please run =./antw -p= for Unix/Linux or =antw -p= for Windows.
 
 If you use an IDE, take a look at [[http://ant.apache.org/ivy/links.html][Apache Ivy IDE Integration]] section on the Apache Ivy website.
+
+* Maven integration
+
+The =pom.xml= file at the root of this project is meant to illustrate Maven integration:
+
+- Apache AntUnit integration tests are run as part of the project source code.
+- A simple Apache Ant Git task is executed to showcase integration.
+
+Notes about Apache Ant versions:
+
+- Apache Ant 1.8.2 doesn't seem to create any weird issues (NoSuchMethodError, ClassNotFoundException, etc.).
+- Apache Ant 1.7.x is leads to unpredictable builds as well as possible incompatibilities, version conflicts.
+
+
+* License
+
+Source Copyright 2013-2014 Rimero Solutions, Yves Zoundi and contributors.
+
+Distributed under the Apache License version 2.0. See the file LICENSE at the root of the project.
