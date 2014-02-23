@@ -12,7 +12,7 @@ Maven/Apache Ivy repository hosting is provided via [[https://oss.sonatype.org/i
 
 * Tasks description
 For an overview of available Ant tasks, please consult the [[https://github.com/rimerosolutions/ant-git-tasks/wiki][wiki pages]].
-The [[https://github.com/rimerosolutions/ant-git-tasks/blob/master/src/test/resources/unittests.xml][available Apache AntUnit tests]] give a good overview of the intended usage.
+The [[https://github.com/rimerosolutions/ant-git-tasks/blob/master/src/test/resources/integration-tests.xml][available Apache AntUnit tests]] give a good overview of the intended usage.
 The *ant-git-tasks* project is tested with Apache Ant itself, to have a feel of what's working and how usable the tasks are.
 
 * General information

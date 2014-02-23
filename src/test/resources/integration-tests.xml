@@ -297,12 +297,25 @@ limitations under the License.
                         <git:commit message="${dummy.commit.message}" revCommitIdProperty="testAdd.revcommit"/>
                         <git:uptodate failOnError="true"/>
                 </git:git>
-
+                
+                <echo file="${testLocalRepo}/test-fileset1.txt" message="test"/>
+                <echo file="${testLocalRepo}/test-fileset2.txt" message="test"/>
+                <git:git directory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+                        <git:add>
+                                <fileset dir="${testLocalRepo}" includes="test-fileset*.txt"/>
+                        </git:add>
+                        <git:commit message="${dummy.commit.message}" revCommitIdProperty="testAdd.revcommit">
+                                <fileset dir="${testLocalRepo}" includes="test-fileset*.txt"/>
+                        </git:commit>
+                        <git:uptodate failOnError="true"/>
+                </git:git>
+                
                 <au:expectfailure>
                         <git:git directory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
                                 <git:commit message="${dummy.commit.message}" only="test.txt"/>
                         </git:git>
                 </au:expectfailure>
+
         </target>
 
         <target name="testClean" description="Test git-clean">

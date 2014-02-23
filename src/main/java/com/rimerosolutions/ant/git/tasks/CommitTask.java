@@ -20,7 +20,10 @@ import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevCommit;
-
+import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.resources.Union;
+import java.io.File;
+import java.io.IOException;
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
 import com.rimerosolutions.ant.git.GitTaskUtils;
@@ -47,7 +50,8 @@ public class CommitTask extends AbstractGitRepoAwareTask {
         private String reflogComment;
         private String revCommitIdProperty;
         private String only;
-
+        private Union path;
+        
         @Override
         public String getName() {
                 return TASK_NAME;
@@ -61,6 +65,34 @@ public class CommitTask extends AbstractGitRepoAwareTask {
          */
         public void setOnly(String only) {
                 this.only = only;
+        }
+        
+        /**
+         * Configure the fileset(s) of files to add to revision control
+         *
+         * @param fileset The fileset to add
+         */
+        public void addFileset(FileSet fileset) {
+                getPath().add(fileset);
+        }
+
+        private synchronized Union getPath() {
+                if (path == null) {
+                        path = new Union();
+                        path.setProject(getProject());
+                }
+                return path;
+        }
+
+        private String translateFilePathUsingPrefix(String file, String prefix) throws IOException {
+                if (file.equals(prefix)) {
+                        return ".";
+                }
+                String result = new File(file).getCanonicalPath().substring(prefix.length() + 1);
+                if (File.separatorChar != '/') {
+                	result = result.replace(File.separatorChar, '/');
+                }
+                return result;
         }
 
         /**
@@ -79,12 +111,25 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                         setFailOnError(true);
                         CommitCommand cmd = git.commit();
 
-                        if (message != null) {
+                        if (!GitTaskUtils.isNullOrBlankString(message)) {
                                 cmd.setMessage(GitTaskUtils.BRANDING_MESSAGE + " " + message);
                         }
+                        else {
+                                cmd.setMessage(GitTaskUtils.BRANDING_MESSAGE);
+                        }
 
+                        String prefix = getDirectory().getCanonicalPath();
+                        String[] allFiles = getPath().list();
+                        
                         if (!GitTaskUtils.isNullOrBlankString(only)) {
                                 cmd.setOnly(only);
+                        }
+                        else if (allFiles.length > 0) {
+                                for (String file : allFiles) {
+                                        String modifiedFile = translateFilePathUsingPrefix(file, prefix);
+                                        log("Will commit " + modifiedFile);
+                                        cmd.setOnly(modifiedFile);
+                                }
                         }
                         else {
                                 cmd.setAll(true);
@@ -104,7 +149,10 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                         }
 
                         log(revCommit.getFullMessage());
-                } catch (GitAPIException ex) {
+                } catch (IOException ioe) {
+                        throw new GitBuildException(MESSAGE_COMMIT_FAILED, ioe);
+                }
+                catch (GitAPIException ex) {
                         throw new GitBuildException(MESSAGE_COMMIT_FAILED, ex);
                 }
         }

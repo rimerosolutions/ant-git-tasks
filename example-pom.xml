@@ -96,7 +96,7 @@
                                                                 <taskdef uri="antlib:com.rimerosolutions.ant.git"
                                                                          resource="com/rimerosolutions/ant/git/jgit-ant-lib.xml"
                                                                          classpath="${plugin_classpath}"/>
-                                                                <!--                       <ant antfile="${basedir}/src/test/resources/unittests.xml" target="testAdd"/>
+                                                                <!--                       <ant antfile="${basedir}/src/test/resources/integration-tests.xml" target="testAdd"/>
                                                                 -->
 
                                                                 <git:settings refId="git.test"
