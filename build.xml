@@ -204,11 +204,11 @@ limitations under the License.
                               email="${github.email}"/>
         </target>
 
-        <target name="-pre-release" depends="-git-settings">
+         <target name="-pre-release" depends="-git-settings">
                 <echo>Checking tree modifications before release.</echo>
 
                 <git:git directory="${basedir}" verbose="true">
-                        <git:uptodate modificationExistProperty="tree.modified"/>
+                        <git:uptodate modificationExistProperty="tree.modified" failOnError="false"/>
                 </git:git>
 
                 <condition property="tree.modified.but.not.snapshot">
@@ -218,8 +218,12 @@ limitations under the License.
                         </and>
                 </condition>
         </target>
+        
+        <target name="-check-release" depends="-pre-release" if="snapshot-build">
+        	 <fail if="tree.modified">The git tree is not up to date.</fail>        
+        </target>
 
-        <target name="-commit-release" depends="-pre-release" if="tree.modified.but.not.snapshot">
+        <target name="-commit-release" depends="-check-release" if="tree.modified.but.not.snapshot">
                 <echo>Committing before release SCM tagging.</echo>
                 <git:git directory="${basedir}" verbose="true" settingsRef="github.settings">
                         <git:commit message="[${ant.project.name}] Preparing release ${project.version}"/>
