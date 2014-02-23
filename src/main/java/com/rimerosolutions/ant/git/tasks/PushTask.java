@@ -106,8 +106,11 @@ public class PushTask extends AbstractGitRepoAwareTask {
                         PushCommand pushCommand = git.push().
                                 setPushAll().
                                 setRefSpecs(specs).
-                                setDryRun(false).
-                                setRemote(getUri());
+                                setDryRun(false);
+
+                        if (getUri() != null) {
+                                pushCommand.setRemote(getUri());
+                        }
 
                         setupCredentials(pushCommand);
 
