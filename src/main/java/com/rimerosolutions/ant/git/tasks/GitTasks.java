@@ -116,6 +116,18 @@ public class GitTasks extends Task {
         }
 
         /**
+         * Creates a nested <code>rm</code> task.
+         *
+         * @return A new task to remove files or directories.
+         */
+        public RmTask createRm() {
+                RmTask c = new RmTask();
+                tasks.add(c);
+
+                return c;
+        }
+
+    /**
          * Creates a nested <code>branch</code> task.
          *
          * @return a new branch task.

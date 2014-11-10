@@ -15,16 +15,16 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
-import java.io.File;
-import java.io.IOException;
-
+import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
+import com.rimerosolutions.ant.git.GitBuildException;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.resources.Union;
 import org.eclipse.jgit.api.AddCommand;
+import org.eclipse.jgit.api.RmCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
-import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
-import com.rimerosolutions.ant.git.GitBuildException;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Add files.
@@ -41,21 +41,11 @@ import com.rimerosolutions.ant.git.GitBuildException;
  *
  * @author Yves Zoundi
  */
-public class AddTask extends AbstractGitRepoAwareTask {
+public class RmTask extends AbstractGitRepoAwareTask {
 
-        private static final String TASK_NAME = "git-patch";
-        private boolean update;
+        private static final String TASK_NAME = "git-rm";
         private Union path;
 
-        /**
-         * If set to true, the command only matches filepattern against already tracked files in the index rather than the working tree.
-         *
-         * @antdoc.notrequired
-         * @param update Default is false;
-         */
-        public void setUpdate(boolean update) {
-                this.update = update;
-        }
 
         @Override
         public String getName() {
@@ -82,19 +72,19 @@ public class AddTask extends AbstractGitRepoAwareTask {
         @Override
         protected void doExecute() {
                 try {
-                        AddCommand addCommand = git.add().setUpdate(update);
+                        RmCommand rmCommand = git.rm();
                         String prefix = getDirectory().getCanonicalPath();
                         String[] allFiles = getPath().list();
                         if (allFiles.length == 0) {
-                                return;
+                            return;
                         }
 
                         for (String file : allFiles) {
                                 String addedFile = translateFilePathUsingPrefix(file, prefix);
-                                addCommand.addFilepattern(addedFile);
+                                rmCommand.addFilepattern(addedFile);
                         }
 
-                        addCommand.call();
+                        rmCommand.call();
                 }
                 catch (GitAPIException e) {
                         throw new GitBuildException(e);
