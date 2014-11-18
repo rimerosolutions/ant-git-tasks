@@ -285,13 +285,12 @@ limitations under the License.
 			<git:rm>
                                 <fileset dir="${testLocalRepo}" includes="*.txt"/>
                         </git:rm>
-			<git:commit message="${dummy.commit.message}" revCommitIdProperty="testRm.revcommit"/>
-			<au:expectfailure>
-				<au:assertFileExists file="${testLocalRepoClone}/test.txt"/>
-		        </au:expectfailure>
+			<git:commit message="${dummy.commit.message}" revCommitIdProperty="testRm.revcommit"/>			
                         <git:uptodate failOnError="true"/>
                 </git:git>
-		
+		<au:expectfailure>
+			<au:assertFileExists file="${testLocalRepoClone}/test.txt"/>
+		</au:expectfailure>
 	</target>
 		
         <target name="testAdd" description="Test git-add">
