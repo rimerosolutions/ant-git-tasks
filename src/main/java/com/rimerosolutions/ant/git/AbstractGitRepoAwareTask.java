@@ -15,6 +15,7 @@
  */
 package com.rimerosolutions.ant.git;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.tools.ant.BuildException;
@@ -86,5 +87,26 @@ public abstract class AbstractGitRepoAwareTask extends AbstractGitTask {
                         }
                 }
         }
+
+        /**
+         * return either a "." if file and prefix have the same value,
+         * or the right part of file - length of prefix plus one removed
+         * @param file file on which a git operation needs to be done
+         * @param prefix folder of the git sandbox
+         * @return path relative to git sandbox folder
+         * @throws IOException the method uses File#getCanonicalPath which can throw IOException
+         */
+        protected String translateFilePathUsingPrefix(String file, String prefix) throws IOException {
+                if (file.equals(prefix)) {
+                        return ".";
+                }
+                String result = new File(file).getCanonicalPath().substring(prefix.length() + 1);
+                if (File.separatorChar != '/') {
+                        result = result.replace(File.separatorChar, '/');
+                }
+                return result;
+        }
+
+
 
 }
