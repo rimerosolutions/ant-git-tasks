@@ -83,18 +83,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                 }
                 return path;
         }
-
-        private String translateFilePathUsingPrefix(String file, String prefix) throws IOException {
-                if (file.equals(prefix)) {
-                        return ".";
-                }
-                String result = new File(file).getCanonicalPath().substring(prefix.length() + 1);
-                if (File.separatorChar != '/') {
-                	result = result.replace(File.separatorChar, '/');
-                }
-                return result;
-        }
-
+        
         /**
          * Assign the commit revision id to a property
          *
