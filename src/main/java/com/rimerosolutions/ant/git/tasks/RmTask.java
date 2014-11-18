@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Rimero Solutions
+ * Copyright 2014 Antoine Levy-Lambert, Rimero Solutions
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,19 +27,19 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Add files.
+ * Delete files.
  *
  * <pre>{@code
  *  <git:git directory="${testLocalRepo}">
- *    <git:add>
+ *    <git:rm>
  *      <fileset dir="${testLocalRepo}" includes="*.txt"/>
- </git:add>
+ * </git:rm>
  *  </git:git>}</pre>
  *
- * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-add.html">Git documentation about add</a></p>
- * <p><a href="http://download.eclipse.org/jgit/docs/jgit-2.0.0.201206130900-r/apidocs/org/eclipse/jgit/api/AddCommand.html">JGit AddCommand</a></p>
+ * <p><a href="https://www.kernel.org/pub/software/scm/git/docs/git-rm.html">Git documentation about rm</a></p>
+ * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/RmCommand.html">JGit RmCommand</a></p>
  *
- * @author Yves Zoundi
+ * @author Antoine Levy-Lambert
  */
 public class RmTask extends AbstractGitRepoAwareTask {
 

@@ -273,6 +273,27 @@ limitations under the License.
                 <au:assertFileExists file="${testLocalRepoClient}/test.txt"/>
         </target>
 
+	<target name="testRm" description="Test git-rm">
+                <initLocalRepo/>
+                <echo file="${testLocalRepo}/test.txt" message="test"/>
+
+                <git:git directory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+                        <git:add>
+                                <fileset dir="${testLocalRepo}" includes="*.txt"/>
+                        </git:add>
+                        <git:commit message="${dummy.commit.message}" revCommitIdProperty="testAdd.revcommit"/>
+			<git:rm>
+                                <fileset dir="${testLocalRepo}" includes="*.txt"/>
+                        </git:rm>
+			<git:commit message="${dummy.commit.message}" revCommitIdProperty="testRm.revcommit"/>
+			<au:expectfailure>
+				<au:assertFileExists file="${testLocalRepoClone}/test.txt"/>
+		        </au:expectfailure>
+                        <git:uptodate failOnError="true"/>
+                </git:git>
+		
+	</target>
+		
         <target name="testAdd" description="Test git-add">
                 <initLocalRepo/>
                 <echo file="${testLocalRepo}/test.txt" message="test"/>
