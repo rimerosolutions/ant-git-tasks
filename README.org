@@ -131,7 +131,7 @@ In your =build.xml=, initialize the task definition and its classpath.
 
 * Building from source
 
-- You need to have at least JDK 6 installed.
+- You need to have at least JDK 6 installed (*JDK7 will be required soon*).
 - If you don't want to use the ant wrapper =antw= script at the root of this folder, you'll need Apache Ant 1.8.0+.
 - =JAVA_HOME= is to be set for the custom [[http://docs.oracle.com/javase/6/docs/technotes/guides/javadoc/doclet/overview.html][Doclet]] compilation so that the =tools.jar= file can be found.
 
