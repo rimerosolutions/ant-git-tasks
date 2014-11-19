@@ -152,7 +152,7 @@ The =pom.xml= file at the root of this project is only meant to illustrate Maven
 Notes about Apache Ant versions:
 
 - Apache Ant 1.8.2 doesn't seem to create any weird issues (NoSuchMethodError, ClassNotFoundException, etc.).
-- Apache Ant 1.7.x is leads to unpredictable builds as well as possible incompatibilities, version conflicts.
+- Apache Ant 1.7.x leads to unpredictable builds as well as possible incompatibilities, version conflicts.
 
 
 * License
