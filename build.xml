@@ -138,15 +138,7 @@ limitations under the License.
         </tstamp>
 
         <property environment="env."/>
-        <condition property="jdk-tools.jar"
-                   value="/System/Library/Frameworks/JavaVM.Framework/Versions/CurrentJDK/Classes/classes.jar">
-                <os family="mac"/>
-        </condition>
-        <condition property="jdk-tools.jar" value="${env.JAVA_HOME}/lib/tools.jar">
-                <not>
-                        <os family="mac"/>
-                </not>
-        </condition>
+	<property name="jdk-tools.jar" value="${env.JAVA_HOME}/lib/tools.jar"/>
 
         <echo>Ant Git Tasks ${project.version} Build.</echo>
 
