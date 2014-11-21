@@ -1,6 +1,6 @@
 language: java
 jdk:
-  - openjdk6
+  - openjdk7
 install: ./antw clean
 script: ./antw test
 notifications:

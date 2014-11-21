@@ -8,10 +8,27 @@ This is a set of basic [[http://ant.apache.org/][Apache Ant]] tasks for [[http:/
 The goal is to leverage release management processes for Apache Ant based projects that use Git for revision control.
 This set of Ant tasks is currently used by the [[https://github.com/rimerosolutions/ant-wrapper][Ant Command Line Wrapper]] project and by the =ant-git-tasks= project itself!
 
-Maven/Apache Ivy repository hosting is provided via [[https://oss.sonatype.org/index.html][Sonatype OSS repositories]].
+Below is one possible workflow:
 
-* Tasks description
-For an overview of available Ant tasks, please consult the [[https://github.com/rimerosolutions/ant-git-tasks/wiki][wiki pages]].
+- Create a branch for a fix, feature or major change.
+- Merge the branch after some testing.
+- Update the documentation/changelog and/or other notes.
+- Prepare a release settings with ideally [[http://semver.org][semantic versioning]] by updating a /release properties/ file.
+- Commit the changes after updating the application version.
+- Tag the release and push the changes to a Git repository.
+- Push the code to a repository (Maven/Ivy).
+
+[[http://maven.apache.org][Apache Maven]]/[[http://ant.apache.org/ivy/][Apache Ivy]] repository hosting is provided via [[https://oss.sonatype.org/index.html][Sonatype OSS repositories]].
+
+* Tasks description and documentation
+
+** Apache Ant tasks documentation.
+
+- The available ant tasks documentation is available for online browsing via the project [[https://github.com/rimerosolutions/ant-git-tasks/wiki][wiki pages]].
+- You can also generate the Ant tasks documentation locally by running the *javadoc* target (=ant javadoc=). This
+generates both the API javadocs and the Ant tasks documentation (generated via a custom [[https://github.com/rimerosolutions/ant-git-tasks/blob/master/src/main/java/com/rimerosolutions/ant/git/AntTaskDoclet.java][Doclet]]).
+
+** Code samples
 The [[https://github.com/rimerosolutions/ant-git-tasks/blob/master/src/test/resources/integration-tests.xml][available Apache AntUnit tests]] give a good overview of the intended usage.
 The *ant-git-tasks* project is tested with Apache Ant itself, to have a feel of what's working and how usable the tasks are.
 
@@ -131,7 +148,7 @@ In your =build.xml=, initialize the task definition and its classpath.
 
 * Building from source
 
-- You need to have at least JDK 6 installed (*JDK7 will be required soon*).
+- You need [[http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html][JDK7]] to build the code from source. While it may also work for JDK8, it hasn't been tested.
 - If you don't want to use the ant wrapper =antw= script at the root of this folder, you'll need Apache Ant 1.8.0+.
 - =JAVA_HOME= is to be set for the custom [[http://docs.oracle.com/javase/6/docs/technotes/guides/javadoc/doclet/overview.html][Doclet]] compilation so that the =tools.jar= file can be found.
 

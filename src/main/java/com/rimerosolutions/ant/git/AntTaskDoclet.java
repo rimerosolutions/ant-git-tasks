@@ -106,33 +106,19 @@ public final class AntTaskDoclet extends Standard {
         }
 
         private static void copyFile(File sourceFile, File destFile) throws IOException {
-                InputStream in = null;
-                OutputStream out = null;
-
-                try {
-                        in = new FileInputStream(sourceFile);
-                        out = new FileOutputStream(destFile);
+                try (InputStream in = new FileInputStream(sourceFile);
+                     OutputStream out = new FileOutputStream(destFile)) {
                         byte[] buf = new byte[4096];
                         int len;
                         while ((len = in.read(buf)) > 0) {
                                 out.write(buf, 0, len);
-                        }
-                } finally {
-                        try {
-                                if (in != null) {
-                                        in.close();
-                                }
-                        } finally {
-                                if (out != null) {
-                                        out.close();
-                                }
                         }
                 }
         }
 
         public static final boolean start(RootDoc root) {
                 readDestDirOption(root.options());
-                
+
                 try {
                         writeContents(root.classes());
                 } catch (IOException ioe) {
@@ -177,16 +163,8 @@ public final class AntTaskDoclet extends Standard {
         }
 
         static void withWriter(File f, WriterCallback wc) throws IOException {
-                Writer w = null;
-
-                try {
-                        w = new OutputStreamWriter(new FileOutputStream(f), ENCODING_UTF_8);
+                try (Writer w = new OutputStreamWriter(new FileOutputStream(f), ENCODING_UTF_8)) {
                         wc.doWithWriter(w);
-                } finally {
-                        if (w != null) {
-                                w.flush();
-                                w.close();
-                        }
                 }
         }
 
