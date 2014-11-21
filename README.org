@@ -25,8 +25,7 @@ Below is one possible workflow:
 ** Apache Ant tasks documentation.
 
 - The available ant tasks documentation is available for online browsing via the project [[https://github.com/rimerosolutions/ant-git-tasks/wiki][wiki pages]].
-- You can also generate the Ant tasks documentation locally by running the *javadoc* target (=ant javadoc=). This
-generates both the API javadocs and the Ant tasks documentation (generated via a custom [[https://github.com/rimerosolutions/ant-git-tasks/blob/master/src/main/java/com/rimerosolutions/ant/git/AntTaskDoclet.java][Doclet]]).
+- You can also generate the Ant tasks documentation locally by running the *javadoc* target (=ant javadoc=). This generates both the API javadocs and the Ant tasks documentation (generated via a custom [[https://github.com/rimerosolutions/ant-git-tasks/blob/master/src/main/java/com/rimerosolutions/ant/git/AntTaskDoclet.java][Doclet]]).
 
 ** Code samples
 The [[https://github.com/rimerosolutions/ant-git-tasks/blob/master/src/test/resources/integration-tests.xml][available Apache AntUnit tests]] give a good overview of the intended usage.
