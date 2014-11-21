@@ -50,7 +50,9 @@ limitations under the License.
         <property name="docs.dir" value="${target.dir}/docs"/>
         <property name="apidocs.dir" value="${docs.dir}/apidocs"/>
         <property name="antdocs.dir" value="${docs.dir}/antdocs"/>
-        <property name="cobertura.data.filename" value="cobertura.ser"/>
+	
+        <property name="coverage.additional.jvmargs" value="-XX:-UseSplitVerifier"/>
+	<property name="cobertura.data.filename" value="cobertura.ser"/>
         <property name="cobertura.data.file" value="${test.data.dir}/${cobertura.data.filename}"/>
         <property name="javadoc.overview.html" value="${resources.dir}/com/rimerosolutions/ant/git/overview.html"/>
         <property name="antdoc.overview.html" value="${resources.dir}/com/rimerosolutions/ant/git/antdoc.overview.html"/>
@@ -396,7 +398,7 @@ limitations under the License.
                        haltonfailure="false"
                        errorproperty="junit.failed"
                        includeantruntime="false">
-
+		       <jvmarg value="-XX:-UseSplitVerifier"/>
                         <sysproperty key="net.sourceforge.cobertura.datafile"
                                      file="${cobertura.data.file}" />
 
@@ -500,7 +502,9 @@ limitations under the License.
                 <cobertura:report format="html"
                                   destdir="${reports.cobertura.dir}"
                                   srcdir="${src.dir}"
-                                  datafile="${cobertura.data.file}"/>
+                                  datafile="${cobertura.data.file}">		
+			<jvmarg value="-XX:-UseSplitVerifier"/>
+		</cobertura:report>		
         </target>
 
         <target name="reports" depends="report-findbugs,report-junit,report-cobertura"

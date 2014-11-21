@@ -53,7 +53,7 @@ limitations under the License.
                 <dependency org="org.apache.ant" name="ant-antunit" rev="1.2" conf="test"/>
 
                 <!-- cobertura -->
-                <dependency org="net.sourceforge.cobertura" name="cobertura" rev="1.9.4.1" conf="cobertura" />
+                <dependency org="net.sourceforge.cobertura" name="cobertura" rev="2.0.2" conf="cobertura" />
 
                 <!-- findbugs -->
                 <dependency org="com.google.code.findbugs" name="findbugs-ant" rev="2.0.1" conf="findbugs"/>
