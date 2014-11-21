@@ -503,7 +503,6 @@ limitations under the License.
                                   destdir="${reports.cobertura.dir}"
                                   srcdir="${src.dir}"
                                   datafile="${cobertura.data.file}">		
-			<jvmarg value="-XX:-UseSplitVerifier"/>
 		</cobertura:report>		
         </target>
 
