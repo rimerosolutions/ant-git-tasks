@@ -159,28 +159,28 @@ limitations under the License.
 
         <target name="testBranchFromTag" description="Test branch from tag">
                 <initLocalRepo/>
-                <git:git directory="${testLocalRepo}" verbose="true">                	
-                	<git:checkout branchName="${dummy.checkout.branch}" createBranch="true"/>
+                <git:git directory="${testLocalRepo}" verbose="true">
+                        <git:checkout branchName="${dummy.checkout.branch}" createBranch="true"/>
                 </git:git>
-        	
-        	<echo file="${testLocalRepo}/test.txt" message="test"/>
-        	<git:git directory="${testLocalRepo}" verbose="true">  
-        		 <git:add>
-        		                                <fileset dir="${testLocalRepo}" includes="*.txt"/>
-        		                        </git:add>
-        	    <git:commit message="${dummy.commit.message}" settingsRef="git.testing"/>                
-        		<git:checkout branchName="${master.branch.name}"/>
-        		 </git:git>
-        	
-        	<au:expectfailure>
-        	                        <au:assertFileExists file="${testLocalRepo}/test.txt"/>
-        	                        </au:expectfailure>
-        	
-        	 <git:git directory="${testLocalRepo}" verbose="true">     
-        	<git:checkout branchName="${dummy.checkout.branch}" startPoint="${dummy.checkout.branch}"/>
-        	 	 </git:git>
-        	
-        	 <au:assertFileExists file="${testLocalRepo}/test.txt"/>
+
+                <echo file="${testLocalRepo}/test.txt" message="test"/>
+                <git:git directory="${testLocalRepo}" verbose="true">
+                        <git:add>
+                                <fileset dir="${testLocalRepo}" includes="*.txt"/>
+                        </git:add>
+                        <git:commit message="${dummy.commit.message}" settingsRef="git.testing"/>
+                        <git:checkout branchName="${master.branch.name}"/>
+                </git:git>
+
+                <au:expectfailure>
+                        <au:assertFileExists file="${testLocalRepo}/test.txt"/>
+                </au:expectfailure>
+
+                <git:git directory="${testLocalRepo}" verbose="true">
+                        <git:checkout branchName="${dummy.checkout.branch}" startPoint="${dummy.checkout.branch}"/>
+                </git:git>
+
+                <au:assertFileExists file="${testLocalRepo}/test.txt"/>
 
         </target>
 
