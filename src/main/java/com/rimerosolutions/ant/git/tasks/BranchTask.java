@@ -85,8 +85,9 @@ public class BranchTask extends AbstractGitRepoAwareTask {
         @Override
         protected void doExecute() throws BuildException {
                 try {
+                        
                         git.branchCreate().
-                                setForce(force).
+                                setForce(force).                                
                                 setUpstreamMode(upstreamMode).
                                 setName(branchName).
                                 call();
