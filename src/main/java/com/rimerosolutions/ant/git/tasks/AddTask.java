@@ -15,9 +15,6 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.resources.Union;
 import org.eclipse.jgit.api.AddCommand;

@@ -15,16 +15,13 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
-import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
-import com.rimerosolutions.ant.git.GitBuildException;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.resources.Union;
-import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.RmCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
-import java.io.File;
-import java.io.IOException;
+import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
+import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
  * Delete files.

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Copyright 2013 Rimero Solutions
+Copyright 2013-2015 Rimero Solutions
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -88,7 +88,7 @@ limitations under the License.
                         </git:git>
                 </sequential>
         </macrodef>
-        
+
         <!-- ****************************************** -->
         <!-- Tags -->
         <!-- ****************************************** -->
@@ -145,7 +145,7 @@ limitations under the License.
 
         <!-- ****************************************** -->
         <!-- Branches -->
-        <!-- ****************************************** -->        
+        <!-- ****************************************** -->
         <target name="testBranch" description="Test git-branch">
                 <initLocalRepo/>
 
@@ -156,7 +156,34 @@ limitations under the License.
                                          failonerror="true"/>
                 </git:git>
         </target>
-        
+
+        <target name="testBranchFromTag" description="Test branch from tag">
+                <initLocalRepo/>
+                <git:git directory="${testLocalRepo}" verbose="true">
+                        <git:checkout branchName="${dummy.checkout.branch}" createBranch="true"/>
+                </git:git>
+
+                <echo file="${testLocalRepo}/test.txt" message="test"/>
+                <git:git directory="${testLocalRepo}" verbose="true">
+                        <git:add>
+                                <fileset dir="${testLocalRepo}" includes="*.txt"/>
+                        </git:add>
+                        <git:commit message="${dummy.commit.message}" settingsRef="git.testing"/>
+                        <git:checkout branchName="${master.branch.name}"/>
+                </git:git>
+
+                <au:expectfailure>
+                        <au:assertFileExists file="${testLocalRepo}/test.txt"/>
+                </au:expectfailure>
+
+                <git:git directory="${testLocalRepo}" verbose="true">
+                        <git:checkout branchName="${dummy.checkout.branch}" startPoint="${dummy.checkout.branch}"/>
+                </git:git>
+
+                <au:assertFileExists file="${testLocalRepo}/test.txt"/>
+
+        </target>
+
         <target name="testBranchDelete" description="Test git-branch-delete">
                 <initLocalRepo/>
 
@@ -196,10 +223,11 @@ limitations under the License.
                                      actual="${branchlist.file}"
                                      message="Branches list doesn't match baseline"/>
         </target>
-        
+
         <!-- ****************************************** -->
         <!-- Others -->
         <!-- ****************************************** -->
+        <!-- git-checkout -->
         <target name="testCheckout" description="Test git-checkout">
                 <initLocalRepo/>
 
@@ -211,6 +239,7 @@ limitations under the License.
                 </git:git>
         </target>
 
+        <!-- git-clone -->
         <target name="testClone" description="Test git-clone">
                 <initLocalRepo/>
 
@@ -221,6 +250,7 @@ limitations under the License.
                 <au:assertFileExists file="${testLocalRepoClone}/.git/index"/>
         </target>
 
+        <!-- git-push -->
         <target name="testPush" description="Test git-push">
                 <initLocalRepoBare/>
 
@@ -246,6 +276,7 @@ limitations under the License.
                 <au:assertFileExists file="${testLocalRepoClient}/test.txt"/>
         </target>
 
+        <!-- git-fetch -->
         <target name="testFetch" description="Test git-fetch">
                 <initLocalRepoBare/>
 
@@ -273,7 +304,8 @@ limitations under the License.
                 <au:assertFileExists file="${testLocalRepoClient}/test.txt"/>
         </target>
 
-	<target name="testRm" description="Test git-rm">
+        <!-- git-rm -->
+        <target name="testRm" description="Test git-rm">
                 <initLocalRepo/>
                 <echo file="${testLocalRepo}/test.txt" message="test"/>
 
@@ -282,17 +314,18 @@ limitations under the License.
                                 <fileset dir="${testLocalRepo}" includes="*.txt"/>
                         </git:add>
                         <git:commit message="${dummy.commit.message}" revCommitIdProperty="testAdd.revcommit"/>
-			<git:rm>
+                        <git:rm>
                                 <fileset dir="${testLocalRepo}" includes="*.txt"/>
                         </git:rm>
-			<git:commit message="${dummy.commit.message}" revCommitIdProperty="testRm.revcommit"/>			
+                        <git:commit message="${dummy.commit.message}" revCommitIdProperty="testRm.revcommit"/>
                         <git:uptodate failOnError="true"/>
                 </git:git>
-		<au:expectfailure>
-			<au:assertFileExists file="${testLocalRepoClone}/test.txt"/>
-		</au:expectfailure>
-	</target>
-		
+                <au:expectfailure>
+                        <au:assertFileExists file="${testLocalRepoClone}/test.txt"/>
+                </au:expectfailure>
+        </target>
+
+        <!-- git-add -->
         <target name="testAdd" description="Test git-add">
                 <initLocalRepo/>
                 <echo file="${testLocalRepo}/test.txt" message="test"/>
@@ -306,6 +339,7 @@ limitations under the License.
                 </git:git>
         </target>
 
+        <!-- git-commit -->
         <target name="testCommit" description="Test git-commit">
                 <initLocalRepo/>
                 <echo file="${testLocalRepo}/test.txt" message="test"/>
@@ -317,7 +351,7 @@ limitations under the License.
                         <git:commit message="${dummy.commit.message}" revCommitIdProperty="testAdd.revcommit"/>
                         <git:uptodate failOnError="true"/>
                 </git:git>
-                
+
                 <echo file="${testLocalRepo}/test-fileset1.txt" message="test"/>
                 <echo file="${testLocalRepo}/test-fileset2.txt" message="test"/>
                 <git:git directory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
@@ -329,7 +363,7 @@ limitations under the License.
                         </git:commit>
                         <git:uptodate failOnError="true"/>
                 </git:git>
-                
+
                 <au:expectfailure>
                         <git:git directory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
                                 <git:commit message="${dummy.commit.message}" only="test.txt"/>
@@ -338,6 +372,7 @@ limitations under the License.
 
         </target>
 
+        <!-- git-clean -->
         <target name="testClean" description="Test git-clean">
                 <initLocalRepo/>
                 <echo file="${testLocalRepo}/test.txt" message="test"/>
@@ -355,6 +390,7 @@ limitations under the License.
                 </git:git>
         </target>
 
+        <!-- git-apply -->
         <target name="testApply" description="Test git-apply">
                 <initLocalRepo/>
 
@@ -369,6 +405,7 @@ limitations under the License.
                 </au:assertTrue>
         </target>
 
+        <!-- git-pull -->
         <target name="testPull" description="Test git-pull">
                 <initLocalRepo/>
 
@@ -391,6 +428,7 @@ limitations under the License.
                 <au:assertFileExists file="${testLocalRepoClone}/file.txt"/>
         </target>
 
+        <!-- git-status -->
         <target name="testUpToDateFailure" description="Test git-status">
                 <initLocalRepo/>
 
@@ -403,9 +441,10 @@ limitations under the License.
                 </au:expectfailure>
 
                 <au:assertPropertySet name="${tree.modified.property}"/>
-                <au:assertPropertyEquals name="${tree.modified.property}" value="true"/>                
+                <au:assertPropertyEquals name="${tree.modified.property}" value="true"/>
         </target>
 
+        <!-- git-init -->
         <target name="testInit" description="Test git-init">
                 <initLocalRepo/>
                 <au:assertFileExists file="${testLocalRepo}/.git/index"/>

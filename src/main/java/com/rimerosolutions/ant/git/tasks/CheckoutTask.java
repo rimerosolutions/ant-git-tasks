@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Rimero Solutions
+ * Copyright 2013-2015 Rimero Solutions
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import org.eclipse.jgit.api.errors.RefNotFoundException;
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
 import com.rimerosolutions.ant.git.GitTaskUtils;
-
+import org.eclipse.jgit.lib.Constants;
 /**
  * Perform a checkout.
  *
@@ -41,11 +41,12 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
  * <p><a href="https://www.kernel.org/pub/software/scm/git/docs/git-checkout.html">Git documentation about checkout</a></p>
  * <p><a href="http://download.eclipse.org/jgit/docs/latest/apidocs/org/eclipse/jgit/api/CheckoutCommand.html">JGit CheckoutCommand</a></p>
  *
- * @author Yves Zoundi
+ * @author Yves Zoundi <rimerosolutions@gmail.com>
  */
 public class CheckoutTask extends AbstractGitRepoAwareTask {
 
         private String branchName;
+        private String startPoint;
         private boolean createBranch = false;
         private boolean trackBranchOnCreate = true;
         private static final String TASK_NAME = "git-checkout";
@@ -63,6 +64,16 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
          */
         public void setTrackBranchOnCreate(boolean trackBranchOnCreate) {
                 this.trackBranchOnCreate = trackBranchOnCreate;
+        }
+
+	/**
+         * Sets the start point to use
+         *
+         * @antdoc.notrequired
+         * @param startPoint The start point default is HEAD
+         */
+        public void setStartPoint(String startPoint) {
+                this.startPoint = startPoint;
         }
 
         /**
@@ -100,6 +111,10 @@ public class CheckoutTask extends AbstractGitRepoAwareTask {
                         if (!GitTaskUtils.isNullOrBlankString(branchName)) {
                                 checkoutCommand.setName(branchName);
                         }
+
+			if (!GitTaskUtils.isNullOrBlankString(startPoint)) {
+				checkoutCommand.setStartPoint(Constants.DEFAULT_REMOTE_NAME + "/" + startPoint);
+			}			
 
                         checkoutCommand.call();
 
