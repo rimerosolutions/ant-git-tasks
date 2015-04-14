@@ -106,6 +106,8 @@ You'll need the following dependencies in your =ivy.xml= file.
 :             rev="0.0.1-SNAPSHOT" 
 :             changing="true" conf="YOUR_IVY_CONFIGURATION"/>
 
+The versions mentionned above could be obsolete, please use the information from a site such as
+[[http://mvnrepository.com][mvnrepository]].
 
 In your =ivysettings.xml= file, you need a reference to two repositories:
 - Maven Central for general dependencies
