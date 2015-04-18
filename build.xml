@@ -95,7 +95,7 @@ limitations under the License.
         <property name="wrapper.dir" value="wrapper"/>
 
         <!-- ivy properties -->
-        <property name="ivy.install.version" value="2.3.0" />
+        <property name="ivy.install.version" value="2.4.0" />
         <condition property="ivy.home" value="${env.IVY_HOME}">
                 <isset property="env.IVY_HOME" />
         </condition>
@@ -276,7 +276,7 @@ limitations under the License.
 
         <target name="-resolve" depends="-init-ivy">
                 <echo>Fetching dependencies.</echo>
-                <ivy:retrieve  pattern="${ivy.lib.dir}/[conf]/[artifact].[ext]" sync="true" log="quiet"/>
+                <ivy:retrieve  pattern="${ivy.lib.dir}/[conf]/[artifact].[ext]" sync="false" log="default"/>
                 <ivy:cachepath pathid="compile.classpath" conf="compile"/>
                 <ivy:cachepath pathid="test.classpath" conf="test"/>
                 <ivy:cachepath pathid="findbugs.classpath" conf="findbugs"/>
