@@ -32,7 +32,7 @@ limitations under the License.
         </signers>
 
         <resolvers>
-                <chain name="chain">
+                <chain name="chain" returnFirst="true" dual="true">
                         <url name="mavencentral">
                                 <artifact pattern="http://repo1.maven.org/maven2/[organisation]/[artifact]-[revision].[ext]" />
                         </url>
