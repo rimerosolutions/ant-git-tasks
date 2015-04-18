@@ -157,6 +157,18 @@ limitations under the License.
                 </git:git>
         </target>
 
+        <target name="testCurrentBranch" description="Test git-currentbranch">
+                <initLocalRepo/>
+
+                <git:git directory="${testLocalRepo}" verbose="true">
+                        <git:checkout branchName="${dummy.checkout.branch}" createBranch="true"/>			
+                        <git:currentbranch outputProperty="currentBranchName"/>
+                </git:git>
+
+		<au:assertEquals expected="${dummy.checkout.branch}" actual="${currentBranchName}"/>
+        </target>
+
+
         <target name="testBranchFromTag" description="Test branch from tag">
                 <initLocalRepo/>
                 <git:git directory="${testLocalRepo}" verbose="true">

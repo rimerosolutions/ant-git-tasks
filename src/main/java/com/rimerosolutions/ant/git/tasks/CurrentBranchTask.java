@@ -39,7 +39,7 @@ public class CurrentBranchTask extends AbstractGitRepoAwareTask {
         private static final String TASK_NAME = "git-current-branch";
 
         private String outputProperty;
-        
+
         @Override
         public String getName() {
                 return TASK_NAME;
@@ -52,13 +52,13 @@ public class CurrentBranchTask extends AbstractGitRepoAwareTask {
          * @param outputProperty - required: the ant property name to assign the current branch value to
          */
         public void setOutputProperty(String outputProperty) {
-        	this.outputProperty = outputProperty;
+                this.outputProperty = outputProperty;
         }
 
         @Override
         protected void doExecute() {
                 try {
-                		getProject().setProperty(outputProperty, git.getRepository().getBranch());
+                        getProject().setProperty(outputProperty, git.getRepository().getBranch());
                 } catch (IOException e) {
                         throw new GitBuildException("Could not query the current branch.", e);
                 }

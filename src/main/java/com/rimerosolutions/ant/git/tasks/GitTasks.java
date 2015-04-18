@@ -80,12 +80,12 @@ public class GitTasks extends Task {
         }
 
         /**
-         * Creates a new nested <code>branchlist</code> task
+         * Creates a new nested <code>currentbranch</code> task
          *
-         * @return A new task to list branches
+         * @return A new task to display the current branch
          */
-        public BranchListTask createBranchList() {
-                BranchListTask c = new BranchListTask();
+        public CurrentBranchTask createCurrentBranch() {
+                CurrentBranchTask c = new CurrentBranchTask();
                 tasks.add(c);
 
                 return c;
