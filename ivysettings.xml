@@ -32,8 +32,12 @@ limitations under the License.
         </signers>
 
         <resolvers>
-                <chain name="chain" returnFirst="true">
-                        <ibiblio name="central" m2compatible="true"/>
+                <chain name="chain">
+                        <url name="mavencentral">
+                                <artifact pattern="http://repo1.maven.org/maven2/[organisation]/[artifact]-[revision].[ext]" />
+                        </url>
+
+			<ibiblio name="central" m2compatible="true"/>
                         
                         <url name="sonatype-snapshots"
                              m2compatible="true"
@@ -43,11 +47,7 @@ limitations under the License.
                         
                         <url name="sonatype-releases" m2compatible="true" signer="${signing.name}">
                                 <artifact pattern="https://oss.sonatype.org/service/local/staging/deploy/maven2/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
-                        </url>
-                        
-                        <url name="mavencentral">
-                                <artifact pattern="http://repo1.maven.org/maven2/[organisation]/[artifact]-[revision].[ext]" />
-                        </url>
+                        </url>                        
                         
                         <filesystem name="local-m2" m2compatible="true">
                                 <artifact pattern="${user.home}/.m2/repository/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
