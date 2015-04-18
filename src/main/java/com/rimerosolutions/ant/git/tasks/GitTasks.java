@@ -92,6 +92,18 @@ public class GitTasks extends Task {
         }
 
         /**
+         * Creates a new nested <code>branchlist</code> task
+         *
+         * @return A new task to list branches
+         */
+        public BranchListTask createBranchList() {
+                BranchListTask c = new BranchListTask();
+                tasks.add(c);
+
+                return c;
+        }
+
+        /**
          * Creates a nested <code>apply</code> task.
          *
          * @return A new task to apply patches.
