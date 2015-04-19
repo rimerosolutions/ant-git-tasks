@@ -2,7 +2,7 @@ language: java
 jdk:
   - openjdk7
 install: ./antw clean
-script: travis_wait ./antw test
+script: ./antw test
 notifications:
   email: false
 branches:
