@@ -96,8 +96,8 @@ public class GitTasks extends Task {
          *
          * @return A new task to list branches
          */
-        public BranchListTask createBranchList() {
-                BranchListTask c = new BranchListTask();
+        public CurrentBranchTask createCurrentBranch() {
+                CurrentBranchTask c = new CurrentBranchTask();
                 tasks.add(c);
 
                 return c;
