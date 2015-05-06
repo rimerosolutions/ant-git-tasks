@@ -53,6 +53,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
         private String reflogComment;
         private String revCommitIdProperty;
         private String only;
+        private boolean brandedMessage = true;
         private Union path;
         
         @Override
@@ -69,6 +70,14 @@ public class CommitTask extends AbstractGitRepoAwareTask {
         public void setOnly(String only) {
                 this.only = only;
         }
+        
+        /**
+         * Prefix commit message with [ant-git-tasks} brand.
+         * @param brandedMessage Flag to use branded message
+         */
+        public void setBrandedMessage(boolean brandedMessage) {
+			this.brandedMessage = brandedMessage;
+		}
         
         /**
          * Configure the fileset(s) of files to add to revision control
@@ -104,7 +113,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                         CommitCommand cmd = git.commit();
 
                         if (!GitTaskUtils.isNullOrBlankString(message)) {
-                                cmd.setMessage(GitTaskUtils.BRANDING_MESSAGE + " " + message);
+                                cmd.setMessage(brandedMessage?GitTaskUtils.BRANDING_MESSAGE + " ":"" + message);
                         }
                         else {
                                 cmd.setMessage(GitTaskUtils.BRANDING_MESSAGE);
