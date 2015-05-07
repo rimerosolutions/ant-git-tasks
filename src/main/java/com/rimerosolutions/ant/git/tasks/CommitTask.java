@@ -17,6 +17,11 @@ package com.rimerosolutions.ant.git.tasks;
 
 import java.io.IOException;
 
+import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
+import com.rimerosolutions.ant.git.GitBuildException;
+import com.rimerosolutions.ant.git.GitSettings;
+import com.rimerosolutions.ant.git.GitTaskUtils;
+import com.rimerosolutions.ant.git.MissingRequiredGitSettingsException;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.resources.Union;
@@ -24,12 +29,6 @@ import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevCommit;
-
-import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
-import com.rimerosolutions.ant.git.GitBuildException;
-import com.rimerosolutions.ant.git.GitSettings;
-import com.rimerosolutions.ant.git.GitTaskUtils;
-import com.rimerosolutions.ant.git.MissingRequiredGitSettingsException;
 
 /**
  * Commits all local changes.
@@ -55,7 +54,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
         private String only;
         private boolean brandedMessage = true;
         private Union path;
-        
+
         @Override
         public String getName() {
                 return TASK_NAME;
@@ -70,7 +69,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
         public void setOnly(String only) {
                 this.only = only;
         }
-        
+
         /**
          * Prefix commit message with [ant-git-tasks} brand.
          * @param brandedMessage Flag to use branded message
@@ -78,7 +77,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
         public void setBrandedMessage(boolean brandedMessage) {
 			this.brandedMessage = brandedMessage;
 		}
-        
+
         /**
          * Configure the fileset(s) of files to add to revision control
          *
@@ -95,7 +94,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                 }
                 return path;
         }
-        
+
         /**
          * Assign the commit revision id to a property
          *
@@ -121,7 +120,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
 
                         String prefix = getDirectory().getCanonicalPath();
                         String[] allFiles = getPath().list();
-                        
+
                         if (!GitTaskUtils.isNullOrBlankString(only)) {
                                 cmd.setOnly(only);
                         }
@@ -137,12 +136,12 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                         }
 
                         GitSettings gitSettings = lookupSettings();
-                        
+
                         if (gitSettings == null) {
                                 throw new MissingRequiredGitSettingsException();
                         }
-                        
-                        cmd.setAmend(amend).setAuthor(gitSettings.getIdentity());
+
+			cmd.setAmend(amend).setAuthor(gitSettings.getIdentity()).setCommitter(gitSettings.getIdentity());
 
                         if (reflogComment != null) {
                                 cmd.setReflogComment(reflogComment);
