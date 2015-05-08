@@ -78,7 +78,7 @@ public class MergeTask extends AbstractGitRepoAwareTask {
 
 			if (!mergeResult.getMergeStatus().isSuccessful()) {
 
-				if (mergeResult.getFailingPaths().size() > 0) {
+				if (mergeResult.getFailingPaths() != null && mergeResult.getFailingPaths().size() > 0) {
 					throw new BuildException(String.format("%s - Failing paths: %s", MESSAGE_MERGE_FAILED, mergeResult.getFailingPaths()));
 				}
 
