@@ -19,12 +19,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
-
 import com.rimerosolutions.ant.git.GitTask;
 import com.rimerosolutions.ant.git.GitTaskMonitor;
 import com.rimerosolutions.ant.git.GitTaskUtils;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
 
 /**
  * Git tasks container.
@@ -49,7 +48,7 @@ public class GitTasks extends Task {
         private File directory;
         private String settingsRef;
 
-        private List<Task> tasks = new ArrayList<Task>();
+        private final List<Task> tasks = new ArrayList<Task>();
 
         /**
          * Unable/Disable Git commands verbosity
@@ -73,7 +72,7 @@ public class GitTasks extends Task {
         /**
          * Sets the Git local directory (Not required if set already at the parent task level).
          *
-         * @param dir The local directory to set. 
+         * @param dir The local directory to set.
          */
         public void setDirectory(File dir) {
                 this.directory = dir;
@@ -246,6 +245,18 @@ public class GitTasks extends Task {
 
                 return p;
         }
+
+	/**
+	 * Creates a nested <code>merge</code> task.
+	 *
+	 * @return a new task to merge changes.
+	 */
+	public MergeTask createMerge() {
+		MergeTask m = new MergeTask();
+		tasks.add(m);
+
+		return m;
+	}
 
         /**
          * Creates a nested <code>tag</code> task.
