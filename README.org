@@ -1,7 +1,8 @@
 #+TITLE: Ant tasks for Git using JGit
 
-#+ATTR_HTML: title="travis-ci status page"
+[[https://github.com/rimerosolutions/ant-git-tasks/blob/master/LICENSE][file:https://img.shields.io/hexpm/l/plug.svg]]
 [[https://travis-ci.org/rimerosolutions/ant-git-tasks/][file:https://travis-ci.org/rimerosolutions/ant-git-tasks.png]]
+[[http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22ant-git-tasks%22][file:https://img.shields.io/maven-central/v/com.rimerosolutions.ant/ant-git-tasks.svg]]
 
 * Summary
 This is a set of basic [[http://ant.apache.org/][Apache Ant]] tasks for [[http://git-scm.com/][Git]] to automate release processes, using the [[http://www.eclipse.org/jgit/][Eclipse JGit API]].
@@ -20,6 +21,8 @@ Below is one possible workflow:
 
 [[http://maven.apache.org][Apache Maven]]/[[http://ant.apache.org/ivy/][Apache Ivy]] repository hosting is provided via [[https://oss.sonatype.org/index.html][Sonatype OSS repositories]].
 
+If you'd like to contribute, please also read the [[https://github.com/rimerosolutions/ant-git-tasks/wiki/Developer-notes][Developer Notes Wiki page]].
+ 
 * Tasks description and documentation
 
 ** Apache Ant tasks documentation.
