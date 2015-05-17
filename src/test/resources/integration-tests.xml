@@ -41,6 +41,7 @@ limitations under the License.
         <property name="tree.modified.property" value="treeModified"/>
         <property name="dummy.tag.name" value="dummytag"/>
         <property name="master.branch.name" value="master"/>
+        <property name="tomerge.branch.name" value="tomerge"/>
 
         <!-- ****************************************** -->
         <!-- Test lifecycle -->
@@ -161,11 +162,11 @@ limitations under the License.
                 <initLocalRepo/>
 
                 <git:git directory="${testLocalRepo}" verbose="true">
-                        <git:checkout branchName="${dummy.checkout.branch}" createBranch="true"/>			
+                        <git:checkout branchName="${dummy.checkout.branch}" createBranch="true"/>
                         <git:currentbranch outputProperty="currentBranchName"/>
                 </git:git>
 
-		<au:assertEquals expected="${dummy.checkout.branch}" actual="${currentBranchName}"/>
+                <au:assertEquals expected="${dummy.checkout.branch}" actual="${currentBranchName}"/>
         </target>
 
 
@@ -239,6 +240,58 @@ limitations under the License.
         <!-- ****************************************** -->
         <!-- Others -->
         <!-- ****************************************** -->
+        <!-- git-merge -->
+        <target name="testMerge" description="Test git-merge">
+                <initLocalRepo/>
+
+                <!-- create a first branch with one file -->
+                <git:git directory="${testLocalRepo}" verbose="true">
+                        <git:checkout
+                            branchName="${dummy.checkout.branch}"
+                            createBranch="true"/>
+                </git:git>
+
+                <echo file="${testLocalRepo}/test.txt" message="test"/>
+                <git:git directory="${testLocalRepo}" verbose="true">
+                        <git:add>
+                                <fileset dir="${testLocalRepo}" includes="*.txt"/>
+                        </git:add>
+                        <git:commit message="${dummy.commit.message}" settingsRef="git.testing"/>
+                </git:git>
+
+                <!-- create a second branch with one file from master -->
+                <git:git directory="${testLocalRepo}" verbose="true">
+                        <git:checkout
+                            branchName="${master.branch.name}"
+                            createBranch="false"/>
+                        <git:checkout
+                            branchName="${tomerge.branch.name}"
+                            createBranch="true"/>
+                </git:git>
+
+                <echo file="${testLocalRepo}/test1.txt" message="test1"/>
+                <git:git directory="${testLocalRepo}" verbose="true">
+                        <git:add>
+                                <fileset dir="${testLocalRepo}" includes="*.txt"/>
+                        </git:add>
+                        <git:commit
+                            message="${dummy.commit.message}"
+                            settingsRef="git.testing"/>
+                </git:git>
+
+                <!-- merge from the second branch into the first branch -->
+                <git:git directory="${testLocalRepo}" verbose="true">
+                        <git:checkout
+                            branchName="${dummy.checkout.branch}"
+                            createBranch="false"/>
+                        <git:merge branchname="${tomerge.branch.name}"/>
+                </git:git>
+
+		<!-- we expect 2 text files -->
+		<au:assertFileExists file="${testLocalRepo}/test.txt"/>
+		<au:assertFileExists file="${testLocalRepo}/test1.txt"/>
+        </target>
+
         <!-- git-checkout -->
         <target name="testCheckout" description="Test git-checkout">
                 <initLocalRepo/>
