@@ -26,7 +26,7 @@ import org.eclipse.jgit.api.MergeResult;
  *
  * <pre>{@code
  * <git:git directory="${testLocalRepoClient}" verbose="true" settingsRef="git.testing">
- *  <git:merge/>
+ *  <git:merge branchname="branchToMergeFrom"/>
  * </git:git>}</pre>
  *
  * <p><a href="http://www.kernel.org/pub/software/scm/git/docs/git-merge.html">Git documentation about merge</a></p>
