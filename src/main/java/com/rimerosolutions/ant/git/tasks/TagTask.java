@@ -15,6 +15,9 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
+import com.rimerosolutions.ant.git.GitSettings;
+import com.rimerosolutions.ant.git.MissingRequiredGitSettingsException;
+
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
@@ -75,8 +78,14 @@ public class TagTask extends AbstractGitRepoAwareTask {
 
                 message = GitTaskUtils.BRANDING_MESSAGE + " " + message;
 
+                GitSettings gitSettings = lookupSettings();
+
+                if (gitSettings == null) {
+                        throw new MissingRequiredGitSettingsException();
+                }
+                
                 try {
-                        git.tag().setName(name).setMessage(message).call();
+                        git.tag().setName(name).setTagger(gitSettings.getIdentity()).setMessage(message).call();
                 } catch (GitAPIException ex) {
                         throw new GitBuildException(String.format(MESSAGE_TAG_CREATE_FAILED, name), ex);
                 }
