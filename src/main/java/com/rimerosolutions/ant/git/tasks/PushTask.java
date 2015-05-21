@@ -52,6 +52,7 @@ public class PushTask extends AbstractGitRepoAwareTask {
 
         private String pushFailedProperty;
         private boolean includeTags = true;
+        private String deleteRemoteBranch;
         private static final String TASK_NAME = "git-push";
         private static final String PUSH_FAILED_MESSAGE = "Push failed.";
         private static final String DEFAULT_REFSPEC_STRING = "+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*";
@@ -81,6 +82,15 @@ public class PushTask extends AbstractGitRepoAwareTask {
                 this.pushFailedProperty = pushFailedProperty;
         }
 
+        /**
+         * Sets a remote branch to delete.
+         * @antdoc.notrequired
+         * @param deleteRemoteBranch Locally deleted branch to delete remotely
+         */
+        public void setDeleteRemoteBranch(String deleteRemoteBranch) {
+                this.deleteRemoteBranch = deleteRemoteBranch;
+        }
+
         @Override
         protected void doExecute() {
                 try {
@@ -102,6 +112,10 @@ public class PushTask extends AbstractGitRepoAwareTask {
 
                         String currentBranch = git.getRepository().getBranch();
                         List<RefSpec> specs = Arrays.asList(new RefSpec(currentBranch + ":" + currentBranch));
+
+                        if (deleteRemoteBranch != null) {
+                                specs = Arrays.asList(new RefSpec(":" + Constants.R_HEADS + deleteRemoteBranch));
+                        }
 
                         PushCommand pushCommand = git.push().
                                         setPushAll().
