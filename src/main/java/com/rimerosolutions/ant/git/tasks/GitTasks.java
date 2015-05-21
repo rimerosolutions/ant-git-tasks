@@ -19,11 +19,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
+
 import com.rimerosolutions.ant.git.GitTask;
 import com.rimerosolutions.ant.git.GitTaskMonitor;
 import com.rimerosolutions.ant.git.GitTaskUtils;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
 
 /**
  * Git tasks container.
@@ -138,11 +139,11 @@ public class GitTasks extends Task {
                 return c;
         }
 
-    /**
-         * Creates a nested <code>branch</code> task.
-         *
-         * @return a new branch task.
-         */
+        /**
+             * Creates a nested <code>branch</code> task.
+             *
+             * @return a new branch task.
+             */
         public BranchTask createBranch() {
                 BranchTask c = new BranchTask();
                 tasks.add(c);
@@ -246,17 +247,17 @@ public class GitTasks extends Task {
                 return p;
         }
 
-	/**
-	 * Creates a nested <code>merge</code> task.
-	 *
-	 * @return a new task to merge changes.
-	 */
-	public MergeTask createMerge() {
-		MergeTask m = new MergeTask();
-		tasks.add(m);
+        /**
+         * Creates a nested <code>merge</code> task.
+         *
+         * @return a new task to merge changes.
+         */
+        public MergeTask createMerge() {
+                MergeTask m = new MergeTask();
+                tasks.add(m);
 
-		return m;
-	}
+                return m;
+        }
 
         /**
          * Creates a nested <code>tag</code> task.

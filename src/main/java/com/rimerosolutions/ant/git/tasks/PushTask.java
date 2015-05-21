@@ -18,9 +18,6 @@ package com.rimerosolutions.ant.git.tasks;
 import java.util.Arrays;
 import java.util.List;
 
-import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
-import com.rimerosolutions.ant.git.GitBuildException;
-import com.rimerosolutions.ant.git.GitTaskUtils;
 import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.StoredConfig;
@@ -28,6 +25,10 @@ import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
+
+import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
+import com.rimerosolutions.ant.git.GitBuildException;
+import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
  * Push changes to a remote repository.
@@ -51,8 +52,8 @@ public class PushTask extends AbstractGitRepoAwareTask {
 
         private String pushFailedProperty;
         private boolean includeTags = true;
+        private String deleteRemoteBranch;
         private static final String TASK_NAME = "git-push";
-	private static final String PUSH_REJECTED_MESSAGE = "Push rejected.";
         private static final String PUSH_FAILED_MESSAGE = "Push failed.";
         private static final String DEFAULT_REFSPEC_STRING = "+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*";
 
@@ -81,6 +82,15 @@ public class PushTask extends AbstractGitRepoAwareTask {
                 this.pushFailedProperty = pushFailedProperty;
         }
 
+        /**
+         * Sets a remote branch to delete.
+         * @antdoc.notrequired
+         * @param deleteRemoteBranch Locally deleted branch to delete remotely
+         */
+        public void setDeleteRemoteBranch(String deleteRemoteBranch) {
+                this.deleteRemoteBranch = deleteRemoteBranch;
+        }
+
         @Override
         protected void doExecute() {
                 try {
@@ -103,10 +113,14 @@ public class PushTask extends AbstractGitRepoAwareTask {
                         String currentBranch = git.getRepository().getBranch();
                         List<RefSpec> specs = Arrays.asList(new RefSpec(currentBranch + ":" + currentBranch));
 
+                        if (deleteRemoteBranch != null) {
+                                specs = Arrays.asList(new RefSpec(":" + Constants.R_HEADS + deleteRemoteBranch));
+                        }
+
                         PushCommand pushCommand = git.push().
-                                setPushAll().
-                                setRefSpecs(specs).
-                                setDryRun(false);
+                                        setPushAll().
+                                        setRefSpecs(specs).
+                                        setDryRun(false);
 
                         if (getUri() != null) {
                                 pushCommand.setRemote(getUri());
@@ -124,17 +138,10 @@ public class PushTask extends AbstractGitRepoAwareTask {
 
                         Iterable<PushResult> pushResults = pushCommand.setForce(true).call();
 
-			boolean rejected = false;
                         for (PushResult pushResult : pushResults) {
+                                log(pushResult.getMessages());
+                                GitTaskUtils.validateRemoteRefUpdates(PUSH_FAILED_MESSAGE, pushResult.getRemoteUpdates());
                                 GitTaskUtils.validateTrackingRefUpdates(PUSH_FAILED_MESSAGE, pushResult.getTrackingRefUpdates());
-				String messages = pushResult.getMessages();
-				log(messages);
-				if (messages.contains(PUSH_REJECTED_MESSAGE)) {
-					rejected = true;
-				}
-			}
-			if (rejected) {
-				throw new Exception(PUSH_REJECTED_MESSAGE);
                         }
                 } catch (Exception e) {
                         if (pushFailedProperty != null) {

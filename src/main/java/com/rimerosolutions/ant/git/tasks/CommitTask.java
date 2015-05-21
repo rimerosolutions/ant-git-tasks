@@ -17,11 +17,6 @@ package com.rimerosolutions.ant.git.tasks;
 
 import java.io.IOException;
 
-import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
-import com.rimerosolutions.ant.git.GitBuildException;
-import com.rimerosolutions.ant.git.GitSettings;
-import com.rimerosolutions.ant.git.GitTaskUtils;
-import com.rimerosolutions.ant.git.MissingRequiredGitSettingsException;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.resources.Union;
@@ -29,6 +24,12 @@ import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevCommit;
+
+import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
+import com.rimerosolutions.ant.git.GitBuildException;
+import com.rimerosolutions.ant.git.GitSettings;
+import com.rimerosolutions.ant.git.GitTaskUtils;
+import com.rimerosolutions.ant.git.MissingRequiredGitSettingsException;
 
 /**
  * Commits all local changes.
@@ -75,8 +76,8 @@ public class CommitTask extends AbstractGitRepoAwareTask {
          * @param brandedMessage Flag to use branded message
          */
         public void setBrandedMessage(boolean brandedMessage) {
-			this.brandedMessage = brandedMessage;
-		}
+                this.brandedMessage = brandedMessage;
+        }
 
         /**
          * Configure the fileset(s) of files to add to revision control
@@ -112,7 +113,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                         CommitCommand cmd = git.commit();
 
                         if (!GitTaskUtils.isNullOrBlankString(message)) {
-                                cmd.setMessage(brandedMessage?GitTaskUtils.BRANDING_MESSAGE + " ":"" + message);
+                                cmd.setMessage(brandedMessage ? GitTaskUtils.BRANDING_MESSAGE + " " : "" + message);
                         }
                         else {
                                 cmd.setMessage(GitTaskUtils.BRANDING_MESSAGE);
@@ -141,7 +142,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                                 throw new MissingRequiredGitSettingsException();
                         }
 
-			cmd.setAmend(amend).setAuthor(gitSettings.getIdentity()).setCommitter(gitSettings.getIdentity());
+                        cmd.setAmend(amend).setAuthor(gitSettings.getIdentity()).setCommitter(gitSettings.getIdentity());
 
                         if (reflogComment != null) {
                                 cmd.setReflogComment(reflogComment);
@@ -157,8 +158,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                         log(revCommit.getFullMessage());
                 } catch (IOException ioe) {
                         throw new GitBuildException(MESSAGE_COMMIT_FAILED, ioe);
-                }
-                catch (GitAPIException ex) {
+                } catch (GitAPIException ex) {
                         throw new GitBuildException(MESSAGE_COMMIT_FAILED, ex);
                 }
         }
