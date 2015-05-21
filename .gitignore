@@ -1,11 +1,34 @@
-target
-bin
-.eclipse
-.classpath
+### OSX ###
+.DS_Store
+.AppleDouble
+.LSOverride
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+
+### Eclipse ###
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
 .project
+.externalToolBuilders/
+*.launch
+.classpath
 lib
 dist
+target/
+
+### Emacs ###
+.projectile
 TAGS
-.settings
-.idea
 
