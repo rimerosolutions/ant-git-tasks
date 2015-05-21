@@ -17,11 +17,6 @@ package com.rimerosolutions.ant.git.tasks;
 
 import java.io.IOException;
 
-import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
-import com.rimerosolutions.ant.git.GitBuildException;
-import com.rimerosolutions.ant.git.GitSettings;
-import com.rimerosolutions.ant.git.GitTaskUtils;
-import com.rimerosolutions.ant.git.MissingRequiredGitSettingsException;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.resources.Union;
@@ -29,6 +24,12 @@ import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevCommit;
+
+import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
+import com.rimerosolutions.ant.git.GitBuildException;
+import com.rimerosolutions.ant.git.GitSettings;
+import com.rimerosolutions.ant.git.GitTaskUtils;
+import com.rimerosolutions.ant.git.MissingRequiredGitSettingsException;
 
 /**
  * Commits all local changes.

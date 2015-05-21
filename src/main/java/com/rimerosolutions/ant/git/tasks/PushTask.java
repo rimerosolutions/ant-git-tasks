@@ -18,9 +18,6 @@ package com.rimerosolutions.ant.git.tasks;
 import java.util.Arrays;
 import java.util.List;
 
-import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
-import com.rimerosolutions.ant.git.GitBuildException;
-import com.rimerosolutions.ant.git.GitTaskUtils;
 import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.StoredConfig;
@@ -28,6 +25,10 @@ import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
+
+import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
+import com.rimerosolutions.ant.git.GitBuildException;
+import com.rimerosolutions.ant.git.GitTaskUtils;
 
 /**
  * Push changes to a remote repository.

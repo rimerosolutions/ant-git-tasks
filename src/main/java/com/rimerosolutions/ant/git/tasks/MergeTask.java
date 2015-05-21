@@ -15,11 +15,12 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
-import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
-import com.rimerosolutions.ant.git.GitBuildException;
 import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.MergeResult;
+
+import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
+import com.rimerosolutions.ant.git.GitBuildException;
 
 /**
  * Merge changes from a repository.

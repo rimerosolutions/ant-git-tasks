@@ -15,12 +15,13 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
+import org.eclipse.jgit.api.errors.GitAPIException;
+
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
 import com.rimerosolutions.ant.git.GitSettings;
 import com.rimerosolutions.ant.git.GitTaskUtils;
 import com.rimerosolutions.ant.git.MissingRequiredGitSettingsException;
-import org.eclipse.jgit.api.errors.GitAPIException;
 
 /**
  * Create a git tag.

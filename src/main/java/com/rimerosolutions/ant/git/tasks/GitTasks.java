@@ -19,11 +19,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
+
 import com.rimerosolutions.ant.git.GitTask;
 import com.rimerosolutions.ant.git.GitTaskMonitor;
 import com.rimerosolutions.ant.git.GitTaskUtils;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
 
 /**
  * Git tasks container.
