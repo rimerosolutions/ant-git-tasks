@@ -19,6 +19,7 @@ import java.util.Collection;
 
 import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.lib.RefUpdate;
+import org.eclipse.jgit.transport.RemoteRefUpdate;
 import org.eclipse.jgit.transport.TrackingRefUpdate;
 
 /**
@@ -97,6 +98,27 @@ public final class GitTaskUtils {
                             result == RefUpdate.Result.REJECTED ||
                             result == RefUpdate.Result.REJECTED_CURRENT_BRANCH ) {
                                 throw new BuildException(String.format("%s - Status '%s'", errorPrefix, result.name()));
+                        }
+                }
+        }
+
+        /**
+         * Check references updates for any errors
+         *
+         * @param errorPrefix The error prefix for any error message
+         * @param refUpdates A collection of remote references updates
+         */
+        public static void validateRemoteRefUpdates(String errorPrefix, Collection<RemoteRefUpdate> refUpdates) {
+                for (RemoteRefUpdate refUpdate : refUpdates) {
+                        RemoteRefUpdate.Status status = refUpdate.getStatus();
+
+                        if (status == RemoteRefUpdate.Status.REJECTED_NODELETE ||
+                            status == RemoteRefUpdate.Status.NON_EXISTING ||
+                            status == RemoteRefUpdate.Status.NOT_ATTEMPTED ||
+                            status == RemoteRefUpdate.Status.REJECTED_NONFASTFORWARD ||
+                            status == RemoteRefUpdate.Status.REJECTED_OTHER_REASON ||
+                            status == RemoteRefUpdate.Status.REJECTED_REMOTE_CHANGED) {
+                                throw new BuildException(String.format("%s - Status '%s'", errorPrefix, status.name()));
                         }
                 }
         }
