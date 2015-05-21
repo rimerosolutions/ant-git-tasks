@@ -52,7 +52,7 @@ public class PushTask extends AbstractGitRepoAwareTask {
         private String pushFailedProperty;
         private boolean includeTags = true;
         private static final String TASK_NAME = "git-push";
-	private static final String PUSH_REJECTED_MESSAGE = "Push rejected.";
+        private static final String PUSH_REJECTED_MESSAGE = "Push rejected.";
         private static final String PUSH_FAILED_MESSAGE = "Push failed.";
         private static final String DEFAULT_REFSPEC_STRING = "+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*";
 
@@ -104,9 +104,9 @@ public class PushTask extends AbstractGitRepoAwareTask {
                         List<RefSpec> specs = Arrays.asList(new RefSpec(currentBranch + ":" + currentBranch));
 
                         PushCommand pushCommand = git.push().
-                                setPushAll().
-                                setRefSpecs(specs).
-                                setDryRun(false);
+                                        setPushAll().
+                                        setRefSpecs(specs).
+                                        setDryRun(false);
 
                         if (getUri() != null) {
                                 pushCommand.setRemote(getUri());
@@ -124,17 +124,17 @@ public class PushTask extends AbstractGitRepoAwareTask {
 
                         Iterable<PushResult> pushResults = pushCommand.setForce(true).call();
 
-			boolean rejected = false;
+                        boolean rejected = false;
                         for (PushResult pushResult : pushResults) {
                                 GitTaskUtils.validateTrackingRefUpdates(PUSH_FAILED_MESSAGE, pushResult.getTrackingRefUpdates());
-				String messages = pushResult.getMessages();
-				log(messages);
-				if (messages.contains(PUSH_REJECTED_MESSAGE)) {
-					rejected = true;
-				}
-			}
-			if (rejected) {
-				throw new Exception(PUSH_REJECTED_MESSAGE);
+                                String messages = pushResult.getMessages();
+                                log(messages);
+                                if (messages.contains(PUSH_REJECTED_MESSAGE)) {
+                                        rejected = true;
+                                }
+                        }
+                        if (rejected) {
+                                throw new Exception(PUSH_REJECTED_MESSAGE);
                         }
                 } catch (Exception e) {
                         if (pushFailedProperty != null) {

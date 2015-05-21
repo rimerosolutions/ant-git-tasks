@@ -75,8 +75,8 @@ public class CommitTask extends AbstractGitRepoAwareTask {
          * @param brandedMessage Flag to use branded message
          */
         public void setBrandedMessage(boolean brandedMessage) {
-			this.brandedMessage = brandedMessage;
-		}
+                this.brandedMessage = brandedMessage;
+        }
 
         /**
          * Configure the fileset(s) of files to add to revision control
@@ -112,7 +112,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                         CommitCommand cmd = git.commit();
 
                         if (!GitTaskUtils.isNullOrBlankString(message)) {
-                                cmd.setMessage(brandedMessage?GitTaskUtils.BRANDING_MESSAGE + " ":"" + message);
+                                cmd.setMessage(brandedMessage ? GitTaskUtils.BRANDING_MESSAGE + " " : "" + message);
                         }
                         else {
                                 cmd.setMessage(GitTaskUtils.BRANDING_MESSAGE);
@@ -141,7 +141,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                                 throw new MissingRequiredGitSettingsException();
                         }
 
-			cmd.setAmend(amend).setAuthor(gitSettings.getIdentity()).setCommitter(gitSettings.getIdentity());
+                        cmd.setAmend(amend).setAuthor(gitSettings.getIdentity()).setCommitter(gitSettings.getIdentity());
 
                         if (reflogComment != null) {
                                 cmd.setReflogComment(reflogComment);
@@ -157,8 +157,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                         log(revCommit.getFullMessage());
                 } catch (IOException ioe) {
                         throw new GitBuildException(MESSAGE_COMMIT_FAILED, ioe);
-                }
-                catch (GitAPIException ex) {
+                } catch (GitAPIException ex) {
                         throw new GitBuildException(MESSAGE_COMMIT_FAILED, ex);
                 }
         }

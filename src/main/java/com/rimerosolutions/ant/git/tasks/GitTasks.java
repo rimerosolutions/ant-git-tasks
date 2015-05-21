@@ -138,11 +138,11 @@ public class GitTasks extends Task {
                 return c;
         }
 
-    /**
-         * Creates a nested <code>branch</code> task.
-         *
-         * @return a new branch task.
-         */
+        /**
+             * Creates a nested <code>branch</code> task.
+             *
+             * @return a new branch task.
+             */
         public BranchTask createBranch() {
                 BranchTask c = new BranchTask();
                 tasks.add(c);
@@ -246,17 +246,17 @@ public class GitTasks extends Task {
                 return p;
         }
 
-	/**
-	 * Creates a nested <code>merge</code> task.
-	 *
-	 * @return a new task to merge changes.
-	 */
-	public MergeTask createMerge() {
-		MergeTask m = new MergeTask();
-		tasks.add(m);
+        /**
+         * Creates a nested <code>merge</code> task.
+         *
+         * @return a new task to merge changes.
+         */
+        public MergeTask createMerge() {
+                MergeTask m = new MergeTask();
+                tasks.add(m);
 
-		return m;
-	}
+                return m;
+        }
 
         /**
          * Creates a nested <code>tag</code> task.
