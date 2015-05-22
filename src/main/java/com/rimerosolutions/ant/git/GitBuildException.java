@@ -27,11 +27,11 @@ public class GitBuildException extends BuildException {
         private static final long serialVersionUID = 7520461437069898546L;
 
         public GitBuildException(String msg, Exception e) {
-                super(msg, e);
+                super(msg + " (" + e.getMessage() + ")", e);
         }
 
         public GitBuildException(Exception e) {
-                super(e);
+                super(e.getMessage(), e);
         }
 
         public GitBuildException(String msg) {
