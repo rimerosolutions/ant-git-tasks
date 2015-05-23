@@ -18,6 +18,7 @@ package com.rimerosolutions.ant.git.tasks;
 import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.MergeResult;
+import org.eclipse.jgit.api.errors.CheckoutConflictException;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
@@ -75,9 +76,19 @@ public class MergeTask extends AbstractGitRepoAwareTask {
                         mergeCommand.include(mergeCommand.getRepository().getRef(branchname));
 
                         setupCredentials(mergeCommand);
-                        MergeResult mergeResult = mergeCommand.call();
+
+                        MergeResult mergeResult = null;
+                        try {
+                                mergeResult = mergeCommand.call();
+                        } catch (CheckoutConflictException conflicts) {
+                                throw new BuildException(String.format("%s - Checkout conflicts: %s", MESSAGE_MERGE_FAILED, conflicts.getConflictingPaths()));
+                        }
 
                         if (!mergeResult.getMergeStatus().isSuccessful()) {
+
+                                if (mergeResult.getCheckoutConflicts() != null && mergeResult.getCheckoutConflicts().size() > 0) {
+                                        throw new BuildException(String.format("%s - Checkout conflicts: %s", MESSAGE_MERGE_FAILED, mergeResult.getCheckoutConflicts()));
+                                }
 
                                 if (mergeResult.getFailingPaths() != null && mergeResult.getFailingPaths().size() > 0) {
                                         throw new BuildException(String.format("%s - Failing paths: %s", MESSAGE_MERGE_FAILED, mergeResult.getFailingPaths()));
