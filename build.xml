@@ -220,7 +220,8 @@ limitations under the License.
         <target name="-commit-release" depends="-check-release" if="tree.modified.but.not.snapshot">
                 <echo>Committing before release SCM tagging.</echo>
                 <git:git directory="${basedir}" verbose="true" settingsRef="github.settings">
-                        <git:commit message="[${ant.project.name}] Preparing release ${project.version}"/>
+                        <git:commit message="[${ant.project.name}] Preparing release ${project.version}"
+				    brandedMessage="false"/>
                         <git:uptodate failOnError="true"/>
                         <git:push />
                 </git:git>
@@ -229,7 +230,7 @@ limitations under the License.
         <target name="-tag-release" depends="-commit-release" unless="snapshot-build">
                 <echo>Tagging release ${build.number}.</echo>
                 <git:git directory="${basedir}" verbose="true" settingsRef="github.settings">
-                        <git:tag name="${build.number}"/>
+                        <git:tag name="${build.number}" message="Tagging ${build.number}"/>
                         <git:push />
                 </git:git>
         </target>
