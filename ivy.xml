@@ -30,7 +30,7 @@ limitations under the License.
                 <conf name="compile"   description="Compile dependencies"/>
                 <conf name="test"      description="Tests dependencies"/>
                 <conf name="findbugs"  visibility="private" description="Findbugs dependencies"/>
-                <conf name="cobertura" visibility="private" description="Cobertura dependencies"/>
+		<conf name="jacoco"    visibility="private" description="Jacoco dependencies"/>
                 <conf name="wrapper"   visibility="private" description="Ant wrapper dependencies"/>
         </configurations>
 
@@ -52,8 +52,8 @@ limitations under the License.
                 <dependency org="org.apache.ant" name="ant-junit" rev="1.7.1" conf="test"/>
                 <dependency org="org.apache.ant" name="ant-antunit" rev="1.2" conf="test"/>
 
-                <!-- cobertura -->
-                <dependency org="net.sourceforge.cobertura" name="cobertura" rev="1.9.4.1" conf="cobertura" />
+		<!-- Jacoco -->
+		<dependency org="org.jacoco" name="org.jacoco.ant" rev="0.7.2.201409121644" conf="jacoco" />		
 
                 <!-- findbugs -->
                 <dependency org="com.google.code.findbugs" name="findbugs-ant" rev="2.0.1" conf="findbugs"/>
