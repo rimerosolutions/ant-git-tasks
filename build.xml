@@ -19,7 +19,7 @@ limitations under the License.
          xmlns:wrapper="antlib:com.rimerosolutions.ant.wrapper.tasks"
          xmlns:au="antlib:org.apache.ant.antunit"
          xmlns:findbugs="antlib:edu.umd.cs.findbugs"
-         xmlns:cobertura="antlib:net.sourceforge.cobertura.ant"
+         xmlns:jacoco="antlib:org.jacoco.ant"
          name="ant-git-tasks"
          default="jar">
 
@@ -52,8 +52,8 @@ limitations under the License.
         <property name="antdocs.dir" value="${docs.dir}/antdocs"/>
 	
         <property name="coverage.additional.jvmargs" value="-XX:-UseSplitVerifier"/>
-	<property name="cobertura.data.filename" value="cobertura.ser"/>
-        <property name="cobertura.data.file" value="${test.data.dir}/${cobertura.data.filename}"/>
+	<property name="jacoco.data.filename" value="jacoco.exec"/>
+        <property name="jacoco.data.file" value="${test.data.dir}/${jacoco.data.filename}"/>
         <property name="javadoc.overview.html" value="${resources.dir}/com/rimerosolutions/ant/git/overview.html"/>
         <property name="antdoc.overview.html" value="${resources.dir}/com/rimerosolutions/ant/git/antdoc.overview.html"/>
         <property name="company.name" value="Rimero Solutions Inc."/>
@@ -66,7 +66,7 @@ limitations under the License.
         <property name="reports.junit.xml.dir" value="${reports.junit.dir}/xml"/>
         <property name="reports.junit.html.dir" value="${reports.junit.dir}/html"/>
         <property name="reports.findbugs.dir" value="${reports.dir}/findbugs"/>
-        <property name="reports.cobertura.dir" value="${reports.dir}/cobertura"/>
+        <property name="reports.jacoco.dir" value="${reports.dir}/jacoco"/>
 
         <!-- classes -->
         <property name="classes.dir" value="${target.dir}/classes"/>
@@ -281,7 +281,7 @@ limitations under the License.
                 <ivy:cachepath pathid="compile.classpath" conf="compile"/>
                 <ivy:cachepath pathid="test.classpath" conf="test"/>
                 <ivy:cachepath pathid="findbugs.classpath" conf="findbugs"/>
-                <ivy:cachepath pathid="cobertura.classpath" conf="cobertura"/>
+                <ivy:cachepath pathid="jacoco.classpath" conf="jacoco"/>
                 <ivy:cachepath pathid="wrapper.classpath" conf="wrapper"/>
         </target>
 
@@ -306,7 +306,7 @@ limitations under the License.
                 <mkdir dir="${reports.junit.xml.dir}"/>
                 <mkdir dir="${reports.junit.html.dir}"/>
                 <mkdir dir="${reports.findbugs.dir}"/>
-                <mkdir dir="${reports.cobertura.dir}"/>
+                <mkdir dir="${reports.jacoco.dir}"/>
                 <mkdir dir="${dist.dir}"/>
         </target>
 
@@ -365,61 +365,41 @@ limitations under the License.
                 </javac>
         </target>
 
-        <target name="-instrument-tests" depends="compile-tests">
-                <delete file="${cobertura.data.file}" failonerror="false"/>
-
-                <taskdef name="junit"
-                         classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
-                         classpathref="test.classpath"/>
-
-                <taskdef uri="antlib:net.sourceforge.cobertura.ant"
-                         classpathref="cobertura.classpath"
-                         resource="net/sourceforge/cobertura/ant/antlib.xml"/>
-
-                <cobertura:instrument todir="${instrumentation.dir}" datafile="${cobertura.data.file}">
-                        <includeClasses regex=".*" />
-                        <excludeClasses regex=".*\.Test.*"/>
-                        <instrumentationClasspath>
-                                <path refid="test.classpath" />
-                                <pathelement location="${test.classes.dir}" />
-                        </instrumentationClasspath>
-                </cobertura:instrument>
-        </target>
-
-        <target name="-junit-tests" depends="-instrument-tests" >
+        <target name="-junit-tests" depends="compile-tests" >
                 <echo>Running junit tests.</echo>
+
+		<taskdef uri="antlib:org.jacoco.ant"
+			 resource="org/jacoco/ant/antlib.xml"
+			 classpathref="jacoco.classpath"/>
+		
                 <taskdef name="junit"
                          classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
                          classpathref="test.classpath"/>
+		<jacoco:coverage output="file" destfile="${jacoco.data.file}">
+			<junit fork="true"
+			       dir="${basedir}"
+			       printsummary="yes"
+			       showoutput="true"
+			       haltonfailure="false"
+			       errorproperty="junit.failed"
+			       includeantruntime="false">
+				<classpath location="${classes.dir}"/>
+				<classpath refid="test.classpath"/>
+				<classpath refid="compile.classpath"/>
+				<classpath refid="jacoco.classpath"/>
 
-                <junit fork="true"
-                       dir="${basedir}"
-                       printsummary="yes"
-                       showoutput="true"
-                       haltonfailure="false"
-                       errorproperty="junit.failed"
-                       includeantruntime="false">
-		       <jvmarg value="-XX:-UseSplitVerifier"/>
-                        <sysproperty key="net.sourceforge.cobertura.datafile"
-                                     file="${cobertura.data.file}" />
+				<formatter type="xml"/>
 
-                        <classpath location="${classes.dir}"/>
-                        <classpath location="${instrumentation.dir}"/>
-                        <classpath refid="test.classpath"/>
-                        <classpath refid="compile.classpath"/>
-                        <classpath refid="cobertura.classpath"/>
-
-                        <formatter type="xml"/>
-
-                        <batchtest todir="${reports.junit.xml.dir}">
-                                <fileset dir="${test.src.dir}">
-                                        <include name="**/*Test*.java"/>
-                                </fileset>
-                        </batchtest>
-                </junit>
+				<batchtest todir="${reports.junit.xml.dir}">
+					<fileset dir="${test.src.dir}">
+						<include name="**/*Test*.java"/>
+					</fileset>
+				</batchtest>
+			</junit>
+		</jacoco:coverage>
         </target>
 
-        <target name="-antunit-tests" depends="-instrument-tests">
+        <target name="-antunit-tests" depends="-junit-tests">
                 <echo>Running antunit tests.</echo>
 
                 <taskdef uri="antlib:org.apache.ant.antunit"
@@ -498,17 +478,30 @@ limitations under the License.
                 </junitreport>
         </target>
 
-        <target name="report-cobertura" depends="test" description="Generate Cobertura report">
-                <echo>Generating Cobertura report.</echo>
-                <cobertura:report format="html"
-                                  destdir="${reports.cobertura.dir}"
-                                  srcdir="${src.dir}"
-                                  datafile="${cobertura.data.file}">		
-		</cobertura:report>		
+        <target name="report-jacoco" depends="test" description="Generate Jacoco report">
+                <echo>Generating Jacoco report.</echo>
+		<jacoco:report>
+			<executiondata>
+				<file file="${jacoco.data.file}"/>
+			</executiondata>
+			<structure name="${ant.project.name}">
+				<classfiles>
+					<fileset dir="${classes.dir}">
+						<include name="**/*.class"/>
+					</fileset>
+				</classfiles>
+				<sourcefiles>
+					<fileset dir="${src.dir}">
+						<include name="**/*.java"/>
+					</fileset>
+				</sourcefiles>
+			</structure>
+			<html destdir="${reports.jacoco.dir}"/>
+		</jacoco:report>
         </target>
 
-        <target name="reports" depends="report-findbugs,report-junit,report-cobertura"
-                description="Generate reports(JUnit, FindBugs, Cobertura)">
+        <target name="reports" depends="report-findbugs,report-junit,report-jacoco"
+                description="Generate reports(JUnit, FindBugs, Jacoco)">
                 <fail unless="test.passed">Some tests failed, please take a look at the reports.</fail>
         </target>
 
