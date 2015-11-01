@@ -386,7 +386,6 @@ limitations under the License.
 				<classpath location="${classes.dir}"/>
 				<classpath refid="test.classpath"/>
 				<classpath refid="compile.classpath"/>
-				<classpath refid="jacoco.classpath"/>
 
 				<formatter type="xml"/>
 

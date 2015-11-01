@@ -53,7 +53,7 @@ limitations under the License.
                 <dependency org="org.apache.ant" name="ant-antunit" rev="1.2" conf="test"/>
 
                 <!-- Jacoco -->
-		<dependency org="org.jacoco" name="org.jacoco.ant" rev="0.7.2.201409121644" conf="jacoco" />
+		<dependency org="org.jacoco" name="org.jacoco.ant" rev="0.6.3.201306030806" conf="jacoco" />
 
                 <!-- findbugs -->
                 <dependency org="com.google.code.findbugs" name="findbugs-ant" rev="2.0.1" conf="findbugs"/>
