@@ -113,7 +113,7 @@ public class CommitTask extends AbstractGitRepoAwareTask {
                         CommitCommand cmd = git.commit();
 
                         if (!GitTaskUtils.isNullOrBlankString(message)) {
-                                cmd.setMessage(brandedMessage ? GitTaskUtils.BRANDING_MESSAGE + " " : "" + message);
+                                cmd.setMessage(brandedMessage ? GitTaskUtils.BRANDING_MESSAGE + " " + message : message);
                         }
                         else {
                                 cmd.setMessage(GitTaskUtils.BRANDING_MESSAGE);
