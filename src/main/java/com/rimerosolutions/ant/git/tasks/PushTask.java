@@ -52,6 +52,7 @@ public class PushTask extends AbstractGitRepoAwareTask {
 
         private String pushFailedProperty;
         private boolean includeTags = true;
+        private boolean forcePush = false;
         private String deleteRemoteBranch;
         private static final String TASK_NAME = "git-push";
         private static final String PUSH_FAILED_MESSAGE = "Push failed.";
@@ -71,6 +72,14 @@ public class PushTask extends AbstractGitRepoAwareTask {
         public void setIncludeTags(boolean includeTags) {
                 this.includeTags = includeTags;
         }
+
+        /**
+         * Whether or not to force push
+         *
+         * @antdoc.notrequired
+         * @param forcePush Default is false
+         */
+        public void setForcePush(boolean forcePush) { this.forcePush = forcePush; }
 
         /**
          * Sets a boolean property if the git push fails
@@ -120,7 +129,8 @@ public class PushTask extends AbstractGitRepoAwareTask {
                         PushCommand pushCommand = git.push().
                                         setPushAll().
                                         setRefSpecs(specs).
-                                        setDryRun(false);
+                                        setDryRun(false).
+                                        setForce(forcePush);
 
                         if (getUri() != null) {
                                 pushCommand.setRemote(getUri());
@@ -136,7 +146,7 @@ public class PushTask extends AbstractGitRepoAwareTask {
                                 pushCommand.setProgressMonitor(getProgressMonitor());
                         }
 
-                        Iterable<PushResult> pushResults = pushCommand.setForce(true).call();
+                        Iterable<PushResult> pushResults = pushCommand.call();
 
                         for (PushResult pushResult : pushResults) {
                                 log(pushResult.getMessages());
