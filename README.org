@@ -148,7 +148,7 @@ In your =build.xml=, initialize the task definition and its classpath.
 :   <pathelement location="path/to/org.eclipse.jgit.ant-3.0.0.201306101825-r.jar"/>
 :   <pathelement location="path/to/org.eclipse.jgit-3.0.0.201306101825-r.jar"/>
 :   <pathelement location="path/to/jsch-0.1.50.jar"/>
-:   <pathelement location="path/to/ant-git-tasks-0.0.1-SNAPSHOT.jar"/>
+:   <pathelement location="path/to/ant-git-tasks-0.0.1.jar"/>
 :  </classpath>
 : </taskdef>
 
