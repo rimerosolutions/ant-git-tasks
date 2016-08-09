@@ -47,6 +47,7 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
 public class FetchTask extends AbstractGitRepoAwareTask {
 
         private boolean dryRun = false;
+        private String remoteRefSpec = "+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*";
         private boolean removeDeletedRefs = true;
         private boolean thinPack = true;
         private static final String TASK_NAME = "git-fetch";
@@ -65,6 +66,16 @@ public class FetchTask extends AbstractGitRepoAwareTask {
          */
         public void setThinPack(boolean thinPack) {
                 this.thinPack = thinPack;
+        }
+        
+        /**
+         * Sets the remote refSpec preference for fetch operation.
+         *
+         * @antdoc.notrequired
+         * @param remoteRefSpec (Default value is '+/refs/heads/*:refs/remote/origin/*' )
+         */
+        public void setRemoteRefSpec(String remoteRefSpec) {
+                this.remoteRefSpec = remoteRefSpec;
         }
 
         /**
@@ -109,7 +120,7 @@ public class FetchTask extends AbstractGitRepoAwareTask {
 
                         List<RefSpec> specs = new ArrayList<RefSpec>(3);
 
-                        specs.add(new RefSpec("+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*"));
+                        specs.add(new RefSpec(remoteRefSpec));
                         specs.add(new RefSpec("+" + Constants.R_NOTES + "*:" + Constants.R_NOTES + "*"));
                         specs.add(new RefSpec("+" + Constants.R_TAGS + "*:" + Constants.R_TAGS + "*"));
 
