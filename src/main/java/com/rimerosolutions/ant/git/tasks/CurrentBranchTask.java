@@ -17,6 +17,10 @@ package com.rimerosolutions.ant.git.tasks;
 
 import java.io.IOException;
 
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Repository;
+
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
 
@@ -58,7 +62,15 @@ public class CurrentBranchTask extends AbstractGitRepoAwareTask {
         @Override
         protected void doExecute() {
                 try {
-                        getProject().setProperty(outputProperty, git.getRepository().getBranch());
+                        Repository repository = git.getRepository();
+                        ObjectId objectId = repository.getRef(Constants.HEAD).getObjectId();
+                        String branch = repository.getBranch();
+                        // Backward compatibility
+						getProject().setProperty(outputProperty, branch);
+						// Extended (nested) properties
+						getProject().setProperty(outputProperty + ".name", branch);
+						getProject().setProperty(outputProperty + ".id", objectId.name());
+                        getProject().setProperty(outputProperty + ".shortId", objectId.abbreviate(8).name());
                 } catch (IOException e) {
                         throw new GitBuildException("Could not query the current branch.", e);
                 }
