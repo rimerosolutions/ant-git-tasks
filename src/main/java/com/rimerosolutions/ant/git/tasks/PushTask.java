@@ -15,6 +15,7 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -54,6 +55,7 @@ public class PushTask extends AbstractGitRepoAwareTask {
         private boolean includeTags = true;
         private boolean forcePush = false;
         private String deleteRemoteBranch;
+        private String remoteRefSpec;
         private static final String TASK_NAME = "git-push";
         private static final String PUSH_FAILED_MESSAGE = "Push failed.";
         private static final String DEFAULT_REFSPEC_STRING = "+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*";
@@ -100,6 +102,18 @@ public class PushTask extends AbstractGitRepoAwareTask {
                 this.deleteRemoteBranch = deleteRemoteBranch;
         }
 
+        /**
+         * Sets the remote refSpec preference for push operation.
+         *
+         * @antdoc.notrequired
+         * @param remoteRefSpec (Default value is '+/refs/heads/*:refs/remote/origin/*' )
+         *
+         * One is able to provide an null or empty string to not set any refSpec.
+         */
+        public void setRemoteRefSpec(String remoteRefSpec) {
+                this.remoteRefSpec  = remoteRefSpec;
+        }
+
         @Override
         protected void doExecute() {
                 try {
@@ -119,8 +133,10 @@ public class PushTask extends AbstractGitRepoAwareTask {
                                 config.save();
                         }
 
-                        String currentBranch = git.getRepository().getBranch();
-                        List<RefSpec> specs = Arrays.asList(new RefSpec(currentBranch + ":" + currentBranch));
+                        List<RefSpec> specs = new ArrayList<RefSpec>();
+                        if (null != remoteRefSpec && remoteRefSpec != "") {
+                            specs.add(new RefSpec(remoteRefSpec));
+                        }
 
                         if (deleteRemoteBranch != null) {
                                 specs = Arrays.asList(new RefSpec(":" + Constants.R_HEADS + deleteRemoteBranch));
