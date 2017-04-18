@@ -272,6 +272,18 @@ public class GitTasks extends Task {
         }
 
         /**
+         * Creates a nested <code>tag</code> task.
+         *
+         * @return a new task to create tags.
+         */
+        public ResetTask createReset() {
+                ResetTask c = new ResetTask();
+                tasks.add(c);
+
+                return c;
+        }
+
+        /**
          * Creates a nested <code>tag</code> task
          *
          * @return a new task to create tags

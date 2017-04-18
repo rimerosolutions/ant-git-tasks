@@ -515,4 +515,24 @@ limitations under the License.
                 <au:assertFileExists file="${testLocalRepo}/.git/index"/>
         </target>
 
+        <!-- git-reset -->
+        <target name="testReset" description="Test git-reset">
+                <initLocalRepo/>
+                <echo file="${testLocalRepo}/test.txt" message="test"/>
+                <git:git directory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+                        <git:add>
+                                <fileset dir="${testLocalRepo}" includes="*.txt"/>
+                        </git:add>
+                        <git:commit message="${dummy.commit.message}" revCommitIdProperty="testAdd.revcommit"/>
+                        <git:uptodate failOnError="true"/>
+                </git:git>
+
+                <delete file="${testLocalRepo}/test.txt"/>
+                <git:git directory="${testLocalRepo}" verbose="true" settingsRef="git.testing">
+                        <git:reset mode="hard"/>
+                        <git:uptodate failOnError="true"/>
+                </git:git>
+                <au:assertFileExists file="${testLocalRepo}/test.txt"/>
+        </target>
+
 </project>
