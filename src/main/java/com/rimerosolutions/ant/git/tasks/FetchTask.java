@@ -15,22 +15,22 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.net.URISyntaxException;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jgit.api.FetchCommand;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.api.errors.TransportException;
+import org.eclipse.jgit.lib.ConfigConstants;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
-import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.StoredConfig;
-import org.eclipse.jgit.lib.ConfigConstants;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.TransportException;
-import org.eclipse.jgit.api.errors.GitAPIException;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
 import com.rimerosolutions.ant.git.GitBuildException;
@@ -47,8 +47,10 @@ import com.rimerosolutions.ant.git.GitTaskUtils;
 public class FetchTask extends AbstractGitRepoAwareTask {
 
         private boolean dryRun = false;
+        private String remoteRefSpec = "+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*";
         private boolean removeDeletedRefs = true;
         private boolean thinPack = true;
+        private boolean defaultRefSpecs = true;
         private static final String TASK_NAME = "git-fetch";
         private static final String FETCH_FAILED_MESSAGE = "Fetch failed";
 
@@ -65,6 +67,18 @@ public class FetchTask extends AbstractGitRepoAwareTask {
          */
         public void setThinPack(boolean thinPack) {
                 this.thinPack = thinPack;
+        }
+
+        /**
+         * Sets the remote refSpec preference for fetch operation.
+         *
+         * @antdoc.notrequired
+         * @param remoteRefSpec (Default value is '+/refs/heads/*:refs/remote/origin/*' )
+         *
+         * One is able to provide an null or empty string to not set any refSpec.
+         */
+        public void setRemoteRefSpec(String remoteRefSpec) {
+                this.remoteRefSpec = remoteRefSpec;
         }
 
         /**
@@ -85,6 +99,17 @@ public class FetchTask extends AbstractGitRepoAwareTask {
          */
         public void setDryRun(boolean dryRun) {
                 this.dryRun = dryRun;
+        }
+
+        /**
+         * If set to true, the following additional refs are also fetched:
+         * +/refs/notes/*:refs/notes/* and +/refs/tags/*:refs/tags/*
+         *
+         * @antdoc.notrequired
+         * @param defaultRefSpecs (Default value is true)
+         */
+        public void setDefaultRefSpecs(boolean defaultRefSpecs) {
+                this.defaultRefSpecs  = defaultRefSpecs;
         }
 
         @Override
@@ -109,9 +134,13 @@ public class FetchTask extends AbstractGitRepoAwareTask {
 
                         List<RefSpec> specs = new ArrayList<RefSpec>(3);
 
-                        specs.add(new RefSpec("+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*"));
-                        specs.add(new RefSpec("+" + Constants.R_NOTES + "*:" + Constants.R_NOTES + "*"));
-                        specs.add(new RefSpec("+" + Constants.R_TAGS + "*:" + Constants.R_TAGS + "*"));
+                        if (null != remoteRefSpec && remoteRefSpec != "") {
+                            specs.add(new RefSpec(remoteRefSpec));
+                        }
+                        if (defaultRefSpecs) {
+                            specs.add(new RefSpec("+" + Constants.R_NOTES + "*:" + Constants.R_NOTES + "*"));
+                            specs.add(new RefSpec("+" + Constants.R_TAGS + "*:" + Constants.R_TAGS + "*"));
+                        }
 
                         FetchCommand fetchCommand = git.fetch().
                                 setDryRun(dryRun).
