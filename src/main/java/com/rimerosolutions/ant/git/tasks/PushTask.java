@@ -15,16 +15,15 @@
  */
 package com.rimerosolutions.ant.git.tasks;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.transport.URIish;
 
 import com.rimerosolutions.ant.git.AbstractGitRepoAwareTask;
@@ -53,9 +52,6 @@ public class PushTask extends AbstractGitRepoAwareTask {
 
         private String pushFailedProperty;
         private boolean includeTags = true;
-        private boolean forcePush = false;
-        private String deleteRemoteBranch;
-        private String remoteRefSpec;
         private static final String TASK_NAME = "git-push";
         private static final String PUSH_FAILED_MESSAGE = "Push failed.";
         private static final String DEFAULT_REFSPEC_STRING = "+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + Constants.DEFAULT_REMOTE_NAME + "/*";
@@ -76,14 +72,6 @@ public class PushTask extends AbstractGitRepoAwareTask {
         }
 
         /**
-         * Whether or not to force push
-         *
-         * @antdoc.notrequired
-         * @param forcePush Default is false
-         */
-        public void setForcePush(boolean forcePush) { this.forcePush = forcePush; }
-
-        /**
          * Sets a boolean property if the git push fails
          *
          * @antdoc.notrequired
@@ -91,27 +79,6 @@ public class PushTask extends AbstractGitRepoAwareTask {
          */
         public void setPushFailedProperty(String pushFailedProperty) {
                 this.pushFailedProperty = pushFailedProperty;
-        }
-
-        /**
-         * Sets a remote branch to delete.
-         * @antdoc.notrequired
-         * @param deleteRemoteBranch Locally deleted branch to delete remotely
-         */
-        public void setDeleteRemoteBranch(String deleteRemoteBranch) {
-                this.deleteRemoteBranch = deleteRemoteBranch;
-        }
-
-        /**
-         * Sets the remote refSpec preference for push operation.
-         *
-         * @antdoc.notrequired
-         * @param remoteRefSpec (Default value is '+/refs/heads/*:refs/remote/origin/*' )
-         *
-         * One is able to provide an null or empty string to not set any refSpec.
-         */
-        public void setRemoteRefSpec(String remoteRefSpec) {
-                this.remoteRefSpec  = remoteRefSpec;
         }
 
         @Override
@@ -124,7 +91,7 @@ public class PushTask extends AbstractGitRepoAwareTask {
                                 URIish uri = new URIish(getUri());
 
                                 RemoteConfig remoteConfig = new RemoteConfig(config, Constants.DEFAULT_REMOTE_NAME);
-
+                                
                                 remoteConfig.addURI(uri);
                                 remoteConfig.addFetchRefSpec(new RefSpec(DEFAULT_REFSPEC_STRING));
                                 remoteConfig.addPushRefSpec(new RefSpec(DEFAULT_REFSPEC_STRING));
@@ -132,25 +99,15 @@ public class PushTask extends AbstractGitRepoAwareTask {
 
                                 config.save();
                         }
-
-                        List<RefSpec> specs = new ArrayList<RefSpec>();
-                        if (null != remoteRefSpec && remoteRefSpec != "") {
-                            specs.add(new RefSpec(remoteRefSpec));
-                        }
-
-                        if (deleteRemoteBranch != null) {
-                                specs = Arrays.asList(new RefSpec(":" + Constants.R_HEADS + deleteRemoteBranch));
-                        }
+                        
+                        String currentBranch = git.getRepository().getBranch();
+                        List<RefSpec> specs = Arrays.asList(new RefSpec(currentBranch + ":" + currentBranch));
 
                         PushCommand pushCommand = git.push().
-                                        setPushAll().
-                                        setRefSpecs(specs).
-                                        setDryRun(false).
-                                        setForce(forcePush);
-
-                        if (getUri() != null) {
-                                pushCommand.setRemote(getUri());
-                        }
+                                setPushAll().
+                                setRefSpecs(specs).
+                                setDryRun(false).
+                                setRemote(getUri());
 
                         setupCredentials(pushCommand);
 
@@ -162,12 +119,11 @@ public class PushTask extends AbstractGitRepoAwareTask {
                                 pushCommand.setProgressMonitor(getProgressMonitor());
                         }
 
-                        Iterable<PushResult> pushResults = pushCommand.call();
+                        Iterable<PushResult> pushResults = pushCommand.setForce(true).call();
 
                         for (PushResult pushResult : pushResults) {
-                                log(pushResult.getMessages());
-                                GitTaskUtils.validateRemoteRefUpdates(PUSH_FAILED_MESSAGE, pushResult.getRemoteUpdates());
                                 GitTaskUtils.validateTrackingRefUpdates(PUSH_FAILED_MESSAGE, pushResult.getTrackingRefUpdates());
+                                log(pushResult.getMessages());
                         }
                 } catch (Exception e) {
                         if (pushFailedProperty != null) {
