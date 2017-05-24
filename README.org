@@ -21,7 +21,7 @@ Below is one possible workflow:
 
 [[http://maven.apache.org][Apache Maven]]/[[http://ant.apache.org/ivy/][Apache Ivy]] repository hosting is provided via [[https://oss.sonatype.org/index.html][Sonatype OSS repositories]].
 
-If you'd like to contribute, please also read the [[https://github.com/rimerosolutions/ant-git-tasks/wiki/Developer-notes][Developer Notes Wiki page]].
+*The best way to contribute is via pull requests after running tests.* Please also check the [[https://github.com/rimerosolutions/ant-git-tasks/wiki/Developer-notes][Developer Notes Wiki page]].
  
 * Tasks description and documentation
 
