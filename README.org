@@ -4,6 +4,14 @@
 [[https://travis-ci.org/rimerosolutions/ant-git-tasks/][file:https://travis-ci.org/rimerosolutions/ant-git-tasks.png]]
 [[http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22ant-git-tasks%22][file:https://img.shields.io/maven-central/v/com.rimerosolutions.ant/ant-git-tasks.svg]]
 
+*IMPORTANT: This project is officially retired*
+- I haven't updated this for a while and there have been couple of issues created
+  - It often takes many years to get some community involvement (issues or useful pull requests)
+  - The same happened many years ago with [[https://xpontus.sourceforge.net/][XPontus XML editor]] (active efforts between 2004-2008)
+- I don't program "that much" professionally anymore
+  - I haven't used Apache Ant since 2014-2015 or so
+  - For my Open Source projects, I've been "playing around" [[https://github.com/rimerosolutions/entrusted][mostly with Rust lately]]
+  
 * Summary
 This is a set of basic [[http://ant.apache.org/][Apache Ant]] tasks for [[http://git-scm.com/][Git]] to automate release processes, using the [[http://www.eclipse.org/jgit/][Eclipse JGit API]].
 The goal is to leverage release management processes for Apache Ant based projects that use Git for revision control.
